@@ -6,6 +6,7 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     
+    
     ofSetWindowTitle("data to waveform");
         
     pallete.push_back(0x264653);
@@ -32,9 +33,18 @@ void ofApp::setup(){
     //synth.datatable.smoothing(0.5f);
 
     synth.setup( voicesNum );
+    
+    setupSequencer();
+
+    
     for(int i=0; i<voicesNum; ++i){
         keyboard.out_trig(i)  >> synth.voices[i].in("trig");
         keyboard.out_pitch(i) >> synth.voices[i].in("pitch");
+        
+        seq.out_trig("kick") >> synth.voices[i].in("trig2");
+        
+        seq.out_trig("gate") >> synth.voices[i].in("trig3");
+        seq.out_value("pitch") >> synth.voices[i].in("pitch3");
     }
     
     // patch synth to the engine
@@ -60,11 +70,11 @@ void ofApp::setup(){
     // audio / midi setup----------------------------
 #ifdef USE_MIDI_KEYBOARD
     midiIn.listPorts();
-    midiIn.openPort(0); //set the right port !!!
+    midiIn.openPort(0);
     engine.addMidiController( keyboard, midiIn );
 #endif
     engine.listDevices();
-    engine.setDeviceID(1); // REMEMBER TO SET THIS AT THE RIGHT INDEX!!!!
+    engine.setDeviceID(1); // my sound output index
     engine.setup( 44100, 512, 3);
     
     generatePattern();
@@ -77,14 +87,9 @@ void ofApp::update(){
     // generating the image
     ofPixels pixels;
     imagePattern.readToPixels(pixels);
-    
-    // ------------------ GENERATING THE WAVE ----------------------
-    
-    // a pdsp::DataTable easily convert data to a waveform in real time
-    // if you don't need to generate waves in real time but
-    // interpolate between already stored waves pdsp::WaveTable is a better choice
-    // for example if you want to convert an image you already have to a wavetable
-    
+        
+    //convert data to a waveform in real time
+
     switch( mode ){
         case 0: // converting pixels to waveform samples
             synth.datatable.begin();
@@ -236,15 +241,51 @@ void ofApp::generatePattern() {
     imagePattern.end();
 }
 
+
+void ofApp::setupSequencer () {
+    engine.sequencer.setTempo( 108 );
+    
+    // pdsp::Function can be used to make generative sequencers
+    
+    // this assignable function is executed each 16th
+    seq.code = [&]() noexcept {
+        // synth -------
+        if( seq.chance( 0.5f ) ){
+            seq.send("gate", 1.0f ); // sends note on to "gate" out
+        }else{
+            seq.send("gate", 0.0f ); // note off
+        }
+       
+        static float akebono[] = { 72.0f, 74.0f, 75.0f, 79.0f, 80.0f, 84.0f, 86.0f, 87.0f }; // akebono scale
+        float p = akebono[ seq.dice( 8 ) ]; // random note from scale
+     
+        seq.send( "pitch", p - 20.0f );
+        
+        // kick -------
+        const float x = 1.0f;
+        const float o = 0.0f;
+        static float ks[] = { x,x,x,o, o,o,o,o, x,o,o,o, o,o,o,o };
+        
+        // frame returns the playback in bars multiplied for timing
+        // as int, use modulo operations for getting the step
+        seq.send( "kick", ks[seq.frame()%16] );
+    };
+    
+
+    
+}
+
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
     if (key == OF_KEY_RETURN) {
+        engine.sequencer.play();
         generatePattern();
     }
 #ifndef USE_MIDI_KEYBOARD
     // sends key messages to ofxPDSPComputerKeyboard
     keyboard.keyReleased( key );
 #endif
+
 }
 
 //--------------------------------------------------------------

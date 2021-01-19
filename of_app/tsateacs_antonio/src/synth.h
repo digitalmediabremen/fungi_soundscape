@@ -20,7 +20,9 @@ public:
         
         float meter_mod_env() const;
         float meter_pitch() const;
-
+        
+        
+        void patch ();
     private:
         void setup(PolySynth & m, int v);
 
@@ -29,7 +31,11 @@ public:
         pdsp::DataOscillator    oscillator;
         pdsp::VAFilter          filter;
         pdsp::Amp               amp;
-
+        pdsp::FMOperator    osc;
+        pdsp::AHR           ampEnv;
+        pdsp::AHR           modEnv;
+        pdsp::PatchNode     trigger_in;
+        pdsp::ADSR env;
 
         pdsp::ADSR          envelope;
     }; // end voice class -----------------------------
@@ -76,5 +82,6 @@ private: // --------------------------------------------------
     pdsp::Parameter     chorus_depth_ctrl;
     
     std::vector<float> partials_vector;
+    
 
 };

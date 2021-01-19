@@ -3,8 +3,8 @@
 
 void PolySynth::setup(int numVoices){
     
-
     // -------------------------- PATCHING ------------------------------------
+    
     voices.resize( numVoices );
 
     for(int i=0; i<numVoices; ++i){
@@ -84,8 +84,41 @@ void PolySynth::Voice::setup( PolySynth & m, int v ){
         m.env_decay_ctrl   >> envelope.in_decay();
         m.env_sustain_ctrl >> envelope.in_sustain();
         m.env_release_ctrl >> envelope.in_release();
+    
+    
+    // sequencer
+    
+    addModuleInput("trig3", env.in_trig()); // arguments are tag and the Unit in/out to link to that tag
+    addModuleInput("pitch3", osc.in_pitch());
+    //patching
+    env.set(0.0f, 50.0f, 1.0f, 350.0f) * 0.25f >> amp.in_mod();
+    env * 0.12f >> osc.in_fb() >> filter >> amp;
+    // valor faz explodir a caixa de som
+    
+    
+    
+    
+    // second trigger
+    
+    //set inputs/outputs
+    addModuleInput("trig2", trigger_in);
+    
+    //patching
+    trigger_in >> ampEnv.set(0.0f, 50.0f, 100.0f) >> amp.in_mod();
+    trigger_in >> modEnv.set(0.0f, 0.0f, 50.0f) * 48.0f >> oscillator.in_pitch();
+                                                  48.0f >> oscillator.in_pitch();
+    
+    //trigger_in >> envelope >> amp.in_mod();
+
+    
+    
+    
+
+    
+    ampEnv.enableDBTriggering( -24.0f );
 
 }
+
 
 float PolySynth::Voice::meter_mod_env() const{
     return envelope.meter_output();

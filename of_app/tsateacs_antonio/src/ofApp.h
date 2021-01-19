@@ -6,7 +6,7 @@
 #include "ofxGui.h"
 #include "synth.h"
 
-// decomment to use a midi keyboard instead of the computer keys
+
 //#define USE_MIDI_KEYBOARD
 
 class ofApp : public ofBaseApp{
@@ -29,9 +29,12 @@ class ofApp : public ofBaseApp{
         void gotMessage(ofMessage msg);
         void generatePattern();
         pdsp::Engine   engine;
+    
 
+        pdsp::Function          seq;
+    void setupSequencer();
         PolySynth                   synth;
-        
+
 #ifdef USE_MIDI_KEYBOARD
         pdsp::midi::Keys        keyboard;
         pdsp::midi::Input       midiIn;
@@ -54,5 +57,6 @@ class ofApp : public ofBaseApp{
         ofFbo waveplot;
     
         ofFbo imagePattern;
+    
         
 };
