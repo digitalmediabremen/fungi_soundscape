@@ -32,14 +32,14 @@ WolframSeq::WolframSeq(){
 
             for(int x=0; x < CA_WIDTH; ++x){
                 int sum = 0;
-                sum += ca.CA[0][x];
-                sum += ca.CA[1][x];
-                sum += ca.CA[2][x];
-                sum += ca.CA[3][x];
-                sum += ca.CA[4][x];
-                sum += ca.CA[5][x];
-                sum += ca.CA[6][x];
-                sum += ca.CA[7][x];
+                sum += ca.CA[CA_HEIGHT - 1][x];
+                sum += ca.CA[CA_HEIGHT - 2][x];
+                sum += ca.CA[CA_HEIGHT - 3][x];
+                sum += ca.CA[CA_HEIGHT - 4][x];
+                sum += ca.CA[CA_HEIGHT - 5][x];
+                sum += ca.CA[CA_HEIGHT - 6][x];
+                sum += ca.CA[CA_HEIGHT - 7][x];
+                sum += ca.CA[CA_HEIGHT - 8][x];
                 
                 int sect = x / steps;
                 float value = 0.0f;
@@ -79,8 +79,13 @@ float WolframSeq::getStep( int step, int out ) const{
     return stepbars[ step + out*steps ];
 }
 
+void WolframSeq::setImage( ofImage img ) {
+    ca.fill(img);
+}
+
 void WolframSeq::draw( int ca_side, int bars_h, ofColor fg, ofColor bg ){
-    
+    ofPushMatrix();
+    ofScale(0.3,0.3,0.3);
     ofSetColor( fg );
     
     for( int y=0; y<CA_HEIGHT; ++y ){
@@ -94,7 +99,7 @@ void WolframSeq::draw( int ca_side, int bars_h, ofColor fg, ofColor bg ){
         }
     }
 
-    ofPushMatrix();
+
     ofTranslate( 0, ca_side * (CA_HEIGHT+1));
     
     ofSetColor( bg );

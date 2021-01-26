@@ -27,7 +27,7 @@ void ofApp::setup(){
     ofDisableAntiAliasing();
     brightColor = ofColor( 255, 95, 95);
     darkColor = ofColor( 90, 35, 35);
-    ofSetWindowTitle( "wolfram dub d(-_-)b" );
+    ofSetWindowTitle( "read mushroom" );
     caHeight = SIDE*MAX_GENERATIONS;
     
     // image to become bits
@@ -46,7 +46,7 @@ void ofApp::setup(){
     //----------------- ---------------------
     // Setting up sequencer
     //engine.sequencer.stop();    // decomment if you want to start the app from stopped state
-    engine.sequencer.setTempo(92.0f);
+    engine.sequencer.setTempo(120.0f);
         
     // ----------- PATCHING -----------
     
@@ -60,6 +60,7 @@ void ofApp::setup(){
         wolframSeq.out_trig(i) >> zaps.voices[i]; // patch the sequence outputs to the zaps
         zaps.voices[i] >> scopes[i] >> engine.blackhole();
     }
+    
     
     zaps.fader.ch(0) >> engine.audio_out(0);
     zaps.fader.ch(1) >> engine.audio_out(1);   
@@ -96,7 +97,8 @@ void ofApp::setup(){
     //---------------------- audio setup -------------
     engine.listDevices();
     engine.setDeviceID(1); // <--- remember to set your index
-    engine.setup( 44100, 512, 3); 
+    engine.setup( 44100, 512, 3);
+    
 }
 
 //--------------------------------------------------------------
@@ -142,8 +144,10 @@ void ofApp::draw(){
     ofPopMatrix();
 
 
-    ofDrawBitmapString("spacebar: stop/play", 20, ofGetHeight() - 20); 
+    ofDrawBitmapString("spacebar: stop/play", 20, ofGetHeight() - 20);
     
+    
+    pattern.draw(500, 200);
 }
 
 
@@ -159,13 +163,13 @@ void ofApp::findContours(ofImage img) {
 }
 
 void ofApp::generatePattern(ofxCvGrayscaleImage grayImage) {
-        int w = 64;
-        int h = 64;
+        int w = CA_WIDTH;
+        int h = CA_HEIGHT;
     
         int wMultiplier = currentWidth/w;
         int hMultiplier = currentHeight/h;
 
-        pattern.allocate(w, h, OF_IMAGE_COLOR);
+        pattern.allocate(w, h, OF_IMAGE_GRAYSCALE);
         pattern.setColor(ofColor::white);
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
@@ -182,11 +186,16 @@ void ofApp::generatePattern(ofxCvGrayscaleImage grayImage) {
 void ofApp::keyPressed(int key){
     
     if (key == ' '){
+        // fill with image
+        wolframSeq.setImage(pattern);
+        /*
         if(engine.sequencer.isPlaying()){
             engine.sequencer.stop();
         }else{
             engine.sequencer.play();
         }
+         (
+         */
     }
     
 }

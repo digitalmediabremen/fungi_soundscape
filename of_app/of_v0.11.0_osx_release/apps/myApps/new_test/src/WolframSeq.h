@@ -29,7 +29,9 @@ public:
 
     pdsp::SequencerGateOutput& out_trig( int index );
     
-    vector<float>   stepbars;    
+    vector<float>   stepbars;
+    
+    void setImage(ofImage img);
     
 private:
     pdsp::Function seq;

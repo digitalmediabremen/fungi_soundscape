@@ -3,7 +3,7 @@
 #include "ofxPDSP.h"
 
 Automaton1D::Automaton1D(){
-    setRule( 60 );
+    setRule( 90);
     clear();
 }
 
@@ -39,7 +39,9 @@ void Automaton1D::advance() noexcept{ // update the automaton
 }
 
 void Automaton1D::random( float density, pdsp::Function & seq ) noexcept{
+    ofLog () << "random automatom";
     clear();
+    
     for( int x=0; x<CA_WIDTH; ++x ){
         if(x%2==0){
             // pdsp has its own random generator 
@@ -52,6 +54,22 @@ void Automaton1D::random( float density, pdsp::Function & seq ) noexcept{
     for( int i=0; i<CA_HEIGHT-1; ++i ){
         advance();
     }
+}
+
+void Automaton1D::fill( ofImage img) {
+    ofLog() << "filll";
+    for( int x=0; x<CA_WIDTH; ++x ){
+        for( int y=0; y<CA_HEIGHT; ++y ){
+            if (img.getPixels().getColor(x,y).getLightness() > 0.0f) {
+                ofLog() << "filling..";
+                CA[y][x] = 1;
+            } else {
+                CA[y][x] = 0;
+            }
+        }
+    }
+    ofLog() << "foi";
+
 }
 
 void Automaton1D::clear() noexcept{

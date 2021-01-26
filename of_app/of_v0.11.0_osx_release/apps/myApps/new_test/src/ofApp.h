@@ -6,7 +6,7 @@
 #include "ofxGui.h"
 #include "Zaps.h"
 #include "StereoDelay.h"
-
+#include "ofxOpenCv.h"
 
 class ofApp : public ofBaseApp{
 
