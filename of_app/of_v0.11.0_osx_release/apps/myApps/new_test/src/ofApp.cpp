@@ -144,7 +144,7 @@ void ofApp::draw(){
     ofPopMatrix();
 
 
-    ofDrawBitmapString("spacebar: stop/play", 20, ofGetHeight() - 20);
+    // ofDrawBitmapString("spacebar: stop/play", 20, ofGetHeight() - 20);
     
     
     pattern.draw(500, 200);
