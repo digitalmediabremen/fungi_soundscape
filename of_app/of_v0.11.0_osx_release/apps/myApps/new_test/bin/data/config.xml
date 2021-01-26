@@ -4,28 +4,28 @@
 		<rule>60</rule>
 		<steps>16</steps>
 		<active_outs>4</active_outs>
-		<threshold>0</threshold>
+		<threshold>2</threshold>
 		<seeds_density>0.5</seeds_density>
 		<regenerate>0</regenerate>
 	</matrix>
 	<zaps_UI>
-		<gain>-12</gain>
-		<env_to_pitch>48</env_to_pitch>
-		<env_decay>50</env_decay>
-		<env_dyn_amt>0.5</env_dyn_amt>
-		<zap_1_pitch>46</zap_1_pitch>
+		<gain>-11</gain>
+		<env_to_pitch>71</env_to_pitch>
+		<env_decay>88</env_decay>
+		<env_dyn_amt>0.683673</env_dyn_amt>
+		<zap_1_pitch>29</zap_1_pitch>
 		<zap_2_pitch>53</zap_2_pitch>
-		<zap_3_pitch>60</zap_3_pitch>
+		<zap_3_pitch>73</zap_3_pitch>
 		<zap_4_pitch>67</zap_4_pitch>
 	</zaps_UI>
 	<stereo_delay>
-		<input_gain>-15</input_gain>
-		<L_16th_time>5</L_16th_time>
-		<L_feedback>0.4</L_feedback>
-		<R_16th_time>3</R_16th_time>
-		<R_feedback>0.4</R_feedback>
-		<damping>0.5</damping>
+		<input_gain>-2</input_gain>
+		<L_16th_time>11</L_16th_time>
+		<L_feedback>0.678571</L_feedback>
+		<R_16th_time>10</R_16th_time>
+		<R_feedback>0.617347</R_feedback>
+		<damping>0.80102</damping>
 		<output_gain>0</output_gain>
 	</stereo_delay>
-	<Mushroom_genus>Hypholoma</Mushroom_genus>
+	<Mushroom_genus>Agaricus</Mushroom_genus>
 </read_mush>

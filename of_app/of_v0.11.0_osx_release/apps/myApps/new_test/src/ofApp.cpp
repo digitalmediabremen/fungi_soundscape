@@ -17,7 +17,7 @@ void ofApp::setup(){
     
     //----------------- ---------------------
     // Setting up sequencer
-    engine.sequencer.setTempo(70.0f);
+    engine.sequencer.setTempo(120.0f);
         
     // ----------- PATCHING -----------
     
@@ -192,10 +192,10 @@ bool ofApp::processImage(ofImage * img) {
     //grayImage.contrastStretch();
     grayImage.dilate();
     grayImage.dilate();
-    grayImage.erode();
-    grayImage.erode();
 
     grayImage.invert();
+    
+    
 
     int totalArea = grayImage.width*grayImage.height;
    int minArea = totalArea * 0.02;
@@ -252,7 +252,7 @@ void ofApp::generatePattern(ofxCvGrayscaleImage grayImage) {
     
         //colorImg.setFromPixels(pix);
         contoursImage->scaleIntoMe(temp);
-        contoursImage->blur(1);
+        contoursImage->dilate();
         contoursImage->contrastStretch();
         
         } else {
