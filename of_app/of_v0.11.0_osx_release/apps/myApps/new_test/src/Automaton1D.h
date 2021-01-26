@@ -3,6 +3,7 @@
 
 #include "ofMain.h"
 #include "ofxPDSP.h"
+#include "ofxOpenCv.h"
 
 #define MWR 8
 
@@ -25,7 +26,7 @@ public:
     void advance() noexcept;
     
     void setRule( int rule ) noexcept;
-    void fill( ofImage img );
+    void fill( ofxCvGrayscaleImage img );
 
     int CA[CA_HEIGHT][CA_WIDTH];    
 

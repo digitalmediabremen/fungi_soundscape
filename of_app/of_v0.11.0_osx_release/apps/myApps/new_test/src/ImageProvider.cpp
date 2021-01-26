@@ -24,7 +24,7 @@ vector<string> ImageProvider::fetchImages (string species) {
     vector<string> imageUrls;
         
     // find 10 images
-    for (int i = 0; i < jsonObservations["results"].size() && imageUrls.size() < 10; i++) {
+    for (int i = 0; i < jsonObservations["results"].size() && imageUrls.size() < 2; i++) {
         string observationID = ofToString(jsonObservations["results"][i]);
         
         string urlImages = "https://mushroomobserver.org/api2/images?observation=" + observationID + "&format=json";

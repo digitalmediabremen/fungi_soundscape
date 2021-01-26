@@ -27,6 +27,7 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
+        void fillMatrix();
 
         void switchRule();
 
@@ -64,8 +65,14 @@ class ofApp : public ofBaseApp{
         void onChangeMushroomGenus(string&);
     
         ImageProvider imageProvider;
-        ofxCvGrayscaleImage grayImage, grayBg, grayDiff;
+        ofxCvGrayscaleImage grayImage;//, grayBg, grayDiff;
         ofxCvContourFinder contourFinder;
+    
+        ofxCvGrayscaleImage * contoursImage;
+
+        ofImage currentImage;
+        ofFbo contoursFbo;
+    
 
 };
 

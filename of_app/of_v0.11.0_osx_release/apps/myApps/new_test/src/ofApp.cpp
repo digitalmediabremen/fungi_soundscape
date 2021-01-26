@@ -64,7 +64,7 @@ void ofApp::setup(){
     gui.add( wolframSeq.parameters );
     gui.add( zaps.parameters );
     gui.add( dub.parameters );
-    mushroomType.set("Mushroom genus", "Buellia");
+    mushroomType.set("Mushroom genus", "Agaricus");
     gui.add(mushroomType);
     
     // listen via class method
@@ -76,6 +76,8 @@ void ofApp::setup(){
     engine.setDeviceID(1); // <--- remember to set your index
     engine.setup( 44100, 512, 3);
     
+    
+    fillMatrix();
 }
 
 //--------------------------------------------------------------
@@ -85,8 +87,47 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    
     ofBackground(0);
+
+    if (contoursImage != NULL) {
+            ofPushMatrix();
+               ofTranslate(650, 30);
+               //ofScale(0.4,0.4,0.4);
+               currentImage.draw(0, 0, 100, 100);
+           ofPopMatrix();
+        ofPushMatrix();
+            ofTranslate(350, 30);
+            //ofScale(0.4,0.4,0.4);
+            grayImage.draw(0, 0, 100, 100);
+        ofPopMatrix();
+        
+        ofPushMatrix();
+            ofTranslate(350,250);
+            ofScale(0.2,0.2,0.2);
+            contoursImage->draw(0,0, 500, 500);
+        ofPopMatrix();
+        
+        if (contourFinder.nBlobs > 0) {
+            ofPushMatrix();
+            ofPushStyle();
+                ofTranslate(650,250);
+                ofScale(0.1,0.1,0.1);
+            ofSetLineWidth(1);
+
+            for( int i=0; i<(int)contourFinder.blobs.size(); i++ ) {
+                ofNoFill();
+                ofBeginShape();
+                for( int j=0; j<contourFinder.blobs[i].nPts; j++ ) {
+                    ofVertex( contourFinder.blobs[i].pts[j].x, contourFinder.blobs[i].pts[j].y );
+                }
+                ofEndShape();
+            }
+            ofPopStyle();
+            ofPopMatrix();
+        }
+
+    }
+    
     
     gui.draw();
 
@@ -121,29 +162,7 @@ void ofApp::draw(){
     ofPopMatrix();
 
 
-    // ofDrawBitmapString("spacebar: stop/play", 20, ofGetHeight() - 20);
     
-    if (pattern != NULL) {
-        
-        
-        ofPushMatrix();
-            ofTranslate(400,30);
-            //ofScale(0.4,0.4,0.4);
-            grayDiff.draw(0, 0, 100, 100);
-        ofPopMatrix();
-        
-        ofPushMatrix();
-            ofTranslate(500,200);
-            ofScale(2,2,2);
-            pattern->draw(0, 0);
-        ofPopMatrix();
-        ofPushMatrix();
-            ofTranslate(400,70);
-            ofScale(0.2,0.2,0.2);
-            contourFinder.draw(0, 0);
-        ofPopMatrix();
-        
-    }
 }
 
 
@@ -161,47 +180,105 @@ bool ofApp::processImage(ofImage * img) {
     
     colorImg.allocate(width, height);
     grayImage.allocate(width,height);
-    grayBg.allocate(width, height);
-    grayDiff.allocate(width, height);
     
     colorImg.setFromPixels(img->getPixels());
     grayImage = colorImg; // convert our color image to a grayscale image
-    
-    grayDiff.absDiff(grayBg, grayImage);
-    grayDiff.threshold(70);
-    
-    int totalArea = grayDiff.width*grayDiff.height;
-   int minArea = totalArea * 0.01;
-   int maxArea = totalArea * 0.95;
-   int nConsidered = 15;
+    grayImage.brightnessContrast(1,1.5);
+    grayImage.blurGaussian(5);
+    grayImage.adaptiveThreshold(10);
+    //grayImage.threshold(30);
 
-    contourFinder.findContours(grayDiff, minArea, maxArea, nConsidered, true);
-    grayDiff.blurHeavily();
+    //grayImage.threshold(30);
+    //grayImage.contrastStretch();
+    grayImage.dilate();
+    grayImage.dilate();
+    grayImage.erode();
+    grayImage.erode();
 
-    grayDiff.invert();
+    grayImage.invert();
+
+    int totalArea = grayImage.width*grayImage.height;
+   int minArea = totalArea * 0.02;
+   int maxArea = totalArea * 0.80;
+   int nConsidered = 5;
+
+    contourFinder.findContours(grayImage, minArea, maxArea, nConsidered, false, false);
     
-    generatePattern(grayDiff);
+    generatePattern(grayImage);
     return true;
 }
 
 void ofApp::generatePattern(ofxCvGrayscaleImage grayImage) {
-        int w = CA_WIDTH;
-        int h = CA_HEIGHT;
+    int dataWidth = contourFinder.getWidth();
+    int dataHeight = contourFinder.getHeight();
     
-        int wMultiplier = grayImage.getWidth()/w;
-        int hMultiplier = grayImage.getHeight()/h;
-        pattern = new ofImage();
-        pattern->allocate(w, h, OF_IMAGE_GRAYSCALE);
-        pattern->setColor(ofColor::white);
+    int w = CA_WIDTH;
+    int h = CA_HEIGHT;
+
+    int wMultiplier = dataWidth/w;
+    int hMultiplier = dataHeight/h;
+
+    
+    ofPixels pix;
+    contoursImage = new ofxCvGrayscaleImage();
+
+    if (contourFinder.nBlobs > 0) {
+        contoursFbo.allocate(dataWidth, dataHeight, GL_RED);
+            
+        contoursFbo.begin();
+        ofPushMatrix();
+        ofPushStyle();
+            ofClear(0);
+            ofSetColor(255);
+            ofSetLineWidth(700);
+             for( int i=0; i<(int)contourFinder.blobs.size(); i++ ) {
+               ofNoFill();
+               ofBeginShape();
+               for( int j=0; j<contourFinder.blobs[i].nPts; j++ ) {
+                   ofVertex( contourFinder.blobs[i].pts[j].x, contourFinder.blobs[i].pts[j].y );
+               }
+               ofEndShape();
+           }
+        ofPopStyle();
+        ofPopMatrix();
+        contoursFbo.end();
+        
+        pix.allocate(dataWidth, dataHeight, OF_IMAGE_GRAYSCALE); /// <-- manually set this.
+        contoursFbo.readToPixels(pix);
+
+        ofxCvGrayscaleImage temp;
+        temp.setFromPixels(pix);
+        contoursImage->allocate(w, h);
+    
+        //colorImg.setFromPixels(pix);
+        contoursImage->scaleIntoMe(temp);
+        contoursImage->blur(1);
+        contoursImage->contrastStretch();
+        
+        } else {
+            contoursImage->allocate(w, h);
+            contoursImage->scaleIntoMe(grayImage, CV_INTER_CUBIC);
+        }
+        
+
+       // contoursImage.contrastStretch();
+         
+        ofLog() << "num channels" << ofToString(pix.getNumChannels());
+        /*
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
-                
-                ofColor thisPixColor = grayImage.getPixels().getColor(i*wMultiplier,j*hMultiplier);
+                ofColor thisPixColor;
+                if (contourFinder.nBlobs > 0) {
+                    thisPixColor = contoursImage.getPixels().getColor(i*wMultiplier, j*hMultiplier);
+                } else {
+                    thisPixColor = grayImage.getPixels().getColor(i*wMultiplier,j*hMultiplier);
+                }
 
                 pattern->setColor(i % w, j % h, thisPixColor);
             }
         }
         pattern->update();
+     */
 }
 
 //--------------------------------------------------------------
@@ -261,22 +338,26 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
 
 void ofApp::onChangeMushroomGenus(string& ){
     ofLog () << "changed: " << mushroomType.get();
-    
-   vector<string> imageUrls = imageProvider.fetchImages(mushroomType.get());
-    if (imageUrls.size() > 0) {
-        ofImage * downloadedFungus;
-        ofLog () << imageUrls[0];
-        downloadedFungus = imageProvider.fetchImage(imageUrls[0]);
-        int tries = 0;
-        while (!downloadedFungus && tries < imageUrls.size() - 1) {
-            ofLog () << "failed to get image, try next one";
-            tries++;
-            downloadedFungus = imageProvider.fetchImage(imageUrls[tries]);
-        }
-        if (downloadedFungus) {
-            processImage(downloadedFungus);
-            wolframSeq.setImage(pattern);
-        }
-    }
+    fillMatrix();
+}
+
+void ofApp::fillMatrix() {
+    vector<string> imageUrls = imageProvider.fetchImages(mushroomType.get());
+       if (imageUrls.size() > 0) {
+           ofImage * downloadedFungus;
+           ofLog () << imageUrls[0];
+           downloadedFungus = imageProvider.fetchImage(imageUrls[0]);
+           int tries = 0;
+           while (!downloadedFungus && tries < imageUrls.size() - 1) {
+               ofLog () << "failed to get image, try next one";
+               tries++;
+               downloadedFungus = imageProvider.fetchImage(imageUrls[tries]);
+           }
+           if (downloadedFungus) {
+               processImage(downloadedFungus);
+               wolframSeq.setImage(contoursImage);
+               currentImage = *downloadedFungus;
+           }
+       }
 }
 

@@ -79,7 +79,7 @@ float WolframSeq::getStep( int step, int out ) const{
     return stepbars[ step + out*steps ];
 }
 
-void WolframSeq::setImage( ofImage * img ) {
+void WolframSeq::setImage( ofxCvGrayscaleImage * img ) {
     if (!img) {
         return;
     }

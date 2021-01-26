@@ -5,6 +5,7 @@
 #include "ofxPDSP.h"
 #include "flags.h"
 #include "Automaton1D.h"
+#include "ofxOpenCv.h"
 
 #define NUMSYNTHS 4
 
@@ -31,7 +32,7 @@ public:
     
     vector<float>   stepbars;
     
-    void setImage(ofImage * img);
+    void setImage(ofxCvGrayscaleImage * img);
     
 private:
     pdsp::Function seq;
