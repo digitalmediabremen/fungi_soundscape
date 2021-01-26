@@ -31,7 +31,7 @@ public:
     
     vector<float>   stepbars;
     
-    void setImage(ofImage img);
+    void setImage(ofImage * img);
     
 private:
     pdsp::Function seq;

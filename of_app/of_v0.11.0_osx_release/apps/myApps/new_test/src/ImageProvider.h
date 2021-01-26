@@ -12,5 +12,7 @@ public:
     
     
     vector<string> fetchImages(string species);
+    ofImage * fetchImage(string url);
+
 private:
 };

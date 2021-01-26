@@ -55,27 +55,18 @@ class ofApp : public ofBaseApp{
         
         std::vector<pdsp::Scope> scopes;
     
-        // image to bits
-        ofxCvColorImage colorImg;
-        ofxCvGrayscaleImage grayImage, grayBg, grayDiff;
-        ofxCvContourFinder contourFinder;
-    
         void generatePattern(ofxCvGrayscaleImage grayImage);
-        ofImage pattern;
-
-        ofImage imageToAnalyze;
+        ofImage * pattern;
     
-        void findContours(ofImage img);
-        
-        int currentHeight;
-        int currentWidth;
-    
+        bool processImage(ofImage * img);
     
         ofParameter<string> mushroomType;
         void onChangeMushroomGenus(string&);
     
         ImageProvider imageProvider;
-        
+        ofxCvGrayscaleImage grayImage, grayBg, grayDiff;
+        ofxCvContourFinder contourFinder;
+
 };
 
 

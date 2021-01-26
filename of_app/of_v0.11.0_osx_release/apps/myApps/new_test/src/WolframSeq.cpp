@@ -79,8 +79,11 @@ float WolframSeq::getStep( int step, int out ) const{
     return stepbars[ step + out*steps ];
 }
 
-void WolframSeq::setImage( ofImage img ) {
-    ca.fill(img);
+void WolframSeq::setImage( ofImage * img ) {
+    if (!img) {
+        return;
+    }
+    ca.fill(*img);
 }
 
 void WolframSeq::draw( int ca_side, int bars_h, ofColor fg, ofColor bg ){

@@ -45,6 +45,16 @@ vector<string> ImageProvider::fetchImages (string species) {
     
     ofLog () << "found images! " << ofToString(imageUrls.size());
     return imageUrls;
-    
+}
 
+ofImage * ImageProvider::fetchImage (string url) {
+    ofHttpResponse http;
+    http = ofLoadURL(url);
+    ofImage * image;
+    image = new ofImage();
+    if (image->load(http.data)) {
+        return image;
+    }
+    ofLogError() << "access denied to image";
+    return NULL;
 }

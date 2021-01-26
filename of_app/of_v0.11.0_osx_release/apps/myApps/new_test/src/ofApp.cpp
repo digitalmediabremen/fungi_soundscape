@@ -15,19 +15,6 @@ void ofApp::setup(){
     ofSetWindowTitle( "read mushroom" );
     caHeight = SIDE*MAX_GENERATIONS;
     
-    // image to become bits
-    imageToAnalyze.load("musch.jpg");
-    
-    currentHeight = imageToAnalyze.getHeight();
-    currentWidth = imageToAnalyze.getWidth();
-    
-    colorImg.allocate(currentWidth, currentHeight);
-    grayImage.allocate(currentWidth,currentHeight);
-    grayBg.allocate(currentWidth, currentHeight);
-    grayDiff.allocate(currentWidth, currentHeight);
-    
-    findContours(imageToAnalyze);
-
     //----------------- ---------------------
     // Setting up sequencer
     engine.sequencer.setTempo(70.0f);
@@ -136,57 +123,89 @@ void ofApp::draw(){
 
     // ofDrawBitmapString("spacebar: stop/play", 20, ofGetHeight() - 20);
     
-    
-    pattern.draw(500, 200);
+    if (pattern != NULL) {
+        
+        
+        ofPushMatrix();
+            ofTranslate(400,30);
+            //ofScale(0.4,0.4,0.4);
+            grayDiff.draw(0, 0, 100, 100);
+        ofPopMatrix();
+        
+        ofPushMatrix();
+            ofTranslate(500,200);
+            ofScale(2,2,2);
+            pattern->draw(0, 0);
+        ofPopMatrix();
+        ofPushMatrix();
+            ofTranslate(400,70);
+            ofScale(0.2,0.2,0.2);
+            contourFinder.draw(0, 0);
+        ofPopMatrix();
+        
+    }
 }
 
 
-void ofApp::findContours(ofImage img) {
-    colorImg.setFromPixels(img.getPixels());
+bool ofApp::processImage(ofImage * img) {
+    if (!img || !img->isAllocated())
+    {
+        ofLog() << "img null";
+        return false;
+    }
+    // image to bits
+     ofxCvColorImage colorImg;
+    
+    int width = img->getWidth();
+    int height = img->getHeight();
+    
+    colorImg.allocate(width, height);
+    grayImage.allocate(width,height);
+    grayBg.allocate(width, height);
+    grayDiff.allocate(width, height);
+    
+    colorImg.setFromPixels(img->getPixels());
     grayImage = colorImg; // convert our color image to a grayscale image
     
     grayDiff.absDiff(grayBg, grayImage);
     grayDiff.threshold(70);
-    contourFinder.findContours(grayDiff, 5, (currentWidth*currentHeight)/4, 4, true, true);
+    
+    int totalArea = grayDiff.width*grayDiff.height;
+   int minArea = totalArea * 0.01;
+   int maxArea = totalArea * 0.95;
+   int nConsidered = 15;
+
+    contourFinder.findContours(grayDiff, minArea, maxArea, nConsidered, true);
+    grayDiff.blurHeavily();
+
+    grayDiff.invert();
     
     generatePattern(grayDiff);
+    return true;
 }
 
 void ofApp::generatePattern(ofxCvGrayscaleImage grayImage) {
         int w = CA_WIDTH;
         int h = CA_HEIGHT;
     
-        int wMultiplier = currentWidth/w;
-        int hMultiplier = currentHeight/h;
-
-        pattern.allocate(w, h, OF_IMAGE_GRAYSCALE);
-        pattern.setColor(ofColor::white);
+        int wMultiplier = grayImage.getWidth()/w;
+        int hMultiplier = grayImage.getHeight()/h;
+        pattern = new ofImage();
+        pattern->allocate(w, h, OF_IMAGE_GRAYSCALE);
+        pattern->setColor(ofColor::white);
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
                 
                 ofColor thisPixColor = grayImage.getPixels().getColor(i*wMultiplier,j*hMultiplier);
 
-                pattern.setColor(i % w, j % h, thisPixColor);
+                pattern->setColor(i % w, j % h, thisPixColor);
             }
         }
-        pattern.update();
+        pattern->update();
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-    
-    if (key == ' '){
-        // fill with image
-        wolframSeq.setImage(pattern);
-        /*
-        if(engine.sequencer.isPlaying()){
-            engine.sequencer.stop();
-        }else{
-            engine.sequencer.play();
-        }
-         (
-         */
-    }
     
 }
 
@@ -242,10 +261,22 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
 
 void ofApp::onChangeMushroomGenus(string& ){
     ofLog () << "changed: " << mushroomType.get();
-    vector<string> imageUrls = imageProvider.fetchImages(mushroomType.get());
     
-    for (int i = 0; i < imageUrls.size(); i++) {
-        ofLog () << "URL:" << imageUrls[i];
+   vector<string> imageUrls = imageProvider.fetchImages(mushroomType.get());
+    if (imageUrls.size() > 0) {
+        ofImage * downloadedFungus;
+        ofLog () << imageUrls[0];
+        downloadedFungus = imageProvider.fetchImage(imageUrls[0]);
+        int tries = 0;
+        while (!downloadedFungus && tries < imageUrls.size() - 1) {
+            ofLog () << "failed to get image, try next one";
+            tries++;
+            downloadedFungus = imageProvider.fetchImage(imageUrls[tries]);
+        }
+        if (downloadedFungus) {
+            processImage(downloadedFungus);
+            wolframSeq.setImage(pattern);
+        }
     }
 }
 
