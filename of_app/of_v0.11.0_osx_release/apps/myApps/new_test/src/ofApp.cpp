@@ -88,8 +88,8 @@ void ofApp::setup(){
 
      
     // ------------ GUI ------------
-    gui.setup("", "wolframdub.xml", ofGetWidth()-220, 40);
-    gui.setName( "WOLFRAM DUB" );
+    gui.setup("", "config.xml", ofGetWidth()-220, 40);
+    gui.setName( "read mush" );
     gui.add( wolframSeq.parameters );
     gui.add( zaps.parameters );
     gui.add( dub.parameters );
@@ -114,7 +114,7 @@ void ofApp::draw(){
     gui.draw();
 
     ofPushMatrix();
-    ofTranslate( 20, 50 );
+    ofTranslate( 0, 0 );
     wolframSeq.draw( SIDE, 120, brightColor, darkColor );
     ofPopMatrix();
     
@@ -129,7 +129,7 @@ void ofApp::draw(){
                 string label;
                 switch (i){
                     case 0: case 1: case 2: case 3:
-                        label = "zap " + ofToString(i);
+                        label = "synth " + ofToString(i);
                     break;
                     
                     case 4: label = "delay L"; break;

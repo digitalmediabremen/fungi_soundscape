@@ -3,7 +3,7 @@
 
 WolframSeq::WolframSeq(){
 
-    parameters.setName( "wolfram seq" );
+    parameters.setName( "matrix" );
     parameters.add( this->rule.set( "rule", 60, 0, 150 ));
     parameters.add( this->steps.set( "steps", 16, 0, 16 ));
     parameters.add( this->activeOuts.set( "active outs", NUMSYNTHS, 0, NUMSYNTHS ));
