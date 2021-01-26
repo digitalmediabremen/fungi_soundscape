@@ -75,6 +75,7 @@ class ofApp : public ofBaseApp{
         void onChangeMushroomGenus(string&);
     
         ImageProvider imageProvider;
+        
 };
 
 

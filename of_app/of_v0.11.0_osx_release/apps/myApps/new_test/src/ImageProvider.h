@@ -11,7 +11,6 @@ public:
     string baseImagePath;
     
     
-    void getImages(string species);
+    vector<string> fetchImages(string species);
 private:
-    ofHttpResponse http;
 };

@@ -61,7 +61,7 @@ void Automaton1D::fill( ofImage img) {
     for( int x=0; x<CA_WIDTH; ++x ){
         for( int y=0; y<CA_HEIGHT; ++y ){
             if (img.getPixels().getColor(x,y).getLightness() > 0.0f) {
-                ofLog() << "filling..";
+                // ofLog() << "filling..";
                 CA[y][x] = 1;
             } else {
                 CA[y][x] = 0;

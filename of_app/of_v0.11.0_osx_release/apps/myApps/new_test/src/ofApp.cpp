@@ -10,8 +10,8 @@ void ofApp::setup(){
     ofBackground(0);
     ofSetFrameRate(60);
     ofDisableAntiAliasing();
-    brightColor = ofColor( 255, 95, 95);
-    darkColor = ofColor( 90, 35, 35);
+    brightColor = ofColor( 255, 255, 255);
+    darkColor = ofColor( 35, 255, 35);
     ofSetWindowTitle( "read mushroom" );
     caHeight = SIDE*MAX_GENERATIONS;
     
@@ -30,12 +30,12 @@ void ofApp::setup(){
 
     //----------------- ---------------------
     // Setting up sequencer
-    engine.sequencer.setTempo(90.0f);
+    engine.sequencer.setTempo(70.0f);
         
     // ----------- PATCHING -----------
     
     // loads reverb impulse response
-    reverb.loadIR(ofToDataPath( "delay.wav" ));
+    reverb.loadIR(ofToDataPath( "kingtubby-fl1.wav" ));
     
     zaps.setup(NUMSYNTHS);
     scopes.resize(NUMSYNTHS + 2);
@@ -242,7 +242,10 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
 
 void ofApp::onChangeMushroomGenus(string& ){
     ofLog () << "changed: " << mushroomType.get();
-    imageProvider.getImages(mushroomType.get());
-
+    vector<string> imageUrls = imageProvider.fetchImages(mushroomType.get());
+    
+    for (int i = 0; i < imageUrls.size(); i++) {
+        ofLog () << "URL:" << imageUrls[i];
+    }
 }
 
