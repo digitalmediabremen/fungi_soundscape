@@ -7,6 +7,7 @@
 #include "Zaps.h"
 #include "StereoDelay.h"
 #include "ofxOpenCv.h"
+#include "ImageProvider.h"
 
 class ofApp : public ofBaseApp{
 
@@ -68,7 +69,12 @@ class ofApp : public ofBaseApp{
         
         int currentHeight;
         int currentWidth;
-        
+    
+    
+        ofParameter<string> mushroomType;
+        void onChangeMushroomGenus(string&);
+    
+        ImageProvider imageProvider;
 };
 
 

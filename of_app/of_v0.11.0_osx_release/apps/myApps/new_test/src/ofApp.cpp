@@ -3,21 +3,6 @@
 #define MAX_GENERATIONS 8
 #define SIDE 16
 
-// before looking at this check out the basics and scoring examples
-
-// this is the most complex example in ofxPDSP, and it shows you an example of workflow
-
-// instead of hardcoding your values you should write your own
-// generative sequences or code to parse value from files
-
-// ideally you should have your sequencer classes, your synth and effect classes with their ofParameterGroups 
-
-// patch them together in your app and fine tune them in the ui
-
-// the included impulse response come from:
-// dubshot.blogspot.com/2008/10/free-download-60-classic-and-king-tubby.html
-// Licensed under a creative commons attribution-noncommercial-share alike 3.0 Netherlands license
-
 //--------------------------------------------------------------
 void ofApp::setup(){
     
@@ -45,13 +30,12 @@ void ofApp::setup(){
 
     //----------------- ---------------------
     // Setting up sequencer
-    //engine.sequencer.stop();    // decomment if you want to start the app from stopped state
-    engine.sequencer.setTempo(120.0f);
+    engine.sequencer.setTempo(90.0f);
         
     // ----------- PATCHING -----------
     
     // loads reverb impulse response
-    reverb.loadIR(ofToDataPath( "kingtubby-fl1.wav" ));
+    reverb.loadIR(ofToDataPath( "delay.wav" ));
     
     zaps.setup(NUMSYNTHS);
     scopes.resize(NUMSYNTHS + 2);
@@ -93,6 +77,12 @@ void ofApp::setup(){
     gui.add( wolframSeq.parameters );
     gui.add( zaps.parameters );
     gui.add( dub.parameters );
+    mushroomType.set("Mushroom genus", "Buellia");
+    gui.add(mushroomType);
+    
+    // listen via class method
+    mushroomType.addListener(this, &ofApp::onChangeMushroomGenus);
+
     
     //---------------------- audio setup -------------
     engine.listDevices();
@@ -247,6 +237,12 @@ void ofApp::gotMessage(ofMessage msg){
 
 //--------------------------------------------------------------
 void ofApp::dragEvent(ofDragInfo dragInfo){ 
+
+}
+
+void ofApp::onChangeMushroomGenus(string& ){
+    ofLog () << "changed: " << mushroomType.get();
+    imageProvider.getImages(mushroomType.get());
 
 }
 
