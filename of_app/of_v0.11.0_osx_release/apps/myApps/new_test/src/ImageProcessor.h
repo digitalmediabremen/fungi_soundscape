@@ -3,10 +3,8 @@
 
 #include "ofMain.h"
 #include "ofxOpenCv.h"
+#include "BitMatrix.h"
 // this class processes a image to fit the 64x64 bit matrix with it's contours
-
-#define CA_WIDTH 64
-#define CA_HEIGHT 64
 
 class ImageProcessor  {
 

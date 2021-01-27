@@ -3,6 +3,7 @@
 // this class interacts with the mushroom API to fetch the URLS of species and photos
 
 #include "ofMain.h"
+#include "ofxThreadedImageLoader.h"
 
 #define MAX_REQUESTS 2
 
@@ -12,15 +13,19 @@ public:
     ImageProvider();
     
     void fetchImages(string species);
-    ofImage * fetchImage(string url);
+    void fetchImage(string url);
     void urlResponse (ofHttpResponse &response);
-    ofEvent<vector<string>> completedEvent;
+    ofEvent<void> completedDownloadImage;
+    ofEvent<vector<string>> completedGetImageURLs;
     ofEvent<string> failedEvent;
 
     vector<string> * imageUrls;
+    
+    ofImage * lastLoadedImage;
 
 private:
     string httpObservationsID;
+    string singleImageRequestID;
 
     string baseImagePath;
     string baseObservationPath;
@@ -30,5 +35,7 @@ private:
         
     int currentRequests;
     int requestCount;
+    
+    ofxThreadedImageLoader imageLoader;
 
 };

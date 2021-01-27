@@ -2,7 +2,7 @@
 
 #include "ofMain.h"
 #include "ofxPDSP.h"
-#include "WolframSeq.h"
+#include "CustomSequencer.h"
 #include "ofxGui.h"
 #include "Zaps.h"
 #include "StereoDelay.h"
@@ -36,7 +36,7 @@ class ofApp : public ofBaseApp{
         // pdsp modules
         pdsp::Engine   engine; 
              
-        WolframSeq wolframSeq;
+        CustomSequencer customSequencer;
         
         Zaps zaps;
 
@@ -67,6 +67,7 @@ class ofApp : public ofBaseApp{
         
         void onReceivedImageUrls(vector<string> & images);
         void onFailedToReceiveImagesURL(string & error);
+        void onCompletedImageDownload();
 
 };
 

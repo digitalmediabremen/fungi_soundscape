@@ -5,3 +5,4 @@ ofxMidi
 ofxOpenCv
 ofxOsc
 ofxPDSP
+ofxThreadedImageLoader

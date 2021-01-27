@@ -10,6 +10,7 @@ ImageProvider::ImageProvider () {
      ofRegisterURLNotification(this);
     
     httpObservationsID = "observations";
+    singleImageRequestID = "singleimage";
 }
 
 
@@ -23,6 +24,9 @@ void ImageProvider::fetchImages (string species) {
 }
 
 void ImageProvider::urlResponse (ofHttpResponse &response) {
+    ofLog () << "name" << response.request.name;
+    ofLog () << "status" << response.status;
+
     if (response.request.name == httpObservationsID) {
         ofJson parsed = ofJson::parse(response.data);
         
@@ -32,10 +36,19 @@ void ImageProvider::urlResponse (ofHttpResponse &response) {
             return;
         }
         requestImageURLs(parsed);
-    } else {
-        ofJson json = ofJson::parse(response.data);
-        pushImageURL(json);
+        return;
     }
+    
+    if (response.request.name == singleImageRequestID) {
+        ofLog () << "completed single image";
+        lastLoadedImage = new ofImage();
+        lastLoadedImage->load(response.data);
+        completedDownloadImage.notify();
+        return;
+    }
+    
+    ofJson json = ofJson::parse(response.data);
+    pushImageURL(json);
 }
 
 void ImageProvider::requestImageURLs(ofJson jsonObservations) {
@@ -66,7 +79,7 @@ void ImageProvider::pushImageURL(ofJson response) {
             ofRemoveAllURLRequests();
             // dispatch event
             ofLog() << "number of images: " << ofToString(imageUrls->size());
-            completedEvent.notify(*imageUrls);
+            completedGetImageURLs.notify(*imageUrls);
         } else {
             string error = "no image for this species";
             failedEvent.notify(error);
@@ -74,19 +87,8 @@ void ImageProvider::pushImageURL(ofJson response) {
     }
 }
 
-ofImage * ImageProvider::fetchImage (string url) {
+void ImageProvider::fetchImage (string url) {
 
-    ofHttpResponse resp;
-    resp = ofLoadURL(url);
-    ofLog () << "response" << ofToString(resp.status);
-    ofLog () << "response" << ofToString(resp.error);
-    
-    ofImage * image;
-    image = new ofImage();
-    if (image->load(resp.data)) {
-        return image;
-    }
-    ofLogError() << "access denied to image";
-     
-    return NULL;
+    ofLog () << "fetch image";
+     ofLoadURLAsync(url, singleImageRequestID);
 }

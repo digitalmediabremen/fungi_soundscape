@@ -18,7 +18,7 @@ void ofApp::setup(){
     
     //----------------- ---------------------
     // Setting up sequencer
-    engine.sequencer.setTempo(500.0f);
+    engine.sequencer.setTempo(300.0f);
         
     // ----------- PATCHING -----------
     
@@ -29,7 +29,7 @@ void ofApp::setup(){
     scopes.resize(NUMSYNTHS + 2);
     
     for ( int i=0; i<NUMSYNTHS; ++i ) {
-        wolframSeq.out_trig(i) >> zaps.voices[i]; // patch the sequence outputs to the zaps
+        customSequencer.out_trig(i) >> zaps.voices[i]; // patch the sequence outputs to the zaps
         zaps.voices[i] >> scopes[i] >> engine.blackhole();
     }
     
@@ -62,7 +62,7 @@ void ofApp::setup(){
     // ------------ GUI ------------
     gui.setup("", "config.xml", ofGetWidth()-220, 40);
     gui.setName( "read mush" );
-    gui.add( wolframSeq.parameters );
+    gui.add( customSequencer.parameters );
     gui.add( zaps.parameters );
     gui.add( dub.parameters );
     mushroomType.set("Mushroom genus", "Agaricus");
@@ -78,20 +78,20 @@ void ofApp::setup(){
     engine.setup( 44100, 512, 3);
     
         
-    ofAddListener(imageProvider.completedEvent,this,&ofApp::onReceivedImageUrls);
+    ofAddListener(imageProvider.completedGetImageURLs,this,&ofApp::onReceivedImageUrls);
+    ofAddListener(imageProvider.completedDownloadImage,this,&ofApp::onCompletedImageDownload);
     ofAddListener(imageProvider.failedEvent,this,&ofApp::onFailedToReceiveImagesURL);
-    
+
     imageProvider.fetchImages(mushroomType.get());
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    int curStep = wolframSeq.currentStep();
+    int curStep = customSequencer.currentStep();
 
     for ( int i=0; i<NUMSYNTHS; ++i ) {
-        float value = wolframSeq.getStepFloat(curStep, i);
+        float value = customSequencer.getStepFloat(curStep, i);
         if (value) {
-            ofLog () << "val: " << value;
             float pitch = (value) * 80.0f; // max pitch 80
             /*
             if (pitch >= 75.0f) {
@@ -103,7 +103,13 @@ void ofApp::update(){
              */
             zaps.voices[i].pitchControl.set(pitch);
         }
-    }}
+    }
+    
+    if (customSequencer.stepsSinceChange >= MATRIX_HEIGHT - 3) { // start a bit before
+        customSequencer.stepsSinceChange = 0;
+        imageProvider.fetchImages("Amanita");
+    }
+}
 
 //--------------------------------------------------------------
 void ofApp::draw(){
@@ -115,7 +121,7 @@ void ofApp::draw(){
 
     ofPushMatrix();
     ofTranslate( 0, 0 );
-    wolframSeq.draw( SIDE, 120, brightColor, darkColor );
+    customSequencer.draw( SIDE, 120, brightColor, darkColor );
     ofPopMatrix();
     
     // draw the scopes
@@ -143,8 +149,6 @@ void ofApp::draw(){
         }
     ofPopMatrix();
 
-
-    
 }
 
 
@@ -212,9 +216,10 @@ void ofApp::onChangeMushroomGenus(string& ){
 void ofApp::onReceivedImageUrls(vector<string> & images) {
     if (images.size() > 0) {
       string imageURL = images[0];
-      ofImage * downloadedFungus;
+     // ofImage * downloadedFungus;
       ofLog () << images[0];
-      downloadedFungus = imageProvider.fetchImage(imageURL);
+      imageProvider.fetchImage(imageURL);
+     /*
       int tries = 0;
       while (!downloadedFungus && tries < images.size() - 1) {
           ofLog () << "failed to get image, try next one";
@@ -223,11 +228,20 @@ void ofApp::onReceivedImageUrls(vector<string> & images) {
           downloadedFungus = imageProvider.fetchImage(imageURL);
       }
       if (downloadedFungus) {
-          wolframSeq.setImage(imageProcessor.processImage(downloadedFungus));
+          customSequencer.setImage(imageProcessor.processImage(downloadedFungus));
       }
+     */
   }
 }
 
 void ofApp::onFailedToReceiveImagesURL(string & error) {
     ofLogError() << "failed to fetch, response: " << error;
+}
+
+void ofApp::onCompletedImageDownload () {
+    ofImage * downloadedFungus;
+    downloadedFungus = imageProvider.lastLoadedImage;
+    if (downloadedFungus) {
+        customSequencer.setImage(imageProcessor.processImage(downloadedFungus));
+    }
 }

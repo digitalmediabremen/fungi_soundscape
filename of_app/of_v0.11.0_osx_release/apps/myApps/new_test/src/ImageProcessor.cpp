@@ -63,8 +63,8 @@ void ImageProcessor::generateMatrix() {
     int dataWidth = contourFinder.getWidth();
     int dataHeight = contourFinder.getHeight();
     
-    int w = CA_WIDTH;
-    int h = CA_HEIGHT;
+    int w = MATRIX_WIDTH;
+    int h = MATRIX_HEIGHT;
 
     int wMultiplier = dataWidth/w;
     int hMultiplier = dataHeight/h;
