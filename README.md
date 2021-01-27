@@ -17,4 +17,4 @@
 
 
 ### SS
-![Screenshot](/screenshot.jpg?raw=true "screen shot")
+![Screenshot](/screenshot.png?raw=true "screen shot")
