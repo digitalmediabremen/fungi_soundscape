@@ -78,8 +78,11 @@ void ofApp::setup(){
     engine.setDeviceID(1); // <--- remember to set your index
     engine.setup( 44100, 512, 3);
     
+        
+    ofAddListener(imageProvider.completedEvent,this,&ofApp::onReceivedImageUrls);
+    ofAddListener(imageProvider.failedEvent,this,&ofApp::onFailedToReceiveImagesURL);
     
-    fillMatrix();
+    imageProvider.fetchImages(mushroomType.get());
 }
 
 //--------------------------------------------------------------
@@ -188,24 +191,30 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
 
 void ofApp::onChangeMushroomGenus(string& ){
     ofLog () << "changed: " << mushroomType.get();
-    fillMatrix();
+    imageProvider.fetchImages(mushroomType.get());
 }
 
-void ofApp::fillMatrix() {
-    vector<string> imageUrls = imageProvider.fetchImages(mushroomType.get());
-       if (imageUrls.size() > 0) {
-           ofImage * downloadedFungus;
-           ofLog () << imageUrls[0];
-           downloadedFungus = imageProvider.fetchImage(imageUrls[0]);
-           int tries = 0;
-           while (!downloadedFungus && tries < imageUrls.size() - 1) {
-               ofLog () << "failed to get image, try next one";
-               tries++;
-               downloadedFungus = imageProvider.fetchImage(imageUrls[tries]);
-           }
-           if (downloadedFungus) {
-               wolframSeq.setImage(imageProcessor.processImage(downloadedFungus));
-           }
-       }
+void ofApp::onReceivedImageUrls(vector<string> & images) {
+    ofLog() << "app received images" << ofToString(images.size());
+    ofLog () << "first" << ofToString(images[0]);
+    if (images.size() > 0) {
+      string imageURL = images[0];
+      ofImage * downloadedFungus;
+      ofLog () << images[0];
+      downloadedFungus = imageProvider.fetchImage(imageURL);
+      int tries = 0;
+      while (!downloadedFungus && tries < images.size() - 1) {
+          ofLog () << "failed to get image, try next one";
+          tries++;
+          imageURL = images[tries];
+          downloadedFungus = imageProvider.fetchImage(imageURL);
+      }
+      if (downloadedFungus) {
+          wolframSeq.setImage(imageProcessor.processImage(downloadedFungus));
+      }
+  }
 }
 
+void ofApp::onFailedToReceiveImagesURL(string & error) {
+    ofLogError() << "failed to fetch, response: " << error;
+}

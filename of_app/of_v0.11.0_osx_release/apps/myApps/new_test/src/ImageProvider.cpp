@@ -7,50 +7,74 @@ ImageProvider::ImageProvider () {
      // get mushroom image
      baseImagePath = "https://mushroomobserver.nyc3.digitaloceanspaces.com/orig/";
      baseObservationPath = "https://mushroomobserver.org/api2/images?observation=";
+     ofRegisterURLNotification(this);
+    
+    httpObservationsID = "observations";
 }
 
 
-vector<string> ImageProvider::fetchImages (string species) {
+void ImageProvider::fetchImages (string species) {
+    
+    imageUrls = new vector<string>();
+
     string urlObservations = "https://mushroomobserver.org/api2/observations?children_of=" + species + "&format=json";
-    ofHttpResponse httpObservations;
+    
+    ofLoadURLAsync(urlObservations, httpObservationsID);
+}
 
-    httpObservations = ofLoadURL(urlObservations);
-    
-    string responseObservations = httpObservations.data;
-    
-    ofJson jsonObservations = ofJson::parse(responseObservations);
-    
-    ofLog () << jsonObservations;
-    
-    vector<string> imageUrls;
+void ImageProvider::urlResponse (ofHttpResponse &response) {
+    if (response.request.name == httpObservationsID) {
+        ofJson parsed = ofJson::parse(response.data);
         
-    // find 10 images
-    for (int i = 0; i < jsonObservations["results"].size() && imageUrls.size() < 2; i++) {
+        if (parsed.count("errors") > 0) {
+            string error = ofToString(parsed["errors"][0]["details"]);
+            failedEvent.notify(error);
+            return;
+        }
+        requestImageURLs(parsed);
+    } else {
+        ofJson json = ofJson::parse(response.data);
+        pushImageURL(json);
+    }
+}
+
+void ImageProvider::requestImageURLs(ofJson jsonObservations) {
+    requestCount = 0;
+    // request image urls
+    currentRequests = (jsonObservations["results"].size() >= MAX_REQUESTS ? MAX_REQUESTS : jsonObservations["results"].size());
+    for (int i = 0; i < currentRequests; i++) {
         string observationID = ofToString(jsonObservations["results"][i]);
-        
+    
         string urlImages = baseObservationPath + observationID + "&format=json";
-        ofHttpResponse httpImages;
+        ofLoadURLAsync(urlImages);
+    }
+    
+}
 
-        httpImages = ofLoadURL(urlImages);
-        
-        ofJson jsonImages = ofJson::parse(httpImages.data);
-        
-        ofLog () << "image results: " << jsonImages["results"];
-        for (int a = 0; a < jsonImages["results"].size(); a++) {
-            ofLog () << "add images" << ofToString(jsonImages["results"][a]);
-            // create URL
-            string urlToImage = baseImagePath + ofToString(jsonImages["results"][a]) + ".jpg";
-            imageUrls.push_back(urlToImage);
+void ImageProvider::pushImageURL(ofJson response) {
+    requestCount++;
+    for (int a = 0; a < response["results"].size(); a++) {
+        // create URL
+        string urlToImage = baseImagePath + ofToString(response["results"][a]) + ".jpg";
+        imageUrls->push_back(urlToImage);
+    }
+    if (requestCount == currentRequests - 1) {
+        if (imageUrls->size() > 0) {
+            // dispatch event
+            completedEvent.notify(*imageUrls);
+        } else {
+            string error = "no image for this species";
+            failedEvent.notify(error);
         }
     }
     
-    ofLog () << "found images! " << ofToString(imageUrls.size());
-    return imageUrls;
 }
 
 ofImage * ImageProvider::fetchImage (string url) {
+    ofLog() << "url:" << url;
     ofHttpResponse http;
     http = ofLoadURL(url);
+    ofLog () << "response" << ofToString(http.status);
     ofImage * image;
     image = new ofImage();
     if (image->load(http.data)) {

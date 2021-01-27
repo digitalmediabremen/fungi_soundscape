@@ -28,7 +28,6 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
-        void fillMatrix();
 
         void switchRule();
     
@@ -65,6 +64,9 @@ class ofApp : public ofBaseApp{
     
         ImageProcessor imageProcessor;
         ImageProvider imageProvider;
+        
+        void onReceivedImageUrls(vector<string> & images);
+        void onFailedToReceiveImagesURL(string & error);
 
 };
 

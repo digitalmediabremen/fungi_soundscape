@@ -4,14 +4,32 @@
 
 #include "ofMain.h"
 
+#define MAX_REQUESTS 2
+
 class ImageProvider  {
 
 public:
     ImageProvider();
     
-    vector<string> fetchImages(string species);
+    void fetchImages(string species);
     ofImage * fetchImage(string url);
+    void urlResponse (ofHttpResponse &response);
+    ofEvent<vector<string>> completedEvent;
+    ofEvent<string> failedEvent;
+
+    
 private:
+    string httpObservationsID;
+
     string baseImagePath;
     string baseObservationPath;
+        
+    void requestImageURLs(ofJson jsonObservations);
+    void pushImageURL(ofJson jsonImages);
+    
+    vector<string> * imageUrls;
+    
+    int currentRequests;
+    int requestCount;
+
 };
