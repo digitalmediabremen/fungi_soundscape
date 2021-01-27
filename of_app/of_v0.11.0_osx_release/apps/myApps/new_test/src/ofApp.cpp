@@ -92,9 +92,9 @@ void ofApp::update(){
         float value = wolframSeq.getStepFloat(curStep, i);
         if (value) {
             ofLog () << "val: " << value;
-            float pitch = (value) * 100.0f;
-            if (pitch > 100.0f) {
-                pitch = 100.0f;
+            float pitch = (value) * 80.0f; // max pitch 80
+            if (pitch > 80.0f) {
+                pitch = 80.0f;
             }
             zaps.voices[i].pitchControl.set(pitch);
         }
