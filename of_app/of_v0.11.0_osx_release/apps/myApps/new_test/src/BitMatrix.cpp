@@ -6,6 +6,15 @@ BitMatrix::BitMatrix(){
     clear();
 }
 
+void BitMatrix::step () {
+    for( int y=MATRIX_HEIGHT-1; y>0; --y ){
+        for( int x=0; x<MATRIX_WIDTH; ++x){
+            MATRIX[y][x] = MATRIX[y-1][x];
+        }
+    }
+
+}
+
 void BitMatrix::fill( ofxCvGrayscaleImage img) {
     ofLog() << "filll";
     for( int x=0; x<MATRIX_WIDTH; ++x ){

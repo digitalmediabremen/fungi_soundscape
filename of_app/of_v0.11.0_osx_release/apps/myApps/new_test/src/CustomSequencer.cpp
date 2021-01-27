@@ -16,6 +16,9 @@ CustomSequencer::CustomSequencer(){
         if( seq.frame()%steps == 0 ){
             stepsSinceChange++;
             ofLog() << stepsSinceChange;
+            
+            // advance matrix 1 bit height
+            bm.step();
 
             for(int x=0; x < MATRIX_WIDTH; ++x){
                 int sum = 0; // int play only contours, float plays all image;
@@ -40,7 +43,9 @@ CustomSequencer::CustomSequencer(){
 
                 stepbars[x] = value;
                 stepbarsFloat[x] = floatSum;
-            }             
+                            
+            }
+            
         }
     
         int s = seq.frame() % steps;

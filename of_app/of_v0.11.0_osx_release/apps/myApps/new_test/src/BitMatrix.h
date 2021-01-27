@@ -19,6 +19,8 @@ public:
         
     void clear() noexcept;
     
+    void step();
+    
     void fill( ofxCvGrayscaleImage img );
 
     float MATRIX[MATRIX_HEIGHT][MATRIX_WIDTH];
