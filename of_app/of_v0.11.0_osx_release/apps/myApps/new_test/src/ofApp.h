@@ -31,6 +31,8 @@ class ofApp : public ofBaseApp{
         void fillMatrix();
 
         void switchRule();
+    
+        bool DEBUG_MODE = false;
 
         // pdsp modules
         pdsp::Engine   engine; 
