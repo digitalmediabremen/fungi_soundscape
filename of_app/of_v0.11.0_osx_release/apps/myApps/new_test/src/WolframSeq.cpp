@@ -15,7 +15,8 @@ WolframSeq::WolframSeq(){
     ruleMem = -1;
     
     stepbars.resize( CA_WIDTH );
-    
+    stepbarsFloat.resize( CA_WIDTH );
+
     seq.code = [&]() noexcept {
         
         if( seq.frame()%steps == 0 ){
@@ -33,8 +34,12 @@ WolframSeq::WolframSeq(){
 
             for(int x=0; x < CA_WIDTH; ++x){
                 int sum = 0; // int play only contours, float plays all image;
+                float floatSum = 0.0f;
+                floatSum += ca.CA[CA_HEIGHT - 1][x];
+
                 for (int a = 1; a < readHeight; a++) {
                     sum += ca.CA[CA_HEIGHT - a][x];
+                    //floatSum += ca.CA[CA_HEIGHT - a][x];
                 }
                 /*
                 sum += ca.CA[CA_HEIGHT - 1][x];
@@ -55,15 +60,17 @@ WolframSeq::WolframSeq(){
 
                 int sect = x / steps;
                 float value = 0.0f;
-                            
+
                 if( sect <NUMSYNTHS ){
                      int range = CA_HEIGHT - readHeight;
                      if( sum>0){
                          value = float( sum ) / float ( range );
                      }
+                    
                 }
 
                 stepbars[x] = value;
+                stepbarsFloat[x] = floatSum;
             }             
         }
     
@@ -77,6 +84,7 @@ WolframSeq::WolframSeq(){
     };    
 }
 
+
 pdsp::SequencerGateOutput& WolframSeq::out_trig( int index ){
     return seq.out_trig( index );
 }
@@ -88,6 +96,11 @@ int WolframSeq::currentStep() const {
 float WolframSeq::getStep( int step, int out ) const{
     return stepbars[ step + out*steps ];
 }
+
+float WolframSeq::getStepFloat( int step, int out ) const{
+    return stepbarsFloat[ step + out*steps ];
+}
+
 
 void WolframSeq::setImage( ofxCvGrayscaleImage * img ) {
     if (!img) {

@@ -86,8 +86,19 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
+    int curStep = wolframSeq.currentStep();
 
-}
+    for ( int i=0; i<NUMSYNTHS; ++i ) {
+        float value = wolframSeq.getStepFloat(curStep, i);
+        if (value) {
+            ofLog () << "val: " << value;
+            float pitch = (value) * 100.0f;
+            if (pitch > 100.0f) {
+                pitch = 100.0f;
+            }
+            zaps.voices[i].pitchControl.set(pitch);
+        }
+    }}
 
 //--------------------------------------------------------------
 void ofApp::draw(){

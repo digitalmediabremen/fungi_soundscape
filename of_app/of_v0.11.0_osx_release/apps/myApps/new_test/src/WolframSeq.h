@@ -29,15 +29,17 @@ public:
     void setRule(int rule){ ca.setRule( rule); }
     int currentStep() const;
     float getStep( int step, int out ) const;
+    float getStepFloat( int step, int out ) const;
 
     pdsp::SequencerGateOutput& out_trig( int index );
     
     vector<float>   stepbars;
-    
+    vector<float>   stepbarsFloat;
+
     void setImage(ofxCvGrayscaleImage * img);
-    
-private:
     pdsp::Function seq;
+
+private:
     Automaton1D     ca;
     int ruleMem;
     
