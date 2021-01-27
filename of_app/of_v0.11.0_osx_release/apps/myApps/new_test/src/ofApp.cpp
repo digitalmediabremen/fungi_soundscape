@@ -18,7 +18,7 @@ void ofApp::setup(){
     
     //----------------- ---------------------
     // Setting up sequencer
-    engine.sequencer.setTempo(120.0f);
+    engine.sequencer.setTempo(500.0f);
         
     // ----------- PATCHING -----------
     
@@ -93,9 +93,14 @@ void ofApp::update(){
         if (value) {
             ofLog () << "val: " << value;
             float pitch = (value) * 80.0f; // max pitch 80
-            if (pitch > 80.0f) {
-                pitch = 80.0f;
+            /*
+            if (pitch >= 75.0f) {
+                // chose max pitch from scale, because it's the contour
+                float akebono[] = { 72.0f, 74.0f, 75.0f, 79.0f, 80.0f, 84.0f, 86.0f, 87.0f }; //
+                
+                pitch = akebono[int(ofRandom(8))] - 20;
             }
+             */
             zaps.voices[i].pitchControl.set(pitch);
         }
     }}

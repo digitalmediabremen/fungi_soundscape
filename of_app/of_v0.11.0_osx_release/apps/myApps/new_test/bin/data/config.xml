@@ -7,25 +7,25 @@
 		<threshold>2</threshold>
 		<seeds_density>0.5</seeds_density>
 		<regenerate>0</regenerate>
-		<readHeight>34</readHeight>
+		<readHeight>48</readHeight>
 	</matrix>
 	<zaps_UI>
-		<gain>-12</gain>
-		<env_to_pitch>51</env_to_pitch>
-		<env_decay>6</env_decay>
-		<env_dyn_amt>0.831633</env_dyn_amt>
-		<zap_1_pitch>76</zap_1_pitch>
-		<zap_2_pitch>84</zap_2_pitch>
-		<zap_3_pitch>78</zap_3_pitch>
-		<zap_4_pitch>78</zap_4_pitch>
+		<gain>-7</gain>
+		<env_to_pitch>43</env_to_pitch>
+		<env_decay>22</env_decay>
+		<env_dyn_amt>0.290816</env_dyn_amt>
+		<zap_1_pitch>46</zap_1_pitch>
+		<zap_2_pitch>35</zap_2_pitch>
+		<zap_3_pitch>80</zap_3_pitch>
+		<zap_4_pitch>36</zap_4_pitch>
 	</zaps_UI>
 	<stereo_delay>
-		<input_gain>-27</input_gain>
-		<L_16th_time>3</L_16th_time>
-		<L_feedback>0.510204</L_feedback>
-		<R_16th_time>3</R_16th_time>
-		<R_feedback>0.520408</R_feedback>
-		<damping>0.785714</damping>
+		<input_gain>-6</input_gain>
+		<L_16th_time>11</L_16th_time>
+		<L_feedback>0.80102</L_feedback>
+		<R_16th_time>11</R_16th_time>
+		<R_feedback>0.770408</R_feedback>
+		<damping>0.188776</damping>
 		<output_gain>0</output_gain>
 	</stereo_delay>
 	<Mushroom_genus>Fungi</Mushroom_genus>
