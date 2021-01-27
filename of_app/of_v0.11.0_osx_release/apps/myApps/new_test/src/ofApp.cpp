@@ -195,8 +195,6 @@ void ofApp::onChangeMushroomGenus(string& ){
 }
 
 void ofApp::onReceivedImageUrls(vector<string> & images) {
-    ofLog() << "app received images" << ofToString(images.size());
-    ofLog () << "first" << ofToString(images[0]);
     if (images.size() > 0) {
       string imageURL = images[0];
       ofImage * downloadedFungus;

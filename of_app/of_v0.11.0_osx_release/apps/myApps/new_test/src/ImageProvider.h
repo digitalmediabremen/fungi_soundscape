@@ -17,7 +17,8 @@ public:
     ofEvent<vector<string>> completedEvent;
     ofEvent<string> failedEvent;
 
-    
+    vector<string> * imageUrls;
+
 private:
     string httpObservationsID;
 
@@ -26,9 +27,7 @@ private:
         
     void requestImageURLs(ofJson jsonObservations);
     void pushImageURL(ofJson jsonImages);
-    
-    vector<string> * imageUrls;
-    
+        
     int currentRequests;
     int requestCount;
 

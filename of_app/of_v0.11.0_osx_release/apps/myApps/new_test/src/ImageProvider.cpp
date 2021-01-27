@@ -52,34 +52,41 @@ void ImageProvider::requestImageURLs(ofJson jsonObservations) {
 }
 
 void ImageProvider::pushImageURL(ofJson response) {
-    requestCount++;
+    
     for (int a = 0; a < response["results"].size(); a++) {
         // create URL
         string urlToImage = baseImagePath + ofToString(response["results"][a]) + ".jpg";
         imageUrls->push_back(urlToImage);
     }
-    if (requestCount == currentRequests - 1) {
+    requestCount++;
+    
+    if (requestCount == currentRequests) {
         if (imageUrls->size() > 0) {
+            // clear requests
+            ofRemoveAllURLRequests();
             // dispatch event
+            ofLog() << "number of images: " << ofToString(imageUrls->size());
             completedEvent.notify(*imageUrls);
         } else {
             string error = "no image for this species";
             failedEvent.notify(error);
         }
     }
-    
 }
 
 ofImage * ImageProvider::fetchImage (string url) {
-    ofLog() << "url:" << url;
-    ofHttpResponse http;
-    http = ofLoadURL(url);
-    ofLog () << "response" << ofToString(http.status);
+
+    ofHttpResponse resp;
+    resp = ofLoadURL(url);
+    ofLog () << "response" << ofToString(resp.status);
+    ofLog () << "response" << ofToString(resp.error);
+    
     ofImage * image;
     image = new ofImage();
-    if (image->load(http.data)) {
+    if (image->load(resp.data)) {
         return image;
     }
     ofLogError() << "access denied to image";
+     
     return NULL;
 }
