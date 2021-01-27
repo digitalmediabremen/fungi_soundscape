@@ -54,6 +54,7 @@
 		3AFCE6CE34F520843D292C78 /* ToGateTrigger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 53AA676B2E7D8BF23CCA3D3F /* ToGateTrigger.cpp */; };
 		3B8815210C72FF34070EE2E4 /* DataOsc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F7CF9EF7BFFD9F0639DB0A24 /* DataOsc.cpp */; };
 		3F6A208A25C026F60089B14F /* ImageProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3F6A208925C026F60089B14F /* ImageProvider.cpp */; };
+		3F6A208D25C177D40089B14F /* ImageProcessor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3F6A208B25C177D40089B14F /* ImageProcessor.cpp */; };
 		3F6F4F896FC7FD9D3BA7C479 /* SVF2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA0B674C5960CE8B4261BC77 /* SVF2.cpp */; };
 		40FD0C10DB93F59711A63ED4 /* Processor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BAE582C4088C98A1A319041E /* Processor.cpp */; };
 		411225F3B160321EAA4F0999 /* Saturator1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A351DC608F3B618FDCD5ED8A /* Saturator1.cpp */; };
@@ -474,6 +475,8 @@
 		3E62F0912DD06E97FB7B71E5 /* calib3d.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = calib3d.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/calib3d.hpp; sourceTree = SOURCE_ROOT; };
 		3F6A208825C026F50089B14F /* ImageProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageProvider.h; sourceTree = "<group>"; };
 		3F6A208925C026F60089B14F /* ImageProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ImageProvider.cpp; sourceTree = "<group>"; };
+		3F6A208B25C177D40089B14F /* ImageProcessor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ImageProcessor.cpp; sourceTree = "<group>"; };
+		3F6A208C25C177D40089B14F /* ImageProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageProcessor.h; sourceTree = "<group>"; };
 		3FB761163708BA36E130B1DC /* OneMinusInput.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = OneMinusInput.h; path = ../../../addons/ofxPDSP/src/DSP/utility/OneMinusInput.h; sourceTree = SOURCE_ROOT; };
 		3FEC91F2DC9B84817ADF511F /* interface.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = interface.h; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/core/hal/interface.h; sourceTree = SOURCE_ROOT; };
 		405D10AFD267E4E6CEB3E4F9 /* ExtSequencer.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = ExtSequencer.cpp; path = ../../../addons/ofxPDSP/src/messages/ExtSequencer.cpp; sourceTree = SOURCE_ROOT; };
@@ -3551,6 +3554,8 @@
 		E4B69E1C0A3A1BDC003C02F2 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				3F6A208B25C177D40089B14F /* ImageProcessor.cpp */,
+				3F6A208C25C177D40089B14F /* ImageProcessor.h */,
 				3F6A208925C026F60089B14F /* ImageProvider.cpp */,
 				3F6A208825C026F50089B14F /* ImageProvider.h */,
 				E4B69E1D0A3A1BDC003C02F2 /* main.cpp */,
@@ -4099,6 +4104,7 @@
 				A570644D9D2922FFBEC49276 /* LowShelfEQ.cpp in Sources */,
 				0A70850F33566C45829FA9B5 /* PeakEQ.cpp in Sources */,
 				2FFB3A7DE5EC2431473F1E0D /* CombFilter.cpp in Sources */,
+				3F6A208D25C177D40089B14F /* ImageProcessor.cpp in Sources */,
 				BDAD2C9600CF2B091898F97B /* PhaserFilter.cpp in Sources */,
 				664E514B0A60DD26A7FFEA3A /* SVFilter.cpp in Sources */,
 				5159EDB1680026841970A40E /* VAFilter.cpp in Sources */,

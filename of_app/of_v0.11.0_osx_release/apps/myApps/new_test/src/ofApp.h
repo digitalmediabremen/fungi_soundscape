@@ -8,6 +8,7 @@
 #include "StereoDelay.h"
 #include "ofxOpenCv.h"
 #include "ImageProvider.h"
+#include "ImageProcessor.h"
 
 class ofApp : public ofBaseApp{
 
@@ -56,23 +57,12 @@ class ofApp : public ofBaseApp{
         
         std::vector<pdsp::Scope> scopes;
     
-        void generatePattern(ofxCvGrayscaleImage grayImage);
-        ofImage * pattern;
-    
-        bool processImage(ofImage * img);
-    
+        
         ofParameter<string> mushroomType;
         void onChangeMushroomGenus(string&);
     
+        ImageProcessor imageProcessor;
         ImageProvider imageProvider;
-        ofxCvGrayscaleImage grayImage;//, grayBg, grayDiff;
-        ofxCvContourFinder contourFinder;
-    
-        ofxCvGrayscaleImage * contoursImage;
-
-        ofImage currentImage;
-        ofFbo contoursFbo;
-    
 
 };
 

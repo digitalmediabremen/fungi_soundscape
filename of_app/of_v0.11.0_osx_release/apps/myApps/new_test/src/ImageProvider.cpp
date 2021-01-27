@@ -4,8 +4,9 @@
 // constructor
 ImageProvider::ImageProvider () {
 
- // get mushroom image
- baseImagePath = "https://mushroomobserver.nyc3.digitaloceanspaces.com/orig/";
+     // get mushroom image
+     baseImagePath = "https://mushroomobserver.nyc3.digitaloceanspaces.com/orig/";
+     baseObservationPath = "https://mushroomobserver.org/api2/images?observation=";
 }
 
 
@@ -27,7 +28,7 @@ vector<string> ImageProvider::fetchImages (string species) {
     for (int i = 0; i < jsonObservations["results"].size() && imageUrls.size() < 2; i++) {
         string observationID = ofToString(jsonObservations["results"][i]);
         
-        string urlImages = "https://mushroomobserver.org/api2/images?observation=" + observationID + "&format=json";
+        string urlImages = baseObservationPath + observationID + "&format=json";
         ofHttpResponse httpImages;
 
         httpImages = ofLoadURL(urlImages);
@@ -38,7 +39,7 @@ vector<string> ImageProvider::fetchImages (string species) {
         for (int a = 0; a < jsonImages["results"].size(); a++) {
             ofLog () << "add images" << ofToString(jsonImages["results"][a]);
             // create URL
-            string urlToImage = "https://mushroomobserver.nyc3.digitaloceanspaces.com/orig/" + ofToString(jsonImages["results"][a]) + ".jpg";
+            string urlToImage = baseImagePath + ofToString(jsonImages["results"][a]) + ".jpg";
             imageUrls.push_back(urlToImage);
         }
     }
