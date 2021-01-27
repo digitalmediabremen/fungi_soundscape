@@ -7,9 +7,10 @@
 ### TODO
 * pull images from mushroom database - ok
 * use openCv to proces mushroom image - ok
-* create a bit matrix to play with the a low sampled image - ok
+* create a bit matrix to play with a low sampled image - ok
 * do the image fetching and processing in another thread - 
 * keep adding new mushrooms as the previous image is consumed by the algo - 
 * derive algos - 
 * use more instruments - 
-* derive algos - pay with modules - 
+* derive algos - 
+* play with modules - 
