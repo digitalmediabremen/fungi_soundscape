@@ -34,7 +34,7 @@ vector<ofxCvBlob> ImageProcessor::findContours (ofImage * img) {
     colorImg.setFromPixels(img->getPixels());
     grayImage = colorImg; // convert our color image to a grayscale image
     grayImage.brightnessContrast(1,1.5);
-    grayImage.blurGaussian(5);
+    grayImage.blurGaussian(8);
     grayImage.adaptiveThreshold(10);
     //grayImage.threshold(30);
 
@@ -133,7 +133,7 @@ void ImageProcessor::generateMatrix() {
 void ImageProcessor::draw() {
     if (processedImage != NULL) {
             ofPushMatrix();
-               ofTranslate(650, 30);
+               ofTranslate(500, 30);
                //ofScale(0.4,0.4,0.4);
                currentImage.draw(0, 0, 100, 100);
            ofPopMatrix();
@@ -144,15 +144,15 @@ void ImageProcessor::draw() {
         ofPopMatrix();
         
         ofPushMatrix();
-            ofTranslate(350,250);
+            ofTranslate(350, 150);
             ofScale(0.2,0.2,0.2);
-            processedImage->draw(0,0, 500, 500);
+            processedImage->draw(0,0, 400, 400);
         ofPopMatrix();
         
         if (contourFinder.nBlobs > 0) {
             ofPushMatrix();
             ofPushStyle();
-                ofTranslate(650,250);
+                ofTranslate(500, 150);
                 ofScale(0.1,0.1,0.1);
             ofSetLineWidth(1);
 
