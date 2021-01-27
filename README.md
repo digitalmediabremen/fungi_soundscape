@@ -14,3 +14,7 @@
 * use more instruments - 
 * derive algos - 
 * play with modules - 
+
+
+### SS
+![Screenshot](/screenshot.jpg?raw=true "screen shot")
