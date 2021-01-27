@@ -7,7 +7,8 @@ WolframSeq::WolframSeq(){
     parameters.add( this->rule.set( "rule", 60, 0, 150 ));
     parameters.add( this->steps.set( "steps", 16, 0, 16 ));
     parameters.add( this->activeOuts.set( "active outs", NUMSYNTHS, 0, NUMSYNTHS ));
-    parameters.add( this->threshold.set( "threshold", 4, 0, 8 ));
+    parameters.add( this->readHeight.set( "readHeight", 12, 1, 48 ));
+
     parameters.add( this->density.set( "seeds density", 0.5f, 0.0f, 1.0f ));
     parameters.add( this->regenerate.set( "regenerate", true ));
 
@@ -31,7 +32,11 @@ WolframSeq::WolframSeq(){
             }            
 
             for(int x=0; x < CA_WIDTH; ++x){
-                int sum = 0;
+                int sum = 0; // int play only contours, float plays all image;
+                for (int a = 1; a < readHeight; a++) {
+                    sum += ca.CA[CA_HEIGHT - a][x];
+                }
+                /*
                 sum += ca.CA[CA_HEIGHT - 1][x];
                 sum += ca.CA[CA_HEIGHT - 2][x];
                 sum += ca.CA[CA_HEIGHT - 3][x];
@@ -39,18 +44,23 @@ WolframSeq::WolframSeq(){
                 sum += ca.CA[CA_HEIGHT - 5][x];
                 sum += ca.CA[CA_HEIGHT - 6][x];
                 sum += ca.CA[CA_HEIGHT - 7][x];
-                sum += ca.CA[CA_HEIGHT - 8][x];
-                
+                sum += ca.CA[CA_HEIGHT - 9][x];
+                sum += ca.CA[CA_HEIGHT - 10][x];
+                sum += ca.CA[CA_HEIGHT - 11][x];
+                sum += ca.CA[CA_HEIGHT - 12][x];
+                sum += ca.CA[CA_HEIGHT - 13][x];
+                sum += ca.CA[CA_HEIGHT - 14][x];
+                sum += ca.CA[CA_HEIGHT - 15][x];
+                 */
+
                 int sect = x / steps;
                 float value = 0.0f;
                             
                 if( sect <NUMSYNTHS ){
-                    sum -= threshold;
-                    int range = CA_HEIGHT - threshold;
-           
-                    if( sum>0 && range>0 ){
-                        value = float( sum ) / float ( range );
-                    }              
+                     int range = CA_HEIGHT - readHeight;
+                     if( sum>0){
+                         value = float( sum ) / float ( range );
+                     }
                 }
 
                 stepbars[x] = value;
@@ -89,13 +99,16 @@ void WolframSeq::setImage( ofxCvGrayscaleImage * img ) {
 void WolframSeq::draw( int ca_side, int bars_h, ofColor fg, ofColor bg ){
     ofPushMatrix();
     ofScale(0.3,0.3,0.3);
-    ofSetColor( fg );
-    
+    ofSetColor( fg);
+
     for( int y=0; y<CA_HEIGHT; ++y ){
         for( int x=0; x<CA_WIDTH; ++x ){
-            if( ca.CA[y][x] ){
+            if( ca.CA[y][x] > MIN_TO_PLAY ){
+                ofSetColor( ca.CA[y][x] * 255,ca.CA[y][x] * 255,ca.CA[y][x] * 255, ca.CA[y][x] * 255);
+
                 ofFill();
             }else{
+                ofSetColor( bg);
                 ofNoFill();
             }
             ofDrawRectangle( x*ca_side, y*ca_side, ca_side, ca_side );

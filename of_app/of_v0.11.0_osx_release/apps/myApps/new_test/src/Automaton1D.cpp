@@ -60,9 +60,10 @@ void Automaton1D::fill( ofxCvGrayscaleImage img) {
     ofLog() << "filll";
     for( int x=0; x<CA_WIDTH; ++x ){
         for( int y=0; y<CA_HEIGHT; ++y ){
-            if (img.getPixels().getColor(x,y).getLightness() > 0.0f) {
-                // ofLog() << "filling..";
-                CA[y][x] = 1;
+            if (img.getPixels().getColor(x,y).getLightness() > MIN_TO_PLAY) {
+                float fill = img.getPixels().getColor(x,y).getLightness() / 255.0;
+                ofLog() << "filling..: " << ofToString(fill);
+                CA[y][x] = fill;
             } else {
                 CA[y][x] = 0;
             }

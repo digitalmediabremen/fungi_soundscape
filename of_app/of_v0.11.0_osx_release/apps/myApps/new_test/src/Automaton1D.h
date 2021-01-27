@@ -12,6 +12,7 @@
 
 #define CA_WIDTH 64
 #define CA_HEIGHT 64
+#define MIN_TO_PLAY 0.7
 
 
 class Automaton1D  {
@@ -28,7 +29,7 @@ public:
     void setRule( int rule ) noexcept;
     void fill( ofxCvGrayscaleImage img );
 
-    int CA[CA_HEIGHT][CA_WIDTH];    
+    float CA[CA_HEIGHT][CA_WIDTH];    
 
 private:    
     int rule;

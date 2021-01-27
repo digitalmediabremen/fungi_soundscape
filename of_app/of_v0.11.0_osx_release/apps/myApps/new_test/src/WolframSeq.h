@@ -16,7 +16,9 @@ public:
 
     // if you want to make something less hacky you should use proper std::atomic values instead of ofParameter(s)
     ofParameterGroup parameters;
-    ofParameter<int>     threshold;
+    
+    ofParameter<int>    readHeight;
+
     ofParameter<int>     activeOuts;
     ofParameter<int>     steps;
     ofParameter<int>     rule;

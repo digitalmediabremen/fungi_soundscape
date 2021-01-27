@@ -15,7 +15,6 @@ void ofApp::setup(){
     darkColor = ofColor( 35, 255, 35);
     
     ofSetWindowTitle( "read mushroom" );
-    caHeight = SIDE*MAX_GENERATIONS;
     
     //----------------- ---------------------
     // Setting up sequencer

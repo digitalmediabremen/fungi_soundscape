@@ -21,5 +21,6 @@ private:
     ofxCvContourFinder contourFinder;
     ofFbo contoursFbo;
     ofImage currentImage;
+    ofxCvGrayscaleImage backgroundGrayImage;
     void generateMatrix();
 };

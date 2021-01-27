@@ -33,6 +33,8 @@ vector<ofxCvBlob> ImageProcessor::findContours (ofImage * img) {
     
     colorImg.setFromPixels(img->getPixels());
     grayImage = colorImg; // convert our color image to a grayscale image
+    backgroundGrayImage.setFromPixels(grayImage.getPixels());
+
     grayImage.brightnessContrast(1,1.5);
     grayImage.blurGaussian(8);
     grayImage.adaptiveThreshold(10);
@@ -40,6 +42,7 @@ vector<ofxCvBlob> ImageProcessor::findContours (ofImage * img) {
 
     //grayImage.threshold(30);
     //grayImage.contrastStretch();
+    grayImage.dilate();
     grayImage.dilate();
     grayImage.dilate();
 
@@ -66,19 +69,21 @@ void ImageProcessor::generateMatrix() {
     int wMultiplier = dataWidth/w;
     int hMultiplier = dataHeight/h;
 
+    backgroundGrayImage.brightnessContrast(1.0f, 2.5f);
+    backgroundGrayImage.blurGaussian(50);
+    backgroundGrayImage.invert();
     
     ofPixels pix;
     processedImage = new ofxCvGrayscaleImage();
 
     if (contourFinder.nBlobs > 0) {
         contoursFbo.allocate(dataWidth, dataHeight, GL_RED);
-            
         contoursFbo.begin();
         ofPushMatrix();
         ofPushStyle();
             ofClear(0);
-            ofSetColor(255);
-            ofSetLineWidth(700);
+            backgroundGrayImage.draw(0, 0);
+            ofSetLineWidth(1000);
              for( int i=0; i<(int)contourFinder.blobs.size(); i++ ) {
                ofNoFill();
                ofBeginShape();
@@ -100,8 +105,9 @@ void ImageProcessor::generateMatrix() {
     
         //colorImg.setFromPixels(pix);
         processedImage->scaleIntoMe(temp);
-        processedImage->dilate();
-        processedImage->contrastStretch();
+        //processedImage->blur(5);
+        // processedImage->dilate();
+        //processedImage->contrastStretch();
         
         } else {
             processedImage->allocate(w, h);
