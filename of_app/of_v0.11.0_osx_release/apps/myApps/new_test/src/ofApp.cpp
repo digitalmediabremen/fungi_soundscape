@@ -10,8 +10,6 @@ void ofApp::setup(){
     ofBackground(0);
     ofSetFrameRate(60);
     ofDisableAntiAliasing();
-    SetPriorityClass(GetCurrentProcess(), ABOVE_NORMAL_PRIORITY_CLASS);
-
 
     brightColor = ofColor( 255, 255, 255);
     darkColor = ofColor( 35, 255, 35);
