@@ -11,7 +11,7 @@ class ImageProvider  {
 public:
     ImageProvider();
     
-    void fetchImages(string species);
+    void fetchImageURLs(string species);
     void fetchImage(string url);
     void urlResponse (ofHttpResponse &response);
     ofEvent<void> completedDownloadImage;
@@ -25,13 +25,8 @@ public:
 private:
     string httpObservationsID;
     string singleImageRequestID;
-
-    string baseImagePath;
     string baseObservationPath;
-        
-    void requestImageURLs(ofJson jsonObservations);
-    void pushImageURL(ofJson jsonImages);
-        
-    int currentRequests;
-    int requestCount;
+    string baseImagePath;
+    string lastSpecies;
+    void storeImageURLs(ofJson jsonObservations);
 };

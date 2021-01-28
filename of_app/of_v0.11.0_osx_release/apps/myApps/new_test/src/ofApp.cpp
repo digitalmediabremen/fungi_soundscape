@@ -97,7 +97,7 @@ void ofApp::setup(){
     ofAddListener(imageProvider.completedDownloadImage,this,&ofApp::onCompletedImageDownload);
     ofAddListener(imageProvider.failedEvent,this,&ofApp::onFailedToReceiveImagesURL);
 
-    imageProvider.fetchImages(mushroomType.get());
+    imageProvider.fetchImageURLs(mushroomType.get());
 }
 
 //--------------------------------------------------------------
@@ -122,9 +122,9 @@ void ofApp::update(){
         }
     }
     
-    if (customSequencer.stepsSinceChange >= MATRIX_HEIGHT - 20) { // start to fetch next shrooms.
-        customSequencer.stepsSinceChange = -100;
-        imageProvider.fetchImages("Amanita");
+    if (customSequencer.stepsSinceChange >= MATRIX_HEIGHT - 10) { // start to fetch next shrooms.
+        customSequencer.stepsSinceChange = - 100;
+        imageProvider.fetchImageURLs("Amanita");
     }
 }
 
@@ -227,14 +227,14 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
 
 void ofApp::onChangeMushroomGenus(string& ){
     ofLog () << "changed: " << mushroomType.get();
-    imageProvider.fetchImages(mushroomType.get());
+    imageProvider.fetchImageURLs(mushroomType.get());
 }
 
 void ofApp::onReceivedImageUrls(vector<string> & images) {
     if (images.size() > 0) {
       string imageURL = images[(int)ofRandom(images.size()-1)];
      // ofImage * downloadedFungus;
-      ofLog () << images[0];
+      ofLog () << imageURL;
       imageProvider.fetchImage(imageURL);
      /*
       int tries = 0;
@@ -253,7 +253,7 @@ void ofApp::onReceivedImageUrls(vector<string> & images) {
 
 void ofApp::onFailedToReceiveImagesURL(string & error) {
     ofLogError() << "failed to fetch, response: " << error;
-    imageProvider.fetchImages("Cortinarius");
+    imageProvider.fetchImageURLs("Cortinarius");
 }
 
 void ofApp::onCompletedImageDownload () {

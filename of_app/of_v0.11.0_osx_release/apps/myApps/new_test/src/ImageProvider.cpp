@@ -1,25 +1,33 @@
 
 #include "ImageProvider.h"
 
+#define IMAGE_SIZE 640
+#define IMAGE_EXTENSION ".jpg"
 // constructor
 ImageProvider::ImageProvider () {
 
      // get mushroom image
-     baseImagePath = "https://mushroomobserver.nyc3.digitaloceanspaces.com/orig/";
-     baseObservationPath = "https://mushroomobserver.org/api2/images?observation=";
+     baseImagePath = "https://mushroomobserver.org/images/" + ofToString(IMAGE_SIZE) + "/";
+     baseObservationPath = "https://mushroomobserver.org/api2/observations?children_of=";
      ofRegisterURLNotification(this);
     
     httpObservationsID = "observations";
     singleImageRequestID = "singleimage";
+    lastSpecies = "";
 }
 
 
-void ImageProvider::fetchImages (string species) {
+void ImageProvider::fetchImageURLs (string species) {
     
+    if (species == lastSpecies) {
+        completedGetImageURLs.notify(*imageUrls);
+        return;
+    }
+    
+    lastSpecies = species;
     imageUrls = new vector<string>();
 
-    string urlObservations = "https://mushroomobserver.org/api2/observations?children_of=" + species + "&format=json";
-    
+    string urlObservations = baseObservationPath + species + "&format=json&detail=low";
     ofLoadURLAsync(urlObservations, httpObservationsID);
 }
 
@@ -35,7 +43,7 @@ void ImageProvider::urlResponse (ofHttpResponse &response) {
             failedEvent.notify(error);
             return;
         }
-        requestImageURLs(parsed);
+        storeImageURLs(parsed);
         return;
     }
     
@@ -46,55 +54,38 @@ void ImageProvider::urlResponse (ofHttpResponse &response) {
             return;
         }
         
-        ofLog () << "completed single image";
+        ofLog () << "completed download image";
         lastLoadedImage = new ofImage();
         lastLoadedImage->load(response.data);
         completedDownloadImage.notify();
         return;
     }
-    
-    ofJson json = ofJson::parse(response.data);
-    pushImageURL(json);
 }
 
-void ImageProvider::requestImageURLs(ofJson jsonObservations) {
-    requestCount = 0;
-    // request image urls
-    currentRequests = (jsonObservations["results"].size() >= MAX_REQUESTS ? MAX_REQUESTS : jsonObservations["results"].size());
-    for (int i = 0; i < currentRequests; i++) {
-        string observationID = ofToString(jsonObservations["results"][int(ofRandom(jsonObservations["results"].size() - 1))]);
-    
-        string urlImages = baseObservationPath + observationID + "&format=json";
-        ofLoadURLAsync(urlImages);
+void ImageProvider::storeImageURLs(ofJson jsonObservations) {
+    int image_count = 0;
+    // store image urls
+    for (int i = 0; i < jsonObservations["results"].size(); i++) {
+        ofLog () << ofToString(jsonObservations["results"][i]);
+        if (jsonObservations["results"][i].count("primary_image_id") == 0) continue;
+        image_count++;
+        string image_url = baseImagePath + ofToString(jsonObservations["results"][i]["primary_image_id"]) + IMAGE_EXTENSION;
+        imageUrls->push_back(image_url);
     }
     
-}
-
-void ImageProvider::pushImageURL(ofJson response) {
-    
-    for (int a = 0; a < response["results"].size(); a++) {
-        // create URL
-        string urlToImage = baseImagePath + ofToString(response["results"][a]) + ".jpg";
-        imageUrls->push_back(urlToImage);
-    }
-    requestCount++;
-    
-    if (requestCount == currentRequests) {
-        if (imageUrls->size() > 0) {
-            // clear requests
-            ofRemoveAllURLRequests();
-            // dispatch event
-            ofLog() << "number of images: " << ofToString(imageUrls->size());
-            completedGetImageURLs.notify(*imageUrls);
-        } else {
-            string error = "no image for this species";
-            failedEvent.notify(error);
-        }
+    if (image_count > 0) {
+        ofRemoveAllURLRequests();
+        // dispatch event
+        ofLog() << "number of images: " << ofToString(imageUrls->size());
+        completedGetImageURLs.notify(*imageUrls);
+    } else {
+        string error = "no image for this species";
+        failedEvent.notify(error);
     }
 }
 
 void ImageProvider::fetchImage (string url) {
 
-    ofLog () << "fetch image";
+     ofLog () << "fetch image";
      ofLoadURLAsync(url, singleImageRequestID);
 }
