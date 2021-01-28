@@ -12,9 +12,9 @@
 * keep adding new mushrooms as the previous image is consumed by the algo - ok
 * use more instruments - ok
 * use some kind of beat/kick instrument -
-* play with modules, what parameter use to control modules? -
+* play with modules, what parameter use to control modules? - USE PARAMETERS FROM MUSHROOM (Location, Confidence level of species, even description);
 * how can I make the piece evolve in a more 'musical' way?
-
+* create Mushroom.h Class and display more information about the schroom in the screen (location, full name);
 
 ### SS
 ![Screenshot](/screenshot.png?raw=true "screen shot")
