@@ -3582,8 +3582,8 @@
 				79E4EE2EB62B620150B23AB2 /* ImageProvider.h */,
 				C52FF01393DF61243F8A2E83 /* ImageProvider.cpp */,
 				2244848AD3445EEC1184FD61 /* ImageProcessor.cpp */,
-				2BF4784DD39D431445817EA6 /* Zaps.cpp */,
 				5AE4F951AA0CE66C08A1389E /* ImageProcessor.h */,
+				2BF4784DD39D431445817EA6 /* Zaps.cpp */,
 				1442561D35635D9F9A508A53 /* StereoDelay.cpp */,
 				88DA40A4EB5FD4393BD8A204 /* StereoDelay.h */,
 			);

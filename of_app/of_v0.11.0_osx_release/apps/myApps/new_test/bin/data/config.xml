@@ -7,7 +7,7 @@
 		<threshold>2</threshold>
 		<seeds_density>0.5</seeds_density>
 		<regenerate>0</regenerate>
-		<readHeight>48</readHeight>
+		<readHeight>10</readHeight>
 	</matrix>
 	<zaps_UI>
 		<gain>-7</gain>
@@ -20,13 +20,32 @@
 		<zap_4_pitch>36</zap_4_pitch>
 	</zaps_UI>
 	<stereo_delay>
-		<input_gain>-6</input_gain>
-		<L_16th_time>11</L_16th_time>
-		<L_feedback>0.80102</L_feedback>
-		<R_16th_time>11</R_16th_time>
-		<R_feedback>0.770408</R_feedback>
-		<damping>0.188776</damping>
+		<input_gain>-10</input_gain>
+		<L_16th_time>2</L_16th_time>
+		<L_feedback>0.163265</L_feedback>
+		<R_16th_time>2</R_16th_time>
+		<R_feedback>0.688776</R_feedback>
+		<damping>0.561224</damping>
 		<output_gain>0</output_gain>
 	</stereo_delay>
-	<Mushroom_genus>Fungi</Mushroom_genus>
+	<Mushroom_genus>Myxomycetes</Mushroom_genus>
+	<WAVESYNTH>
+		<table_index>5.20408</table_index>
+		<filter_mode>0</filter_mode>
+		<filter_cutoff>90</filter_cutoff>
+		<filter_reso>0.658163</filter_reso>
+		<env_attack>400</env_attack>
+		<env_decay>400</env_decay>
+		<env_sustain>0.561224</env_sustain>
+		<env_release>900</env_release>
+		<env_to_table>1.43878</env_to_table>
+		<env_to_filter>30</env_to_filter>
+		<lfo_wave>2</lfo_wave>
+		<lfo_freq>0.69801</lfo_freq>
+		<lfo_to_table>1</lfo_to_table>
+		<lfo_to_filter>28</lfo_to_filter>
+		<chorus_freq>0.755102</chorus_freq>
+		<chorus_depth>7.75</chorus_depth>
+		<gain>3</gain>
+	</WAVESYNTH>
 </read_mush>

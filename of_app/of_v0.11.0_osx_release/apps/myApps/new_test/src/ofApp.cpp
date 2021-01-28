@@ -2,6 +2,8 @@
 
 #define SIDE 16
 
+#define MAX_PITCH 87
+
 //--------------------------------------------------------------
 void ofApp::setup(){
     
@@ -17,7 +19,7 @@ void ofApp::setup(){
     
     //----------------- ---------------------
     // Setting up sequencer
-    engine.sequencer.setTempo(120.0f);
+    engine.sequencer.setTempo(100.0f);
         
     // ----------- PATCHING -----------
     
@@ -73,12 +75,13 @@ void ofApp::setup(){
     // ------------ GUI ------------
     gui.setup("", "config.xml", ofGetWidth()-220, 40);
     gui.setName( "read mush" );
+    mushroomType.set("Mushroom genus", "Agaricus");
+    gui.add(mushroomType);
     gui.add( customSequencer.parameters );
     //gui.add( zaps.parameters );
     gui.add( synth.ui );
     gui.add( dub.parameters );
-    mushroomType.set("Mushroom genus", "Agaricus");
-    gui.add(mushroomType);
+
     
     // listen via class method
     mushroomType.addListener(this, &ofApp::onChangeMushroomGenus);
@@ -104,7 +107,7 @@ void ofApp::update(){
     for ( int i=0; i<NUMSYNTHS; ++i ) {
         float value = customSequencer.getStepFloat(curStep, i);
         if (value) {
-            float pitch = (value) * 80.0f; // max pitch 80
+            float pitch = (value) * (float)MAX_PITCH; // max pitch 80
             /*
             if (pitch >= 75.0f) {
                 // chose max pitch from scale, because it's the contour
