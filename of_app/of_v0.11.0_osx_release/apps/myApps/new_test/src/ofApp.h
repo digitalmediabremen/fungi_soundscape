@@ -9,6 +9,7 @@
 #include "ofxOpenCv.h"
 #include "ImageProvider.h"
 #include "ImageProcessor.h"
+#include "PolySynth.h"
 
 class ofApp : public ofBaseApp{
 
@@ -38,7 +39,9 @@ class ofApp : public ofBaseApp{
              
         CustomSequencer customSequencer;
         
-        Zaps zaps;
+        //Zaps zaps;
+    
+        PolySynth synth;
 
         pdsp::IRVerb reverb;
         

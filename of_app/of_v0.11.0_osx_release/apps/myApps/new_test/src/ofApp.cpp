@@ -1,6 +1,5 @@
 #include "ofApp.h"
 
-#define MAX_GENERATIONS 8
 #define SIDE 16
 
 //--------------------------------------------------------------
@@ -18,29 +17,39 @@ void ofApp::setup(){
     
     //----------------- ---------------------
     // Setting up sequencer
-    engine.sequencer.setTempo(70.0f);
+    engine.sequencer.setTempo(120.0f);
         
     // ----------- PATCHING -----------
     
     // loads reverb impulse response
     reverb.loadIR(ofToDataPath( "kingtubby-fl1.wav" ));
     
-    zaps.setup(NUMSYNTHS);
+    //zaps.setup(NUMSYNTHS);
+    synth.setup(NUMSYNTHS);
+    
     scopes.resize(NUMSYNTHS + 2);
     
     for ( int i=0; i<NUMSYNTHS; ++i ) {
-        customSequencer.out_trig(i) >> zaps.voices[i]; // patch the sequence outputs to the zaps
-        zaps.voices[i] >> scopes[i] >> engine.blackhole();
+        // customSequencer.out_trig(i) >> zaps.voices[i]; // patch the sequence outputs to the zaps
+        //zaps.voices[i] >> scopes[i] >> engine.blackhole();
+        customSequencer.out_trig(i) >> synth.voices[i]; // patch the sequence outputs to the zaps
+        synth.voices[i] >> scopes[i] >> engine.blackhole();
+
     }
     
     
-    zaps.fader.ch(0) >> engine.audio_out(0);
-    zaps.fader.ch(1) >> engine.audio_out(1);   
+    // zaps.fader.ch(0) >> engine.audio_out(0);
+    // zaps.fader.ch(1) >> engine.audio_out(1);
     
-    // patch the zaps to the reverb input 
-    float revGain = -60.0f; // -65dB, this IRs are very loud
-    zaps.fader.ch(0) * dB(revGain) >> reverb.ch(0);
-    zaps.fader.ch(1) * dB(revGain) >> reverb.ch(1);
+    synth.ch(0) >> engine.audio_out(0);
+    synth.ch(1) >> engine.audio_out(1);
+    
+    float reverbGain = -30.0f; // -65dB, this IRs are very loud // THIS MAKE S A CRAZY DIFFERENCE, use 0.0f for crazy
+    //zaps.fader.ch(0) * dB(revGain) >> reverb.ch(0);
+    //zaps.fader.ch(1) * dB(revGain) >> reverb.ch(1);
+    
+    synth.ch(0) * dB(reverbGain) >> reverb.ch(0);
+    synth.ch(1) * dB(reverbGain) >> reverb.ch(1);
     
     // patch the reverb to an high pass filter and then to the engine
     // ( deactivated on rPi as the processor is too slow for IR convolution using FFT )
@@ -51,8 +60,10 @@ void ofApp::setup(){
 #endif
 
     // connect the zaps to the stereo delay
-    zaps.fader.ch(0) >> dub.ch(0);
-    zaps.fader.ch(1) >> dub.ch(1);
+    // zaps.fader.ch(0) >> dub.ch(0);
+    // zaps.fader.ch(1) >> dub.ch(1);
+    synth.ch(0) >> dub.ch(0);
+    synth.ch(1) >> dub.ch(1);
                         dub.ch(0) >> engine.audio_out(0);
                         dub.ch(1) >> engine.audio_out(1);
                         dub.ch(0) * dB(12.0f) >> scopes[NUMSYNTHS]   >> engine.blackhole();
@@ -63,7 +74,8 @@ void ofApp::setup(){
     gui.setup("", "config.xml", ofGetWidth()-220, 40);
     gui.setName( "read mush" );
     gui.add( customSequencer.parameters );
-    gui.add( zaps.parameters );
+    //gui.add( zaps.parameters );
+    gui.add( synth.ui );
     gui.add( dub.parameters );
     mushroomType.set("Mushroom genus", "Agaricus");
     gui.add(mushroomType);
@@ -100,8 +112,10 @@ void ofApp::update(){
                 
                 pitch = akebono[int(ofRandom(8))] - 20;
             }
-             */
-            zaps.voices[i].pitchControl.set(pitch);
+            */
+             
+            //zaps.voices[i].pitchControl.set(pitch);
+            pitch >> synth.voices[i].in("pitch");
         }
     }
     

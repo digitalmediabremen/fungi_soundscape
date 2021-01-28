@@ -53,6 +53,7 @@
 		3AEFE4FA8AD5C72671AD07F8 /* ofxRtMidiOut.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 712B183BC00EBFFB1EEA5AB8 /* ofxRtMidiOut.cpp */; };
 		3AFCE6CE34F520843D292C78 /* ToGateTrigger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 53AA676B2E7D8BF23CCA3D3F /* ToGateTrigger.cpp */; };
 		3B8815210C72FF34070EE2E4 /* DataOsc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F7CF9EF7BFFD9F0639DB0A24 /* DataOsc.cpp */; };
+		3F52677925C241DF00076D61 /* PolySynth.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3F52677825C241DF00076D61 /* PolySynth.cpp */; };
 		3F5634B125C22B7400C98493 /* BitMatrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3F5634AF25C22B7300C98493 /* BitMatrix.cpp */; };
 		3F5634B725C22EBF00C98493 /* CustomSequencer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3F5634B525C22EBE00C98493 /* CustomSequencer.cpp */; };
 		3F6F4F896FC7FD9D3BA7C479 /* SVF2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA0B674C5960CE8B4261BC77 /* SVF2.cpp */; };
@@ -476,6 +477,8 @@
 		3CD08A024B0129D7FF196867 /* gscalar.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = gscalar.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/gapi/gscalar.hpp; sourceTree = SOURCE_ROOT; };
 		3DD359247F3ED1550D8BB5C9 /* ofxMidiIn.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = ofxMidiIn.cpp; path = ../../../addons/ofxMidi/src/ofxMidiIn.cpp; sourceTree = SOURCE_ROOT; };
 		3E62F0912DD06E97FB7B71E5 /* calib3d.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = calib3d.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/calib3d.hpp; sourceTree = SOURCE_ROOT; };
+		3F52677725C241DF00076D61 /* PolySynth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolySynth.h; sourceTree = "<group>"; };
+		3F52677825C241DF00076D61 /* PolySynth.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolySynth.cpp; sourceTree = "<group>"; };
 		3F5634AF25C22B7300C98493 /* BitMatrix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BitMatrix.cpp; sourceTree = "<group>"; };
 		3F5634B025C22B7400C98493 /* BitMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BitMatrix.h; sourceTree = "<group>"; };
 		3F5634B525C22EBE00C98493 /* CustomSequencer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CustomSequencer.cpp; sourceTree = "<group>"; };
@@ -3566,6 +3569,8 @@
 		E4B69E1C0A3A1BDC003C02F2 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				3F52677825C241DF00076D61 /* PolySynth.cpp */,
+				3F52677725C241DF00076D61 /* PolySynth.h */,
 				3F5634B525C22EBE00C98493 /* CustomSequencer.cpp */,
 				3F5634B625C22EBF00C98493 /* CustomSequencer.h */,
 				3F5634AF25C22B7300C98493 /* BitMatrix.cpp */,
@@ -4043,6 +4048,7 @@
 				901C52413B918554601C4CFD /* APF4.cpp in Sources */,
 				F4F6C433B39BA884CC634398 /* MultiLadder4.cpp in Sources */,
 				A05990E6E8F28A0C18A0D498 /* OnePole.cpp in Sources */,
+				3F52677925C241DF00076D61 /* PolySynth.cpp in Sources */,
 				3F5634B725C22EBF00C98493 /* CustomSequencer.cpp in Sources */,
 				3F6F4F896FC7FD9D3BA7C479 /* SVF2.cpp in Sources */,
 				A16C57EAC4805A0B459F9AFE /* BiquadAPF2.cpp in Sources */,
