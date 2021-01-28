@@ -14,7 +14,7 @@
 * use some kind of beat/kick instrument -
 * play with modules, what parameter use to control modules? -
 * how can I make the piece evolve in a more 'musical' way?
-
+* create Mushroom.h Class and display more information about the schroom in the screen (location, full name);
 
 ### SS
 ![Screenshot](/screenshot.png?raw=true "screen shot")
