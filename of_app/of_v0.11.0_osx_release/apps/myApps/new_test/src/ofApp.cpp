@@ -2,7 +2,7 @@
 
 #define SIDE 16
 
-#define MAX_PITCH 87
+#define MAX_PITCH 80
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -19,7 +19,7 @@ void ofApp::setup(){
     
     //----------------- ---------------------
     // Setting up sequencer
-    engine.sequencer.setTempo(100.0f);
+    engine.sequencer.setTempo(80.0f);
         
     // ----------- PATCHING -----------
     
@@ -90,7 +90,7 @@ void ofApp::setup(){
     //---------------------- audio setup -------------
     engine.listDevices();
     engine.setDeviceID(1); // <--- remember to set your index
-    engine.setup( 44100, 512, 3);
+    engine.setup( 44100, 2048, 3);
     
         
     ofAddListener(imageProvider.completedGetImageURLs,this,&ofApp::onReceivedImageUrls);
@@ -105,17 +105,20 @@ void ofApp::update(){
     int curStep = customSequencer.currentStep();
 
     for ( int i=0; i<NUMSYNTHS; ++i ) {
-        float value = customSequencer.getStepFloat(curStep, i);
+        
+        // increase base pitch by X
+        float basePitch = 0.07f;
+        float value = customSequencer.getStepFloat(curStep, i) + basePitch;
         if (value) {
-            float pitch = (value) * (float)MAX_PITCH; // max pitch 80
-            /*
-            if (pitch >= 75.0f) {
+            float pitch = (value) * (float)MAX_PITCH;
+            
+            if (pitch >= MAX_PITCH - 1.0f) {
                 // chose max pitch from scale, because it's the contour
                 float akebono[] = { 72.0f, 74.0f, 75.0f, 79.0f, 80.0f, 84.0f, 86.0f, 87.0f }; //
                 
-                pitch = akebono[int(ofRandom(8))] - 20;
+                pitch = akebono[int(ofRandom(8))];
             }
-            */
+            
              
             //zaps.voices[i].pitchControl.set(pitch);
             pitch >> synth.voices[i].in("pitch");
@@ -233,8 +236,16 @@ void ofApp::onChangeMushroomGenus(string& ){
 void ofApp::onReceivedImageUrls(vector<string> & images) {
     if (images.size() > 0) {
       string imageURL = images[(int)ofRandom(images.size()-1)];
-     // ofImage * downloadedFungus;
-      ofLog () << imageURL;
+        // ofImage * downloadedFungus;
+        //imageURL = "https://mushroomobserver.org/images/640/928.jpg"; // example of good fallback when no contours (mush is darker, around is brighter)
+        //imageURL = "https://mushroomobserver.org/images/640/125451.jpg"; // no contours
+        //imageURL = "https://mushroomobserver.org/images/640/4828.jpg"; // good shading debug for low frequencies
+        
+        // interesting
+        //imageURL = "https://mushroomobserver.org/images/640/74243.jpg";
+        
+        ofLog () << imageURL;
+
       imageProvider.fetchImage(imageURL);
      /*
       int tries = 0;

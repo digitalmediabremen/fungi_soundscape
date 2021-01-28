@@ -66,7 +66,6 @@ void ImageProvider::storeImageURLs(ofJson jsonObservations) {
     int image_count = 0;
     // store image urls
     for (int i = 0; i < jsonObservations["results"].size(); i++) {
-        ofLog () << ofToString(jsonObservations["results"][i]);
         if (jsonObservations["results"][i].count("primary_image_id") == 0) continue;
         image_count++;
         string image_url = baseImagePath + ofToString(jsonObservations["results"][i]["primary_image_id"]) + IMAGE_EXTENSION;

@@ -35,7 +35,7 @@ vector<ofxCvBlob> ImageProcessor::findContours (ofImage * img) {
     grayImage = colorImg; // convert our color image to a grayscale image
     backgroundGrayImage.setFromPixels(grayImage.getPixels());
 
-    grayImage.brightnessContrast(1,1.5);
+    grayImage.brightnessContrast(1, 1.3);
     grayImage.blurGaussian(8);
     grayImage.adaptiveThreshold(10);
     //grayImage.threshold(30);
@@ -69,7 +69,7 @@ void ImageProcessor::generateMatrix() {
     int wMultiplier = dataWidth/w;
     int hMultiplier = dataHeight/h;
 
-    backgroundGrayImage.brightnessContrast(1.0f, 2.5f);
+    backgroundGrayImage.brightnessContrast(1.0f, 3.0f);
     backgroundGrayImage.blurGaussian(50);
     backgroundGrayImage.invert();
     
@@ -111,8 +111,14 @@ void ImageProcessor::generateMatrix() {
         
         } else {
             processedImage->allocate(w, h);
-            grayImage.invert();
-            processedImage->scaleIntoMe(grayImage, CV_INTER_CUBIC);
+            //backgroundGrayImage.contrastStretch();
+            backgroundGrayImage.invert();
+            backgroundGrayImage.blurGaussian(10);
+            backgroundGrayImage.adaptiveThreshold(15);
+            backgroundGrayImage.erode();
+            //backgroundGrayImage.erode();
+
+            processedImage->scaleIntoMe(backgroundGrayImage, CV_INTER_CUBIC);
         }
         
 
@@ -144,11 +150,19 @@ void ImageProcessor::draw() {
                //ofScale(0.4,0.4,0.4);
                currentImage.draw(0, 0, 100, 100);
            ofPopMatrix();
+        
         ofPushMatrix();
             ofTranslate(350, 30);
             //ofScale(0.4,0.4,0.4);
             grayImage.draw(0, 0, 100, 100);
         ofPopMatrix();
+        
+        ofPushMatrix();
+            ofTranslate(650, 30);
+            //ofScale(0.4,0.4,0.4);
+            backgroundGrayImage.draw(0, 0, 100, 100);
+        ofPopMatrix();
+
         
         ofPushMatrix();
             ofTranslate(350, 150);

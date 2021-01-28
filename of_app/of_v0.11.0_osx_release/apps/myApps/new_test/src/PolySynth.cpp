@@ -100,29 +100,29 @@ void PolySynth::setup(int numVoices){
     table_ctrl.enableSmoothing(200.0f);
 
     ui.add(filter_mode_ctrl.set("filter mode", 0, 0, 5) );
-    ui.add(cutoff_ctrl.set("filter cutoff", 82, 10, 120));
-    ui.add(reso_ctrl.set("filter reso", 0.0f, 0.0f, 1.0f) );
+    ui.add(cutoff_ctrl.set("filter cutoff", 90, 10, 120));
+    ui.add(reso_ctrl.set("filter reso", 0.08f, 0.0f, 1.0f) );
  
     cutoff_ctrl.enableSmoothing(200.0f);
     
-    ui.add(env_attack_ctrl.set( "env attack", 400, 5, 1200) );
-    ui.add(env_decay_ctrl.set(  "env decay", 400, 5, 1200) );
+    ui.add(env_attack_ctrl.set( "env attack", 590, 5, 1200) );
+    ui.add(env_decay_ctrl.set(  "env decay", 280, 5, 1200) );
     ui.add(env_sustain_ctrl.set("env sustain", 1.0f, 0.0f, 1.0f) );
     ui.add(env_release_ctrl.set("env release", 900, 5, 2000));    
-    ui.add( env_table_amt.set( "env to table", 0.0f, 0.0f, 2.0f) );
-    ui.add( env_filter_amt.set("env to filter", 30, 0, 60) );    
+    ui.add( env_table_amt.set( "env to table", 0.5f, 0.0f, 2.0f) );
+    ui.add( env_filter_amt.set("env to filter", 10, 0, 60) );
 
-    ui.add(lfo_wave_ctrl.set("lfo wave", 0, 0, 4));
-    ui.add(lfo_speed_ctrl.set("lfo freq", 0.5f, 0.005f, 4.0f));
-    ui.add(table_lfo_mod_ctrl.set("lfo to table", 1.0f, 0.0f, 2.0f) );
-    ui.add(filter_lfo_mod_ctrl.set("lfo to filter", 0, 0, 60) );
+    ui.add(lfo_wave_ctrl.set("lfo wave", 1, 0, 4));
+    ui.add(lfo_speed_ctrl.set("lfo freq", 0.1f, 0.005f, 4.0f));
+    ui.add(table_lfo_mod_ctrl.set("lfo to table", 0.1f, 0.0f, 2.0f) );
+    ui.add(filter_lfo_mod_ctrl.set("lfo to filter", 2, 0, 60) );
     // ------------------------------------------------------------------------
    
     // Chorus -----------------------------------------------------------------
     chorus_speed_ctrl >> chorus.in_speed();
     chorus_depth_ctrl >> chorus.in_depth();
-    ui.add(chorus_speed_ctrl.set("chorus freq", 0.5f, 0.25f, 1.0f));
-    ui.add(chorus_depth_ctrl.set("chorus depth", 3.5f, 1.0f, 10.0f));
+    ui.add(chorus_speed_ctrl.set("chorus freq", 0.3f, 0.25f, 1.0f));
+    ui.add(chorus_depth_ctrl.set("chorus depth", 5.5f, 1.0f, 10.0f));
     ui.add(gain.set("gain", -12, -48, 48));
     gain.enableSmoothing(50.f);
     // ------------------------------------------------------------------------

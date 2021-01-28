@@ -28,15 +28,15 @@ void StereoDelay::patch() {
 
     parameters.setName("stereo delay");
 
-    parameters.add( inputFader.set("input gain", -15, -48, 12) );
+    parameters.add( inputFader.set("input gain", -5, -48, 12) );
     
     parameters.add( lDelayTimeControl.set("L 16th time", 5, 1, 16) );
     parameters.add( lFeedbackControl.set("L feedback", 0.4f, 0.0f, 1.0f));
-    parameters.add( rDelayTimeControl.set("R 16th time", 3, 1, 16) );
-    parameters.add( rFeedbackControl.set("R feedback", 0.4f, 0.0f, 1.0f));   
-    parameters.add( dampingControl.set("damping", 0.5f, 0.0f, 1.0f));   
+    parameters.add( rDelayTimeControl.set("R 16th time", 2, 1, 16) );
+    parameters.add( rFeedbackControl.set("R feedback", 0.7f, 0.0f, 1.0f));
+    parameters.add( dampingControl.set("damping", 0.6f, 0.0f, 1.0f));
    
-    parameters.add( outputFader.set("output gain", 0, -48, 12) );
+    parameters.add( outputFader.set("output gain", -5, -48, 12) );
 
     inputFader.enableSmoothing(50.f);
     outputFader.enableSmoothing(50.f);
