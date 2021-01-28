@@ -8,12 +8,12 @@
 * pull images from mushroom database - ok
 * use openCv to proces mushroom image - ok
 * create a bit matrix to play with a low sampled image - ok
-* do the image fetching and processing in another thread - 
-* keep adding new mushrooms as the previous image is consumed by the algo - 
-* derive algos - 
-* use more instruments - 
-* derive algos - 
-* play with modules - 
+* do the image fetching and processing in another thread - ok
+* keep adding new mushrooms as the previous image is consumed by the algo - ok
+* use more instruments - ok
+* use some kind of beat/kick instrument -
+* play with modules, what parameter use to control modules? -
+* how can I make the piece evolve in a more 'musical' way?
 
 
 ### SS
