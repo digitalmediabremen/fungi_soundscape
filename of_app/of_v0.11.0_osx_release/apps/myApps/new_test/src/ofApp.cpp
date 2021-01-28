@@ -18,7 +18,7 @@ void ofApp::setup(){
     
     //----------------- ---------------------
     // Setting up sequencer
-    engine.sequencer.setTempo(300.0f);
+    engine.sequencer.setTempo(70.0f);
         
     // ----------- PATCHING -----------
     
@@ -105,8 +105,8 @@ void ofApp::update(){
         }
     }
     
-    if (customSequencer.stepsSinceChange >= MATRIX_HEIGHT - 3) { // start a bit before
-        customSequencer.stepsSinceChange = 0;
+    if (customSequencer.stepsSinceChange >= MATRIX_HEIGHT - 20) { // start to fetch next shrooms.
+        customSequencer.stepsSinceChange = -100;
         imageProvider.fetchImages("Amanita");
     }
 }
@@ -215,7 +215,7 @@ void ofApp::onChangeMushroomGenus(string& ){
 
 void ofApp::onReceivedImageUrls(vector<string> & images) {
     if (images.size() > 0) {
-      string imageURL = images[0];
+      string imageURL = images[(int)ofRandom(images.size()-1)];
      // ofImage * downloadedFungus;
       ofLog () << images[0];
       imageProvider.fetchImage(imageURL);
@@ -236,6 +236,7 @@ void ofApp::onReceivedImageUrls(vector<string> & images) {
 
 void ofApp::onFailedToReceiveImagesURL(string & error) {
     ofLogError() << "failed to fetch, response: " << error;
+    imageProvider.fetchImages("Cortinarius");
 }
 
 void ofApp::onCompletedImageDownload () {

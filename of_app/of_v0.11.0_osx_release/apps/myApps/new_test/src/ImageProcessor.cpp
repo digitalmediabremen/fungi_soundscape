@@ -104,13 +104,14 @@ void ImageProcessor::generateMatrix() {
         processedImage->allocate(w, h);
     
         //colorImg.setFromPixels(pix);
-        processedImage->scaleIntoMe(temp);
+        processedImage->scaleIntoMe(temp, CV_INTER_CUBIC);
         //processedImage->blur(5);
         // processedImage->dilate();
         //processedImage->contrastStretch();
         
         } else {
             processedImage->allocate(w, h);
+            grayImage.invert();
             processedImage->scaleIntoMe(grayImage, CV_INTER_CUBIC);
         }
         

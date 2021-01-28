@@ -3,9 +3,8 @@
 // this class interacts with the mushroom API to fetch the URLS of species and photos
 
 #include "ofMain.h"
-#include "ofxThreadedImageLoader.h"
 
-#define MAX_REQUESTS 2
+#define MAX_REQUESTS 5
 
 class ImageProvider  {
 
@@ -35,7 +34,4 @@ private:
         
     int currentRequests;
     int requestCount;
-    
-    ofxThreadedImageLoader imageLoader;
-
 };

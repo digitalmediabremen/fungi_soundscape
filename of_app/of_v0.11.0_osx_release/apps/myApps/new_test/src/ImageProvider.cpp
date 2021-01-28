@@ -40,6 +40,12 @@ void ImageProvider::urlResponse (ofHttpResponse &response) {
     }
     
     if (response.request.name == singleImageRequestID) {
+        if (response.status != 200) {
+            string error = ofToString(response.status);
+            failedEvent.notify(error);
+            return;
+        }
+        
         ofLog () << "completed single image";
         lastLoadedImage = new ofImage();
         lastLoadedImage->load(response.data);
@@ -56,7 +62,7 @@ void ImageProvider::requestImageURLs(ofJson jsonObservations) {
     // request image urls
     currentRequests = (jsonObservations["results"].size() >= MAX_REQUESTS ? MAX_REQUESTS : jsonObservations["results"].size());
     for (int i = 0; i < currentRequests; i++) {
-        string observationID = ofToString(jsonObservations["results"][i]);
+        string observationID = ofToString(jsonObservations["results"][int(ofRandom(jsonObservations["results"].size() - 1))]);
     
         string urlImages = baseObservationPath + observationID + "&format=json";
         ofLoadURLAsync(urlImages);

@@ -19,7 +19,7 @@ CustomSequencer::CustomSequencer(){
             
             // advance matrix 1 bit height
             bm.step();
-
+            bool isEmpty = true;
             for(int x=0; x < MATRIX_WIDTH; ++x){
                 int sum = 0; // int play only contours, float plays all image;
                 float floatSum = 0.0f;
@@ -35,15 +35,20 @@ CustomSequencer::CustomSequencer(){
 
                 if( sect <NUMSYNTHS ){
                      int range = MATRIX_HEIGHT - readHeight;
-                     if( sum>0){
+                     if( sum>  0){
+                         isEmpty = false;
                          value = float( sum ) / float ( range );
                      }
-                    
                 }
 
                 stepbars[x] = value;
                 stepbarsFloat[x] = floatSum;
                             
+            }
+            
+            if (isEmpty) {
+                bm.step();
+                bm.step();
             }
             
         }
