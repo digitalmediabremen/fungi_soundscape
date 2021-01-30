@@ -13,6 +13,8 @@ ofxCvGrayscaleImage * ImageProcessor::processImage(ofImage * img) {
     findContours(img);
     generateMatrix();
     return processedImage;
+    
+    drawHeight = 120;
 }
 
 vector<ofxCvBlob> ImageProcessor::findContours (ofImage * img) {
@@ -146,26 +148,26 @@ void ImageProcessor::generateMatrix() {
 void ImageProcessor::draw() {
     if (processedImage != NULL) {
             ofPushMatrix();
-               ofTranslate(500, 30);
+               ofTranslate(500, drawHeight);
                //ofScale(0.4,0.4,0.4);
                currentImage.draw(0, 0, 100, 100);
            ofPopMatrix();
         
         ofPushMatrix();
-            ofTranslate(350, 30);
+            ofTranslate(350, drawHeight);
             //ofScale(0.4,0.4,0.4);
             grayImage.draw(0, 0, 100, 100);
         ofPopMatrix();
         
         ofPushMatrix();
-            ofTranslate(650, 30);
+            ofTranslate(650, drawHeight);
             //ofScale(0.4,0.4,0.4);
             backgroundGrayImage.draw(0, 0, 100, 100);
         ofPopMatrix();
 
         
         ofPushMatrix();
-            ofTranslate(350, 150);
+            ofTranslate(350, drawHeight + 100);
             ofScale(0.2,0.2,0.2);
             processedImage->draw(0,0, 400, 400);
         ofPopMatrix();
@@ -173,7 +175,7 @@ void ImageProcessor::draw() {
         if (contourFinder.nBlobs > 0) {
             ofPushMatrix();
             ofPushStyle();
-                ofTranslate(500, 150);
+                ofTranslate(500, drawHeight + 100);
                 ofScale(0.1,0.1,0.1);
             ofSetLineWidth(1);
 

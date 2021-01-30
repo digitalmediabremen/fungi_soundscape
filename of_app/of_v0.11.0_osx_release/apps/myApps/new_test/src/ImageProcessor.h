@@ -15,6 +15,7 @@ public:
     ofxCvGrayscaleImage * processedImage;
     vector<ofxCvBlob> findContours(ofImage * img);
 private:
+    int drawHeight;
     ofxCvGrayscaleImage grayImage;//, grayBg, grayDiff;
     ofxCvContourFinder contourFinder;
     ofFbo contoursFbo;

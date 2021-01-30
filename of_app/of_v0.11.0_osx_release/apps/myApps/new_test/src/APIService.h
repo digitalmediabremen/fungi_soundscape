@@ -3,24 +3,29 @@
 // this class interacts with the mushroom API to fetch the URLS of species and photos
 
 #include "ofMain.h"
+#include "Fungus.h"
 
 #define MAX_REQUESTS 5
 
-class ImageProvider  {
+class APIService  {
 
 public:
-    ImageProvider();
+    APIService();
     
-    void fetchImageURLs(string species);
+    void fetchObservations(string species);
+    ofEvent<void> completedFetchObservations;
+
+    
     void fetchImage(string url);
+    ofEvent<void> completedFetchImage;
+
     void urlResponse (ofHttpResponse &response);
-    ofEvent<void> completedDownloadImage;
-    ofEvent<vector<string>> completedGetImageURLs;
     ofEvent<string> failedEvent;
 
     vector<string> * imageUrls;
     
     ofImage * lastLoadedImage;
+    vector<Fungus*> fungiList;
 
 private:
     string httpObservationsID;
@@ -28,5 +33,5 @@ private:
     string baseObservationPath;
     string baseImagePath;
     string lastSpecies;
-    void storeImageURLs(ofJson jsonObservations);
+    void createFungi(ofJson jsonObservations);
 };

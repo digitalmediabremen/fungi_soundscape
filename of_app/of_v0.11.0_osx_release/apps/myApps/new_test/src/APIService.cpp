@@ -1,26 +1,26 @@
 
-#include "ImageProvider.h"
+#include "APIService.h"
 
 #define IMAGE_SIZE 640
 #define IMAGE_EXTENSION ".jpg"
-// constructor
-ImageProvider::ImageProvider () {
 
-     // get mushroom image
+// constructor
+APIService::APIService () {
+
      baseImagePath = "https://mushroomobserver.org/images/" + ofToString(IMAGE_SIZE) + "/";
      baseObservationPath = "https://mushroomobserver.org/api2/observations?children_of=";
      ofRegisterURLNotification(this);
     
     httpObservationsID = "observations";
-    singleImageRequestID = "singleimage";
+    singleImageRequestID = "image";
     lastSpecies = "";
 }
 
 
-void ImageProvider::fetchImageURLs (string species) {
+void APIService::fetchObservations (string species) {
     
     if (species == lastSpecies) {
-        completedGetImageURLs.notify(*imageUrls);
+        completedFetchObservations.notify();
         return;
     }
     
@@ -31,7 +31,7 @@ void ImageProvider::fetchImageURLs (string species) {
     ofLoadURLAsync(urlObservations, httpObservationsID);
 }
 
-void ImageProvider::urlResponse (ofHttpResponse &response) {
+void APIService::urlResponse (ofHttpResponse &response) {
     ofLog () << "name" << response.request.name;
     ofLog () << "status" << response.status;
 
@@ -43,7 +43,7 @@ void ImageProvider::urlResponse (ofHttpResponse &response) {
             failedEvent.notify(error);
             return;
         }
-        storeImageURLs(parsed);
+        createFungi(parsed);
         return;
     }
     
@@ -57,33 +57,55 @@ void ImageProvider::urlResponse (ofHttpResponse &response) {
         ofLog () << "completed download image";
         lastLoadedImage = new ofImage();
         lastLoadedImage->load(response.data);
-        completedDownloadImage.notify();
+        completedFetchImage.notify();
         return;
     }
 }
 
-void ImageProvider::storeImageURLs(ofJson jsonObservations) {
-    int image_count = 0;
+void APIService::createFungi(ofJson jsonObservations) {
+    
+    bool hasAnyImage = false;
+    fungiList.clear();
     // store image urls
     for (int i = 0; i < jsonObservations["results"].size(); i++) {
-        if (jsonObservations["results"][i].count("primary_image_id") == 0) continue;
-        image_count++;
+        if (jsonObservations["results"][i].count("primary_image_id") == 0) continue; // no image
+        hasAnyImage = true;
+        
+        Fungus * f;
         string image_url = baseImagePath + ofToString(jsonObservations["results"][i]["primary_image_id"]) + IMAGE_EXTENSION;
-        imageUrls->push_back(image_url);
+
+        f = new Fungus();
+        
+        string name = jsonObservations["results"][i]["consensus_name"];
+        string description = ofToString(jsonObservations["results"][i]["notes"]);
+        int id = (int)jsonObservations["results"][i]["id"];
+        int views = (int)jsonObservations["results"][i]["number_of_views"];
+        string location = ofToString(jsonObservations["results"][i]["location_name"]);
+        
+        //float confidence = (jsonObservations["results"][i]["confidence"].count > 0) ? float(jsonObservations["results"][i]["confidence"]) : 0.5;
+
+        ofLog() << ofToString(jsonObservations["results"][i]);
+                                     
+        f->setup(name, description, id, views , location, image_url, 0.1);
+        
+        fungiList.push_back(f);
+                // image_count++;
+        // string image_url = baseImagePath + ofToString(jsonObservations["results"][i]["primary_image_id"]) + IMAGE_EXTENSION;
+        // imageUrls->push_back(image_url);
     }
+
+    ofRemoveAllURLRequests();
     
-    if (image_count > 0) {
-        ofRemoveAllURLRequests();
+    if (hasAnyImage) {
         // dispatch event
-        ofLog() << "number of images: " << ofToString(imageUrls->size());
-        completedGetImageURLs.notify(*imageUrls);
+        completedFetchObservations.notify();
     } else {
         string error = "no image for this species";
         failedEvent.notify(error);
     }
 }
 
-void ImageProvider::fetchImage (string url) {
+void APIService::fetchImage (string url) {
 
      ofLog () << "fetch image";
      ofLoadURLAsync(url, singleImageRequestID);

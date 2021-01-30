@@ -93,11 +93,11 @@ void ofApp::setup(){
     engine.setup( 44100, 2048, 3);
     
         
-    ofAddListener(imageProvider.completedGetImageURLs,this,&ofApp::onReceivedImageUrls);
-    ofAddListener(imageProvider.completedDownloadImage,this,&ofApp::onCompletedImageDownload);
-    ofAddListener(imageProvider.failedEvent,this,&ofApp::onFailedToReceiveImagesURL);
+    ofAddListener(apiService.completedFetchObservations,this,&ofApp::onReceiveObservations);
+    ofAddListener(apiService.completedFetchImage,this,&ofApp::onCompletedImageDownload);
+    ofAddListener(apiService.failedEvent,this,&ofApp::onFailedToReceiveImagesURL);
 
-    imageProvider.fetchImageURLs(mushroomType.get());
+    apiService.fetchObservations(mushroomType.get());
 }
 
 //--------------------------------------------------------------
@@ -127,7 +127,7 @@ void ofApp::update(){
     
     if (customSequencer.stepsSinceChange >= MATRIX_HEIGHT - 10) { // start to fetch next shrooms.
         customSequencer.stepsSinceChange = - 100;
-        imageProvider.fetchImageURLs("Amanita");
+        apiService.fetchObservations("Amanita");
     }
 }
 
@@ -143,6 +143,7 @@ void ofApp::draw(){
     ofTranslate( 0, 0 );
     customSequencer.draw( SIDE, 120, brightColor, darkColor );
     ofPopMatrix();
+    
     
     // draw the scopes
     ofPushMatrix();
@@ -168,7 +169,12 @@ void ofApp::draw(){
             }
         }
     ofPopMatrix();
+    if (currentFungus != NULL) {
+        ofSetColor(255, 255, 255, 255);
+        ofDrawBitmapString( currentFungus->name, 400, 30);
 
+        ofDrawBitmapString( currentFungus->location, 400, 50);
+    }
 }
 
 
@@ -230,12 +236,15 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
 
 void ofApp::onChangeMushroomGenus(string& ){
     ofLog () << "changed: " << mushroomType.get();
-    imageProvider.fetchImageURLs(mushroomType.get());
+    apiService.fetchObservations(mushroomType.get());
 }
 
-void ofApp::onReceivedImageUrls(vector<string> & images) {
-    if (images.size() > 0) {
-      string imageURL = images[(int)ofRandom(images.size()-1)];
+void ofApp::onReceiveObservations() {
+    
+    
+    if (apiService.fungiList.size() > 0) {
+        currentFungus = apiService.fungiList[(int)ofRandom(apiService.fungiList.size()-1)];
+        string imageURL = currentFungus->imageURL;
         // ofImage * downloadedFungus;
         //imageURL = "https://mushroomobserver.org/images/640/928.jpg"; // example of good fallback when no contours (mush is darker, around is brighter)
         //imageURL = "https://mushroomobserver.org/images/640/125451.jpg"; // no contours
@@ -246,14 +255,14 @@ void ofApp::onReceivedImageUrls(vector<string> & images) {
         
         ofLog () << imageURL;
 
-      imageProvider.fetchImage(imageURL);
+      apiService.fetchImage(imageURL);
      /*
       int tries = 0;
       while (!downloadedFungus && tries < images.size() - 1) {
           ofLog () << "failed to get image, try next one";
           tries++;
           imageURL = images[tries];
-          downloadedFungus = imageProvider.fetchImage(imageURL);
+          downloadedFungus = apiService.fetchImage(imageURL);
       }
       if (downloadedFungus) {
           customSequencer.setImage(imageProcessor.processImage(downloadedFungus));
@@ -264,12 +273,12 @@ void ofApp::onReceivedImageUrls(vector<string> & images) {
 
 void ofApp::onFailedToReceiveImagesURL(string & error) {
     ofLogError() << "failed to fetch, response: " << error;
-    imageProvider.fetchImageURLs("Cortinarius");
+    // apiService.fetchObservations("Cortinarius");
 }
 
 void ofApp::onCompletedImageDownload () {
     ofImage * downloadedFungus;
-    downloadedFungus = imageProvider.lastLoadedImage;
+    downloadedFungus = apiService.lastLoadedImage;
     if (downloadedFungus) {
         customSequencer.setImage(imageProcessor.processImage(downloadedFungus));
     }

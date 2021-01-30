@@ -4,12 +4,13 @@
 #include "ofxPDSP.h"
 #include "CustomSequencer.h"
 #include "ofxGui.h"
-#include "Zaps.h"
+// #include "Zaps.h"
 #include "StereoDelay.h"
 #include "ofxOpenCv.h"
-#include "ImageProvider.h"
+#include "APIService.h"
 #include "ImageProcessor.h"
 #include "PolySynth.h"
+#include "Fungus.h"
 
 class ofApp : public ofBaseApp{
 
@@ -66,12 +67,14 @@ class ofApp : public ofBaseApp{
         void onChangeMushroomGenus(string&);
     
         ImageProcessor imageProcessor;
-        ImageProvider imageProvider;
+        APIService apiService;
         
-        void onReceivedImageUrls(vector<string> & images);
+        void onReceiveObservations();
         void onFailedToReceiveImagesURL(string & error);
         void onCompletedImageDownload();
-
+    
+        Fungus * currentFungus;
+    
 };
 
 
