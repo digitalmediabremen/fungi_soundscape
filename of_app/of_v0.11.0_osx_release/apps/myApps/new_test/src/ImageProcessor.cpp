@@ -3,6 +3,7 @@
 
 // constructor
 ImageProcessor::ImageProcessor () {
+    drawHeight = 90;
 
     ofLog() << "initialized";
 }
@@ -13,9 +14,7 @@ ofxCvGrayscaleImage * ImageProcessor::processImage(ofImage * img) {
     findContours(img);
     generateMatrix();
     return processedImage;
-    
-    drawHeight = 120;
-}
+    }
 
 vector<ofxCvBlob> ImageProcessor::findContours (ofImage * img) {
     
@@ -148,9 +147,9 @@ void ImageProcessor::generateMatrix() {
 void ImageProcessor::draw() {
     if (processedImage != NULL) {
             ofPushMatrix();
-               ofTranslate(500, drawHeight);
+               ofTranslate(650, drawHeight);
                //ofScale(0.4,0.4,0.4);
-               currentImage.draw(0, 0, 100, 100);
+               currentImage.draw(0, 0, int(640 * 0.4), int(480 * 0.4));
            ofPopMatrix();
         
         ofPushMatrix();
@@ -160,14 +159,14 @@ void ImageProcessor::draw() {
         ofPopMatrix();
         
         ofPushMatrix();
-            ofTranslate(650, drawHeight);
+            ofTranslate(500, drawHeight);
             //ofScale(0.4,0.4,0.4);
             backgroundGrayImage.draw(0, 0, 100, 100);
         ofPopMatrix();
 
         
         ofPushMatrix();
-            ofTranslate(350, drawHeight + 100);
+            ofTranslate(350, drawHeight + 150);
             ofScale(0.2,0.2,0.2);
             processedImage->draw(0,0, 400, 400);
         ofPopMatrix();
@@ -175,7 +174,7 @@ void ImageProcessor::draw() {
         if (contourFinder.nBlobs > 0) {
             ofPushMatrix();
             ofPushStyle();
-                ofTranslate(500, drawHeight + 100);
+                ofTranslate(500, drawHeight + 150);
                 ofScale(0.1,0.1,0.1);
             ofSetLineWidth(1);
 
