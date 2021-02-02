@@ -16,6 +16,8 @@ APIService::APIService () {
 
 void APIService::fetchObservations (string species) {
     
+    ofStringReplace(species, " ", "%20");
+    
     if (species == lastSpecies) {
         completedFetchObservations.notify();
         return;
@@ -23,7 +25,7 @@ void APIService::fetchObservations (string species) {
     
     lastSpecies = species;
     imageUrls = new vector<string>();
-
+    ofLog() << "species:" << species;
     string urlObservations = baseObservationPath + species + "&format=json&detail=low";
     ofLoadURLAsync(urlObservations, httpObservationsID);
 }
@@ -31,6 +33,12 @@ void APIService::fetchObservations (string species) {
 void APIService::urlResponse (ofHttpResponse &response) {
     ofLog () << "name" << response.request.name;
     ofLog () << "status" << response.status;
+    
+    if (response.status != 200) {
+        string error = ofToString(response.status);
+        failedEvent.notify(error);
+        return;
+    }
 
     if (response.request.name == httpObservationsID) {
         ofJson parsed = ofJson::parse(response.data);
@@ -45,11 +53,6 @@ void APIService::urlResponse (ofHttpResponse &response) {
     }
     
     if (response.request.name == singleImageRequestID) {
-        if (response.status != 200) {
-            string error = ofToString(response.status);
-            failedEvent.notify(error);
-            return;
-        }
         
         ofLog () << "completed download image";
         lastLoadedImage = new ofImage();
