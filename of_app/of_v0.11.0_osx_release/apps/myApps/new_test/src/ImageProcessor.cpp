@@ -36,7 +36,7 @@ vector<ofxCvBlob> ImageProcessor::findContours (ofImage * img) {
     grayImage = colorImg; // convert our color image to a grayscale image
     backgroundGrayImage.setFromPixels(grayImage.getPixels());
 
-    grayImage.brightnessContrast(1, 1.3);
+    grayImage.brightnessContrast(1, 1.6);
     grayImage.blurGaussian(8);
     grayImage.adaptiveThreshold(10);
     //grayImage.threshold(30);
