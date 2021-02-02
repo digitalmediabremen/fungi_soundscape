@@ -6,6 +6,8 @@
 #include "Fungus.h"
 
 #define MAX_REQUESTS 5
+#define IMAGE_SIZE 640
+#define IMAGE_EXTENSION ".jpg"
 
 class APIService  {
 

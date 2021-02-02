@@ -33,6 +33,7 @@ public:
 
     void setImage(ofxCvGrayscaleImage * img);
     pdsp::Function seq;
+    float getMatrixFilledPercentage();
 
     
     int stepsSinceChange;

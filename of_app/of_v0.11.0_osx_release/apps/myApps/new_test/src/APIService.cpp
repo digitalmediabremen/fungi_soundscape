@@ -1,9 +1,6 @@
 
 #include "APIService.h"
 
-#define IMAGE_SIZE 640
-#define IMAGE_EXTENSION ".jpg"
-
 // constructor
 APIService::APIService () {
 
@@ -82,11 +79,13 @@ void APIService::createFungi(ofJson jsonObservations) {
         int views = (int)jsonObservations["results"][i]["number_of_views"];
         string location = ofToString(jsonObservations["results"][i]["location_name"]);
         
-        //float confidence = (jsonObservations["results"][i]["confidence"].count > 0) ? float(jsonObservations["results"][i]["confidence"]) : 0.5;
+        bool hasConfidence = jsonObservations["results"][i].count("confidence") > 0;
+        
+        float confidence = hasConfidence ? float(jsonObservations["results"][i]["confidence"]) : 1.0f;
 
-        ofLog() << ofToString(jsonObservations["results"][i]);
+        ofLog() << "confidence: "<< ofToString(confidence);
                                      
-        f->setup(name, description, id, views , location, image_url, 0.1);
+        f->setup(name, description, id, views , location, image_url, confidence);
         
         fungiList.push_back(f);
                 // image_count++;

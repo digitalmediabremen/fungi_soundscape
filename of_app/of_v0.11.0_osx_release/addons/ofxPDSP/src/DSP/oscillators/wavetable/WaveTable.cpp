@@ -135,6 +135,7 @@ void pdsp::WaveTable::setSample(int index, std::string path ) {
     loader.load(path);
     
     if(loader.loaded()){
+        std::cout << "loaded wave";
         if(length == -1){
             length = loader.length;
         }
@@ -149,6 +150,8 @@ void pdsp::WaveTable::setSample(int index, std::string path ) {
             }
             buffer[index][length] = buffer[index][0];
         }        
+    } else {
+        std::cout << "sample wave not found";
     }
     
 }

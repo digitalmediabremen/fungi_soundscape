@@ -1,9 +1,5 @@
 #include "ofApp.h"
 
-#define SIDE 16
-
-#define MAX_PITCH 80
-
 //--------------------------------------------------------------
 void ofApp::setup(){
     
@@ -19,7 +15,7 @@ void ofApp::setup(){
     
     //----------------- ---------------------
     // Setting up sequencer
-    engine.sequencer.setTempo(80.0f);
+    engine.sequencer.setTempo(MIN_BPM);
         
     // ----------- PATCHING -----------
     
@@ -98,6 +94,8 @@ void ofApp::setup(){
     ofAddListener(apiService.failedEvent,this,&ofApp::onFailedToReceiveImagesURL);
 
     apiService.fetchObservations(mushroomType.get());
+    
+    maxPitch = 75;
 }
 
 //--------------------------------------------------------------
@@ -107,17 +105,24 @@ void ofApp::update(){
     for ( int i=0; i<NUMSYNTHS; ++i ) {
         
         // increase base pitch by X
-        float basePitch = 0.07f;
-        float value = customSequencer.getStepFloat(curStep, i) + basePitch;
+        float value = customSequencer.getStepFloat(curStep, i);
         if (value) {
-            float pitch = (value) * (float)MAX_PITCH;
+            float pitch = (value) * (float)maxPitch;
             
-            if (pitch >= MAX_PITCH - 1.0f) {
+            if (pitch < ABSOLUTE_MIN_PITCH) {
+                ofLog () << "min pitch!";
+                pitch = ofRandom(ABSOLUTE_MIN_PITCH, ABSOLUTE_MIN_PITCH + 5.0f);
+            }
+            
+            
+            if (pitch >= maxPitch - 1.0f) { // basically filled bit (1)
                 // chose max pitch from scale, because it's the contour
-                float akebono[] = { 72.0f, 74.0f, 75.0f, 79.0f, 80.0f, 84.0f, 86.0f, 87.0f }; //
+                float difference = ABSOLUTE_MAX_PITCH - maxPitch;
+                float akebono[] = { 72.0f - difference, 74.0f - difference, 75.0f - difference, 79.0f - difference, 80.0f - difference, 84.0f - difference, 86.0f - difference, 87.0f - difference }; //
                 
                 pitch = akebono[int(ofRandom(8))];
             }
+             
             
              
             //zaps.voices[i].pitchControl.set(pitch);
@@ -172,7 +177,6 @@ void ofApp::draw(){
     if (currentFungus != NULL) {
         ofSetColor(255, 255, 255, 255);
         ofDrawBitmapString( currentFungus->name, 400, 30);
-
         ofDrawBitmapString( currentFungus->location, 400, 50);
     }
 }
@@ -241,7 +245,6 @@ void ofApp::onChangeMushroomGenus(string& ){
 
 void ofApp::onReceiveObservations() {
     
-    
     if (apiService.fungiList.size() > 0) {
         currentFungus = apiService.fungiList[(int)ofRandom(apiService.fungiList.size()-1)];
         string imageURL = currentFungus->imageURL;
@@ -255,31 +258,45 @@ void ofApp::onReceiveObservations() {
         
         ofLog () << imageURL;
 
-      apiService.fetchImage(imageURL);
-     /*
-      int tries = 0;
-      while (!downloadedFungus && tries < images.size() - 1) {
-          ofLog () << "failed to get image, try next one";
-          tries++;
-          imageURL = images[tries];
-          downloadedFungus = apiService.fetchImage(imageURL);
-      }
-      if (downloadedFungus) {
-          customSequencer.setImage(imageProcessor.processImage(downloadedFungus));
-      }
-     */
+        apiService.fetchImage(imageURL);
   }
 }
 
 void ofApp::onFailedToReceiveImagesURL(string & error) {
     ofLogError() << "failed to fetch, response: " << error;
-    // apiService.fetchObservations("Cortinarius");
 }
 
 void ofApp::onCompletedImageDownload () {
-    ofImage * downloadedFungus;
-    downloadedFungus = apiService.lastLoadedImage;
-    if (downloadedFungus) {
-        customSequencer.setImage(imageProcessor.processImage(downloadedFungus));
+    ofImage * fungusImage;
+    fungusImage = apiService.lastLoadedImage;
+    if (fungusImage) {
+        customSequencer.setImage(imageProcessor.processImage(fungusImage));
     }
+    
+    customizeSequencer();
+}
+
+float ofApp::calculateTempo(float confidence) { // more confidence in identification of fungus, the faster it plays
+    return ofMap(confidence, 0.0f, 3.0f, MIN_BPM, MAX_BPM);
+}
+
+int ofApp::calculateReadHeight(float percentage) { // more filled matrix needs to be read in smaller parts at the time - vice-versa
+    return ofMap(percentage, 0.0f, 0.8f, 50, 2, true);
+}
+
+int ofApp::calculateMaxPitch(float percentage) {
+    return ofMap(percentage, 0.0f, 0.8f, ABSOLUTE_MAX_PITCH, ABSOLUTE_MIN_PITCH, true); // bigger the fungus, more low values, vice-verse
+}
+
+void ofApp::customizeSequencer() {
+        // set tempo
+       float tempo = calculateTempo(currentFungus->confidence);
+       engine.sequencer.setTempo(tempo);
+        ofLog () << "TEMPO: " << tempo;
+        float matrixFilledPercentage = customSequencer.getMatrixFilledPercentage(); // may correspond to size of fungus
+       int readHeight = calculateReadHeight(matrixFilledPercentage);
+       customSequencer.readHeight.set(readHeight);
+    
+    maxPitch = calculateMaxPitch(matrixFilledPercentage);
+    ofLog () << "max pitch" << maxPitch;
 }

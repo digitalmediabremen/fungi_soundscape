@@ -20,9 +20,9 @@ void PolySynth::setup(int numVoices){
     // adding waveforms from samples
     // the old trusty Adventure Kid WaveForms   
     // http://www.adventurekid.se/akrt/waveforms/adventure-kid-waveforms/
-    wavetable.addSample( "data/AKWF_0001.wav");
-    wavetable.addSample( "data/AKWF_0022.wav");
-    wavetable.addSample( "data/AKWF_0042.wav");
+    wavetable.addSample( ofToDataPath("AKWF_0001.wav"));
+    wavetable.addSample( ofToDataPath("AKWF_0022.wav"));
+    wavetable.addSample( ofToDataPath("AKWF_0042.wav"));
     
 
     // creating a wave from the values of each partial sine wave amplitude
@@ -46,7 +46,7 @@ void PolySynth::setup(int numVoices){
         }
     }
     // remember to set "true" for harmonic scaling, otherwise you should have set the partials directly to the scaled amplitude
-    wavetable.addAdditiveWave ( partials_vector, true ); 
+    wavetable.addAdditiveWave ( partials_vector, false );
   
   
     // creating a NOISY WAVE, manually setting the buffer values
@@ -100,29 +100,29 @@ void PolySynth::setup(int numVoices){
     table_ctrl.enableSmoothing(200.0f);
 
     ui.add(filter_mode_ctrl.set("filter mode", 0, 0, 5) );
-    ui.add(cutoff_ctrl.set("filter cutoff", 90, 10, 120));
-    ui.add(reso_ctrl.set("filter reso", 0.08f, 0.0f, 1.0f) );
+    ui.add(cutoff_ctrl.set("filter cutoff", 110, 10, 120));
+    ui.add(reso_ctrl.set("filter reso", 0.1f, 0.0f, 1.0f) );
  
     cutoff_ctrl.enableSmoothing(200.0f);
     
     ui.add(env_attack_ctrl.set( "env attack", 590, 5, 1200) );
-    ui.add(env_decay_ctrl.set(  "env decay", 280, 5, 1200) );
+    ui.add(env_decay_ctrl.set(  "env decay", 1100, 5, 1200) );
     ui.add(env_sustain_ctrl.set("env sustain", 1.0f, 0.0f, 1.0f) );
-    ui.add(env_release_ctrl.set("env release", 900, 5, 2000));    
+    ui.add(env_release_ctrl.set("env release", 1200, 5, 2000));
     ui.add( env_table_amt.set( "env to table", 0.5f, 0.0f, 2.0f) );
     ui.add( env_filter_amt.set("env to filter", 10, 0, 60) );
 
-    ui.add(lfo_wave_ctrl.set("lfo wave", 1, 0, 4));
-    ui.add(lfo_speed_ctrl.set("lfo freq", 0.1f, 0.005f, 4.0f));
-    ui.add(table_lfo_mod_ctrl.set("lfo to table", 0.1f, 0.0f, 2.0f) );
-    ui.add(filter_lfo_mod_ctrl.set("lfo to filter", 2, 0, 60) );
+    ui.add(lfo_wave_ctrl.set("lfo wave", 2, 0, 4));
+    ui.add(lfo_speed_ctrl.set("lfo freq", 0.009f, 0.005f, 4.0f));
+    ui.add(table_lfo_mod_ctrl.set("lfo to table", 0.5f, 0.0f, 2.0f) );
+    ui.add(filter_lfo_mod_ctrl.set("lfo to filter", 30, 0, 60) );
     // ------------------------------------------------------------------------
    
     // Chorus -----------------------------------------------------------------
     chorus_speed_ctrl >> chorus.in_speed();
     chorus_depth_ctrl >> chorus.in_depth();
-    ui.add(chorus_speed_ctrl.set("chorus freq", 0.3f, 0.25f, 1.0f));
-    ui.add(chorus_depth_ctrl.set("chorus depth", 5.5f, 1.0f, 10.0f));
+    ui.add(chorus_speed_ctrl.set("chorus freq", 0.25f, 0.25f, 1.0f));
+    ui.add(chorus_depth_ctrl.set("chorus depth", 5.0f, 1.0f, 10.0f));
     ui.add(gain.set("gain", -12, -48, 48));
     gain.enableSmoothing(50.f);
     // ------------------------------------------------------------------------

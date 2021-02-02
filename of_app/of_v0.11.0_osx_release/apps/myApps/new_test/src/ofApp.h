@@ -12,6 +12,13 @@
 #include "PolySynth.h"
 #include "Fungus.h"
 
+#define SIDE 16
+
+#define MAX_BPM 100
+#define MIN_BPM 60
+#define ABSOLUTE_MAX_PITCH 100
+#define ABSOLUTE_MIN_PITCH 40
+
 class ofApp : public ofBaseApp{
 
 	public:
@@ -75,6 +82,12 @@ class ofApp : public ofBaseApp{
     
         Fungus * currentFungus;
     
+        float calculateTempo(float confidence);
+        int calculateReadHeight(float percentage);
+    int calculateMaxPitch(float percentage);
+        int maxPitch;
+    
+    void customizeSequencer();
 };
 
 

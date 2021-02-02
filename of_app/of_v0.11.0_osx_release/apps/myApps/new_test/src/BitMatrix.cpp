@@ -16,17 +16,20 @@ void BitMatrix::step () {
 }
 
 void BitMatrix::fill( ofxCvGrayscaleImage img) {
-    ofLog() << "filll";
+    filledPercentage = 0.0f;
     for( int x=0; x<MATRIX_WIDTH; ++x ){
         for( int y=0; y<MATRIX_HEIGHT; ++y ){
-            if (img.getPixels().getColor(x,y).getLightness() > MIN_TO_FILL) {
-                float fill = img.getPixels().getColor(x,y).getLightness() / 255.0;
-                MATRIX[y][x] = fill;
+            float pixelForce = img.getPixels().getColor(x,y).getLightness() / 255.0f;
+            if (pixelForce > MIN_TO_FILL) {
+                MATRIX[y][x] = pixelForce;
+                filledPercentage+=pixelForce;
             } else {
                 MATRIX[y][x] = 0;
             }
         }
     }
+    filledPercentage = filledPercentage / float(MATRIX_HEIGHT * MATRIX_WIDTH);
+    ofLog() << "filled percentage: " << filledPercentage;
 }
 
 void BitMatrix::clear() noexcept{
@@ -34,7 +37,8 @@ void BitMatrix::clear() noexcept{
         for( int x=0; x<MATRIX_WIDTH; ++x ){
             MATRIX[y][x] = 0;
         }        
-    }    
+    }
+    filledPercentage = 0.0f;
 }
 
 

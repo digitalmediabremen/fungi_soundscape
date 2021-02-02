@@ -47,6 +47,7 @@ CustomSequencer::CustomSequencer(){
             }
             
             if (isEmpty) {
+                stepsSinceChange+=2;
                 bm.step();
                 bm.step();
             }
@@ -57,7 +58,7 @@ CustomSequencer::CustomSequencer(){
         meter_step = s;
         
         for(int o=0; o < activeOuts; ++o) { 
-            float outval = stepbars[ (o*steps) + s ];
+            float outval = stepbars[ (o*steps) + s ] * 2.0f; // hack force
             seq.send( o, outval );
         }
     };    
@@ -122,7 +123,7 @@ void CustomSequencer::draw( int side, int bars_h, ofColor fg, ofColor bg ){
         ofDrawRectangle( side*x, bars_h, side, -(stepbars[x]*bars_h) );
 
         ofNoFill();
-        ofDrawRectangle( side*x, 0, side, bars_h );
+        ofDrawRectangle( side*x, bars_h, side, -((side*readHeight)+bars_h));
     }
         
     ofTranslate( 0, bars_h );
@@ -142,3 +143,7 @@ void CustomSequencer::draw( int side, int bars_h, ofColor fg, ofColor bg ){
     ofPopMatrix();
 }
 
+
+float CustomSequencer::getMatrixFilledPercentage() {
+    return bm.filledPercentage;
+}

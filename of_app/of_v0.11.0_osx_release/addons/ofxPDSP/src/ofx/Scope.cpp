@@ -97,7 +97,7 @@ void pdsp::Scope::draw( int x, int y, int w, int h) const {
         ofBeginShape();
         for ( int xx = 0; xx < w; xx++ ){
             int index = xx*xMult; 
-            float value = buffer[index];
+            float value = buffer[index] * 4.0f; // *2.0 is a hack to make wave visible
             ofVertex(xx, yHalf + value*yMult);
         }
         ofEndShape(false);
