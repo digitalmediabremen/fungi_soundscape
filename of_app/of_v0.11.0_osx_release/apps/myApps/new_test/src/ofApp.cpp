@@ -110,17 +110,21 @@ void ofApp::update(){
             float pitch = (value) * (float)maxPitch;
             
             if (pitch < ABSOLUTE_MIN_PITCH) {
-                ofLog () << "min pitch!";
+                ofLog () << "min pitch!" << pitch;
                 pitch = ofRandom(ABSOLUTE_MIN_PITCH, ABSOLUTE_MIN_PITCH + 5.0f);
             }
             
             
             if (pitch >= maxPitch - 1.0f) { // basically filled bit (1)
+                ofLog () << "max pitch!" << pitch;
+
                 // chose max pitch from scale, because it's the contour
                 float difference = ABSOLUTE_MAX_PITCH - maxPitch;
                 float akebono[] = { 72.0f - difference, 74.0f - difference, 75.0f - difference, 79.0f - difference, 80.0f - difference, 84.0f - difference, 86.0f - difference, 87.0f - difference }; //
                 
                 pitch = akebono[int(ofRandom(8))];
+            } else {
+                ofLog () << "normal pitch!" << pitch;
             }
              
             
@@ -281,11 +285,11 @@ float ofApp::calculateTempo(float confidence) { // more confidence in identifica
 }
 
 int ofApp::calculateReadHeight(float percentage) { // more filled matrix needs to be read in smaller parts at the time - vice-versa
-    return ofMap(percentage, 0.0f, 0.8f, 50, 2, true);
+    return ofMap(percentage, 0.0f, 0.4f, 50, 2, true);
 }
 
 int ofApp::calculateMaxPitch(float percentage) {
-    return ofMap(percentage, 0.0f, 0.8f, ABSOLUTE_MAX_PITCH, ABSOLUTE_MIN_PITCH, true); // bigger the fungus, more low values, vice-verse
+    return ofMap(percentage, 0.0f, 0.7f, ABSOLUTE_MAX_PITCH, ABSOLUTE_MIN_PITCH, true); // bigger the fungus, more low values, vice-verse
 }
 
 void ofApp::customizeSequencer() {
@@ -299,4 +303,11 @@ void ofApp::customizeSequencer() {
     
     maxPitch = calculateMaxPitch(matrixFilledPercentage);
     ofLog () << "max pitch" << maxPitch;
+    
+    
+    //for ( int i=0; i<NUMSYNTHS; ++i ) {
+        // wave index is completely random...
+        synth.table_ctrl.set((float)ofRandom(0.0f, 10.0f));
+
+    //}
 }

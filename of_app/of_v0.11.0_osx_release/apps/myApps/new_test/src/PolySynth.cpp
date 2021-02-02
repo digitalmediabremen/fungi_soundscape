@@ -112,7 +112,7 @@ void PolySynth::setup(int numVoices){
     ui.add( env_table_amt.set( "env to table", 0.5f, 0.0f, 2.0f) );
     ui.add( env_filter_amt.set("env to filter", 10, 0, 60) );
 
-    ui.add(lfo_wave_ctrl.set("lfo wave", 2, 0, 4));
+    ui.add(lfo_wave_ctrl.set("lfo wave", 1, 0, 4));
     ui.add(lfo_speed_ctrl.set("lfo freq", 0.009f, 0.005f, 4.0f));
     ui.add(table_lfo_mod_ctrl.set("lfo to table", 0.5f, 0.0f, 2.0f) );
     ui.add(filter_lfo_mod_ctrl.set("lfo to filter", 30, 0, 60) );
