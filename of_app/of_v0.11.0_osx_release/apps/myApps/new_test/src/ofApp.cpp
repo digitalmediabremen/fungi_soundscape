@@ -285,7 +285,7 @@ float ofApp::calculateTempo(float confidence) { // more confidence in identifica
 }
 
 int ofApp::calculateReadHeight(float percentage) { // more filled matrix needs to be read in smaller parts at the time - vice-versa
-    return ofMap(percentage, 0.0f, 0.5f, 65, 5, true);
+    return ofMap(percentage, 0.0f, 0.5f, 50, 10, true);
 }
 
 int ofApp::calculateMaxPitch(float percentage) {
