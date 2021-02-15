@@ -11,6 +11,7 @@
 #include "ImageProcessor.h"
 #include "PolySynth.h"
 #include "Fungus.h"
+#include "ofxFontStash2.h"
 
 #define SIDE 16
 
@@ -84,6 +85,11 @@ class ofApp : public ofBaseApp{
     
         float calculateTempo(float confidence);
         int calculateReadHeight(float percentage);
+    
+        //ofxFontStash2::Fonts fonts;
+
+    
+    bool isFullscreen;
     int calculateMaxPitch(float percentage);
         int maxPitch;
     

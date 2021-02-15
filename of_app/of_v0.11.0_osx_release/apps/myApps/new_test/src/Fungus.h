@@ -18,5 +18,5 @@ public:
     string location;
     string imageURL;
 private:
-
+    
 };

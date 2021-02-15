@@ -1,5 +1,6 @@
 ofxAudioFile
 ofxFlite
+ofxFontStash2
 ofxGui
 ofxMidi
 ofxOpenCv

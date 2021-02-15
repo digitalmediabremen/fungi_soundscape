@@ -21,7 +21,7 @@ CustomSequencer::CustomSequencer(){
             bm.step();
             bool isEmpty = true;
             for(int x=0; x < MATRIX_WIDTH; ++x){
-                int sum = 0; // int play only contours, float plays all image;
+                int sum = 0; // int play only contours, float plays all image; (interesting to play with)
                 float floatSum = 0.0f;
                 floatSum += bm.MATRIX[MATRIX_HEIGHT - 1][x];
 
@@ -133,6 +133,7 @@ void CustomSequencer::draw( int side, int bars_h, ofColor fg, ofColor bg ){
     int sw = side*steps;
     float soff = meter_percent() * sw;
     int sh = side;
+    
     for( int i=0; i<NUMSYNTHS; ++i ){
         int sx = sw*i;
         ofNoFill();

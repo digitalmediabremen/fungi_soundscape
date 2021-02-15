@@ -96,6 +96,9 @@ void ofApp::setup(){
     apiService.fetchObservations("Aseroe Rubra");
     
     maxPitch = 75;
+    
+    DEBUG_MODE = false;
+    isFullscreen = false;
 }
 
 //--------------------------------------------------------------
@@ -136,7 +139,7 @@ void ofApp::update(){
     
     if (customSequencer.stepsSinceChange >= MATRIX_HEIGHT - 10) { // start to fetch next shrooms.
         customSequencer.stepsSinceChange = - 100;
-        apiService.fetchObservations("Amanita");
+        apiService.fetchObservations(mushroomType.get());
     }
 }
 
@@ -146,8 +149,10 @@ void ofApp::draw(){
     
     imageProcessor.draw();
     
-    gui.draw();
-
+    if (DEBUG_MODE) {
+        gui.draw();
+    }
+    
     ofPushMatrix();
     ofTranslate( 0, 0 );
     customSequencer.draw( SIDE, 120, brightColor, darkColor );
@@ -156,12 +161,13 @@ void ofApp::draw(){
     
     // draw the scopes
     ofPushMatrix();
-        ofTranslate( 20, 370 );
+        ofTranslate( 20, 460 );
         ofSetColor( brightColor );
-        
-        for(int y=0; y<2; ++y){
-            for( int x=0; x<3; ++x){
-                int i = x+y*3;
+        int colums = 2;
+        int rows = 3;
+        for(int y=0; y<rows; ++y){
+            for( int x=0; x<colums; ++x){
+                int i = x+y*colums;
                 string label;
                 switch (i){
                     case 0: case 1: case 2: case 3:
@@ -182,6 +188,9 @@ void ofApp::draw(){
         ofSetColor(255, 255, 255, 255);
         ofDrawBitmapString( currentFungus->name, 400, 30);
         ofDrawBitmapString( currentFungus->location, 400, 50);
+        //fonts.drawFormatted(currentFungus->description, 730, 450);
+
+        // ofDrawBitmapString( currentFungus->description, 730, 450);
     }
 }
 
@@ -189,6 +198,15 @@ void ofApp::draw(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+    
+    if (key == ' ') {
+        DEBUG_MODE = !DEBUG_MODE;
+    }
+    
+    if (key == 'f') {
+        ofSetFullscreen(!isFullscreen);
+        isFullscreen = !isFullscreen;
+    }
     
 }
 
@@ -310,4 +328,6 @@ void ofApp::customizeSequencer() {
         synth.table_ctrl.set((float)ofRandom(0.0f, 10.0f));
 
     //}
+    
+    ofLog() << currentFungus->description;
 }
