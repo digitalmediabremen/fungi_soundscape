@@ -1,5 +1,6 @@
 #include "ofApp.h"
 
+
 //--------------------------------------------------------------
 void ofApp::setup(){
     
@@ -71,8 +72,10 @@ void ofApp::setup(){
     // ------------ GUI ------------
     gui.setup("", "config.xml", ofGetWidth()-220, 40);
     gui.setName( "read mush" );
-    mushroomType.set("Mushroom genus", "Agaricus");
+    mushroomType.set("Mushroom genus search", "");
+    locationSearch.set("Location Search", "Germany");
     gui.add(mushroomType);
+    gui.add(locationSearch);
     gui.add( customSequencer.parameters );
     //gui.add( zaps.parameters );
     gui.add( synth.ui );
@@ -81,8 +84,8 @@ void ofApp::setup(){
     
     // listen via class method
     mushroomType.addListener(this, &ofApp::onChangeMushroomGenus);
+    locationSearch.addListener(this, &ofApp::onChangeLocationSearch);
 
-    
     //---------------------- audio setup -------------
     engine.listDevices();
     engine.setDeviceID(1); // <--- remember to set your index
@@ -93,12 +96,25 @@ void ofApp::setup(){
     ofAddListener(apiService.completedFetchImage,this,&ofApp::onCompletedImageDownload);
     ofAddListener(apiService.failedEvent,this,&ofApp::onFailedToReceiveImagesURL);
 
-    apiService.fetchObservations("Aseroe Rubra");
     
     maxPitch = 75;
     
-    DEBUG_MODE = false;
+    DEBUG_MODE = true;
     isFullscreen = false;
+
+        
+    // texts
+    ofxParagraph* p = new ofxParagraph();
+    p->setColor(ofColor(255, 255, 255, 255));
+    p->drawBorder(ofColor::fromHex(0x777777));
+    p->drawBorder(true);
+    p->setAlignment(ofxParagraph::ALIGN_LEFT);
+    p->setWidth(350);
+
+    p->setFont("fonts/Roboto-Medium.ttf", 9);
+
+    paragraph = p;//.push_back(p);
+    
 }
 
 //--------------------------------------------------------------
@@ -139,7 +155,7 @@ void ofApp::update(){
     
     if (customSequencer.stepsSinceChange >= MATRIX_HEIGHT - 10) { // start to fetch next shrooms.
         customSequencer.stepsSinceChange = - 100;
-        apiService.fetchObservations(mushroomType.get());
+        apiService.fetchObservationsByLocation(locationSearch.get());
     }
 }
 
@@ -149,12 +165,9 @@ void ofApp::draw(){
     
     imageProcessor.draw();
     
-    if (DEBUG_MODE) {
-        gui.draw();
-    }
     
     ofPushMatrix();
-    ofTranslate( 0, 0 );
+    ofTranslate( 20, 50 );
     customSequencer.draw( SIDE, 120, brightColor, darkColor );
     ofPopMatrix();
     
@@ -185,12 +198,18 @@ void ofApp::draw(){
         }
     ofPopMatrix();
     if (currentFungus != NULL) {
+        ofPushMatrix();
         ofSetColor(255, 255, 255, 255);
         ofDrawBitmapString( currentFungus->name, 400, 30);
         ofDrawBitmapString( currentFungus->location, 400, 50);
-        //fonts.drawFormatted(currentFungus->description, 730, 450);
 
-        // ofDrawBitmapString( currentFungus->description, 730, 450);
+        ofPopMatrix();
+        paragraph->setText(currentFungus->description);
+        paragraph->draw(780, 350);
+    }
+    
+    if (DEBUG_MODE) {
+        gui.draw();
     }
 }
 
@@ -203,7 +222,7 @@ void ofApp::keyPressed(int key){
         DEBUG_MODE = !DEBUG_MODE;
     }
     
-    if (key == 'f') {
+    if (key == 'F') {
         ofSetFullscreen(!isFullscreen);
         isFullscreen = !isFullscreen;
     }
@@ -262,7 +281,12 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
 
 void ofApp::onChangeMushroomGenus(string& ){
     ofLog () << "changed: " << mushroomType.get();
-    apiService.fetchObservations(mushroomType.get());
+    apiService.fetchObservationsOfSpecies(mushroomType.get());
+}
+
+void ofApp::onChangeLocationSearch(string&) {
+    ofLog () << "changed location: " << locationSearch.get();
+    apiService.fetchObservationsByLocation(locationSearch.get());
 }
 
 void ofApp::onReceiveObservations() {

@@ -11,7 +11,7 @@
 #include "ImageProcessor.h"
 #include "PolySynth.h"
 #include "Fungus.h"
-#include "ofxFontStash2.h"
+#include "ofxParagraph.h"
 
 #define SIDE 16
 
@@ -72,8 +72,10 @@ class ofApp : public ofBaseApp{
     
         
         ofParameter<string> mushroomType;
+        ofParameter<string> locationSearch;
+
         void onChangeMushroomGenus(string&);
-    
+        void onChangeLocationSearch(string&);
         ImageProcessor imageProcessor;
         APIService apiService;
         
@@ -86,14 +88,14 @@ class ofApp : public ofBaseApp{
         float calculateTempo(float confidence);
         int calculateReadHeight(float percentage);
     
-        //ofxFontStash2::Fonts fonts;
-
     
     bool isFullscreen;
     int calculateMaxPitch(float percentage);
         int maxPitch;
     
     void customizeSequencer();
+    
+    ofxParagraph* paragraph;
 };
 
 

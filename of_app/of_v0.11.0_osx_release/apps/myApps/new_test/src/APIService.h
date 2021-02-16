@@ -14,10 +14,11 @@ class APIService  {
 public:
     APIService();
     
-    void fetchObservations(string species);
+    void fetchObservationsOfSpecies(string species);
+    void fetchObservationsByLocation(string location);
+
     ofEvent<void> completedFetchObservations;
 
-    
     void fetchImage(string url);
     ofEvent<void> completedFetchImage;
 
@@ -35,5 +36,6 @@ private:
     string baseObservationPath;
     string baseImagePath;
     string lastSpecies;
+    string lastLocation;
     void createFungi(ofJson jsonObservations);
 };

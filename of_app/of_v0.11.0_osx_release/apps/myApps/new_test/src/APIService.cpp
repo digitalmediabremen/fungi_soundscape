@@ -5,7 +5,7 @@
 APIService::APIService () {
 
      baseImagePath = "https://mushroomobserver.org/images/" + ofToString(IMAGE_SIZE) + "/";
-     baseObservationPath = "https://mushroomobserver.org/api2/observations?children_of=";
+     baseObservationPath = "https://mushroomobserver.org/api2/observations";
      ofRegisterURLNotification(this);
     
     httpObservationsID = "observations";
@@ -14,7 +14,7 @@ APIService::APIService () {
 }
 
 
-void APIService::fetchObservations (string species) {
+void APIService::fetchObservationsOfSpecies (string species) {
     
     ofStringReplace(species, " ", "%20");
     
@@ -24,9 +24,27 @@ void APIService::fetchObservations (string species) {
     }
     
     lastSpecies = species;
+    lastLocation = "";
     imageUrls = new vector<string>();
     ofLog() << "species:" << species;
-    string urlObservations = baseObservationPath + species + "&format=json&detail=low";
+    string urlObservations = baseObservationPath + "?children_of=" + species + "&format=json&detail=low";
+    ofLoadURLAsync(urlObservations, httpObservationsID);
+}
+
+void APIService::fetchObservationsByLocation (string location) {
+    
+    ofStringReplace(location, " ", "%20");
+    
+    if (location == lastLocation) {
+        completedFetchObservations.notify();
+        return;
+    }
+    
+    lastLocation = location;
+    lastSpecies = "";
+    imageUrls = new vector<string>();
+    ofLog() << "location:" << location;
+    string urlObservations = baseObservationPath + "?region=" + location + "&format=json&detail=low&has_notes=1";
     ofLoadURLAsync(urlObservations, httpObservationsID);
 }
 
@@ -63,7 +81,6 @@ void APIService::urlResponse (ofHttpResponse &response) {
 }
 
 void APIService::createFungi(ofJson jsonObservations) {
-    
     bool hasAnyImage = false;
     fungiList.clear();
     // store image urls
@@ -85,8 +102,6 @@ void APIService::createFungi(ofJson jsonObservations) {
         bool hasConfidence = jsonObservations["results"][i].count("confidence") > 0;
         
         float confidence = hasConfidence ? float(jsonObservations["results"][i]["confidence"]) : 1.0f;
-
-        ofLog() << "confidence: "<< ofToString(confidence);
                                      
         f->setup(name, description, id, views , location, image_url, confidence);
         
