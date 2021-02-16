@@ -86,9 +86,22 @@ void ofApp::setup(){
     mushroomType.addListener(this, &ofApp::onChangeMushroomGenus);
     locationSearch.addListener(this, &ofApp::onChangeLocationSearch);
 
+    
+    // get default
+    int outputDeviceID = -1;
+
+    for (int i=0; i<soundstream.getDeviceList().size(); ++i) {
+
+            if (soundstream.getDeviceList()[i].isDefaultOutput) {
+                  outputDeviceID = i;
+                  break;
+            }
+     }
+    ofLog () << "default audio output:" << outputDeviceID;
+    
     //---------------------- audio setup -------------
     engine.listDevices();
-    engine.setDeviceID(1); // <--- remember to set your index
+    engine.setDeviceID(outputDeviceID);
     engine.setup( 44100, 2048, 3);
     
         

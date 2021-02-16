@@ -88,6 +88,7 @@ class ofApp : public ofBaseApp{
         float calculateTempo(float confidence);
         int calculateReadHeight(float percentage);
     
+    ofSoundStream soundstream;
     
     bool isFullscreen;
     int calculateMaxPitch(float percentage);
