@@ -12,9 +12,14 @@
 * keep adding new mushrooms as the previous image is consumed by the algo - ok
 * use more instruments - ok
 * create Mushroom.h Class and display more information about the schroom in the screen (location, full name) - ok
-* use some kind of beat/kick instrument -
-* play with modules, what parameter use to control modules? - USE PARAMETERS FROM MUSHROOM (Location, Confidence level of species, even description);
-* how can I make the piece evolve in a more 'musical' way?
+* use some kind of beat/kick instrument - (playing with attack/decay/sustain makes it more ritmic) - ok
+* play with modules, what parameter use to control modules - ok
+* how can I make the piece evolve in a more 'musical' way? - ok
+
+### Potential for improving
+* how to skip an image when it's not well defined/processed? Example: when hands are present, rulers, etc
+* make use of Machine Learning to get mushroom shapes instead of opencv/computer vision
+* Missing beats, a lot of mushrooms sounds a bit the same. Tweak parameters, add instruments.
 
 ### SS
 ![Screenshot](/screenshot.png?raw=true "screen shot")
