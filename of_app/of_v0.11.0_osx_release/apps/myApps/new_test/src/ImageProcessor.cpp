@@ -145,37 +145,43 @@ void ImageProcessor::generateMatrix() {
 
 
 void ImageProcessor::draw() {
+    int space = 150;
+    int marginBottom = 160;
+    int imgWidth = int(640 * 0.2);
+    int imgHeight = int(480 * 0.2);
+
     if (processedImage != NULL) {
             ofPushMatrix();
-               ofTranslate(650, drawHeight);
+               ofTranslate(50, ofGetHeight() - marginBottom);
                //ofScale(0.4,0.4,0.4);
-               currentImage.draw(0, 0, int(640 * 0.4), int(480 * 0.4));
+               currentImage.draw(0, 0, int(640 * 0.2), int(480 * 0.2));
            ofPopMatrix();
         
         ofPushMatrix();
-            ofTranslate(350, drawHeight);
+            ofTranslate(50 + space, ofGetHeight() - marginBottom);
             //ofScale(0.4,0.4,0.4);
-            grayImage.draw(0, 0, 100, 100);
+            backgroundGrayImage.draw(0, 0, imgWidth, imgHeight);
         ofPopMatrix();
-        
-        ofPushMatrix();
-            ofTranslate(500, drawHeight);
-            //ofScale(0.4,0.4,0.4);
-            backgroundGrayImage.draw(0, 0, 100, 100);
-        ofPopMatrix();
+
 
         
         ofPushMatrix();
-            ofTranslate(350, drawHeight + 150);
-            ofScale(0.2,0.2,0.2);
-            processedImage->draw(0,0, 400, 400);
+            ofTranslate(50 + space * 2, ofGetHeight() - marginBottom);
+            //ofScale(0.4,0.4,0.4);
+            grayImage.draw(0, 0, imgWidth, imgHeight);
+        ofPopMatrix();
+        
+        
+        ofPushMatrix();
+            ofTranslate(50 + space * 3, ofGetHeight() - marginBottom);
+            processedImage->draw(0,0, imgWidth, imgHeight);
         ofPopMatrix();
         
         if (contourFinder.nBlobs > 0) {
             ofPushMatrix();
             ofPushStyle();
-                ofTranslate(500, drawHeight + 150);
-                ofScale(0.1,0.1,0.1);
+                ofTranslate(50 + space * 4, ofGetHeight() - marginBottom);
+                ofScale(0.2,0.2,0.2);
             ofSetLineWidth(1);
 
             for( int i=0; i<(int)contourFinder.blobs.size(); i++ ) {

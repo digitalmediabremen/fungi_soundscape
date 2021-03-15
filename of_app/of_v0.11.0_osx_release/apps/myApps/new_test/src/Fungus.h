@@ -17,6 +17,8 @@ public:
     string name;
     string location;
     string imageURL;
+    string cleanString(string str);
+
 private:
     
 };

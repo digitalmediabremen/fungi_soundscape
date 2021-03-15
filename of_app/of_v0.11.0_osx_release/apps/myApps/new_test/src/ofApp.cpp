@@ -122,7 +122,7 @@ void ofApp::setup(){
     p->drawBorder(ofColor::fromHex(0x777777));
     p->drawBorder(true);
     p->setAlignment(ofxParagraph::ALIGN_LEFT);
-    p->setWidth(350);
+    p->setWidth(280);
 
     p->setFont("fonts/Roboto-Medium.ttf", 9);
 
@@ -176,24 +176,26 @@ void ofApp::update(){
 void ofApp::draw(){
     ofBackground(0);
     
+    int topMargin = 100;
+    
     imageProcessor.draw();
     
     
     ofPushMatrix();
-    ofTranslate( 20, 50 );
-    customSequencer.draw( SIDE, 120, brightColor, darkColor );
+    ofTranslate( 380, topMargin );
+    customSequencer.draw( 28, 120, brightColor, darkColor );
     ofPopMatrix();
     
     
     // draw the scopes
     ofPushMatrix();
-        ofTranslate( 20, 460 );
         ofSetColor( brightColor );
-        int colums = 2;
-        int rows = 3;
-        for(int y=0; y<rows; ++y){
-            for( int x=0; x<colums; ++x){
-                int i = x+y*colums;
+    int boxWidth = 330;
+    int boxHeight = 80;
+        for(int y=0; y<6; ++y){
+            //for( int x=0; x<colums; ++x){
+                int i = y;
+                /*
                 string label;
                 switch (i){
                     case 0: case 1: case 2: case 3:
@@ -203,22 +205,24 @@ void ofApp::draw(){
                     case 4: label = "delay L"; break;
                     case 5: label = "delay R"; break;
                 }
-                int xpos = x*347;
-                int ypos = y*120;
-                ofDrawBitmapString( label, xpos, ypos);
-                scopes[i].draw( xpos, ypos + 10, 330, 80);
-            }
+                 */
+                int xpos = ofGetWidth() - (boxWidth + 20);
+                int ypos = y * 110;
+                // ofDrawBitmapString( "", xpos, ypos);
+                scopes[i].draw( xpos, ypos + topMargin, boxWidth, boxHeight);
+            //}
         }
     ofPopMatrix();
+    
     if (currentFungus != NULL) {
         ofPushMatrix();
         ofSetColor(255, 255, 255, 255);
-        ofDrawBitmapString( currentFungus->name, 400, 30);
-        ofDrawBitmapString( currentFungus->location, 400, 50);
+        ofDrawBitmapString( currentFungus->name, 50, topMargin);
+        ofDrawBitmapString( currentFungus->location, 50, 50);
 
         ofPopMatrix();
         paragraph->setText(currentFungus->description);
-        paragraph->draw(780, 350);
+        paragraph->draw(50, 200);
     }
     
     if (DEBUG_MODE) {
@@ -368,3 +372,4 @@ void ofApp::customizeSequencer() {
     
     ofLog() << currentFungus->description;
 }
+

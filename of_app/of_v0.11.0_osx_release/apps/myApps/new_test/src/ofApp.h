@@ -13,8 +13,6 @@
 #include "Fungus.h"
 #include "ofxParagraph.h"
 
-#define SIDE 16
-
 #define MAX_BPM 100
 #define MIN_BPM 60
 #define ABSOLUTE_MAX_PITCH 100
@@ -97,6 +95,7 @@ class ofApp : public ofBaseApp{
     void customizeSequencer();
     
     ofxParagraph* paragraph;
+    
 };
 
 
