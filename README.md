@@ -1,9 +1,16 @@
-# Perceiving_Fungi / Unfolding_Mushrooms
+# fungi soundscape
 
-## Audiovisual performance
+## an audio(visual) performance
+
+* Inspired by the unfamiliar shapes found in all kinds of fungi growing in nature, the autonomous algorithm transforms images of different fungus into music, resulting in an eery and uncanny composition.
+
+
+Website link: [link](https://antoniohof.com/Fungi-soundscape).
+
+
+-----
 
 * The general idea is to create an algorithm that receives recent mushroom observations and turns it into music by analyzing mushroom patterns using simple computer vision.
-
 * Try to derive an algoritmin from the mushroom shape or growth pattern. Image to sound
 
 ### Details
