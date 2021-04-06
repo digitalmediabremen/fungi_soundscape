@@ -4,7 +4,7 @@
 #include "ofMain.h"
 #include "ofxOpenCv.h"
 #include "BitMatrix.h"
-// this class processes a image to fit the 64x64 bit matrix with it's contours
+// this class processes an image to fit the 64x64 bit matrix with it's contours
 
 class ImageProcessor  {
 

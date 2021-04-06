@@ -16,6 +16,7 @@ public:
     
     void fetchObservationsOfSpecies(string species);
     void fetchObservationsByLocation(string location);
+    void fetchObservationByID(string id);
 
     ofEvent<void> completedFetchObservations;
 
@@ -36,6 +37,8 @@ private:
     string baseObservationPath;
     string baseImagePath;
     string lastSpecies;
+    string lastId;
+
     string lastLocation;
     void createFungi(ofJson jsonObservations);
 };

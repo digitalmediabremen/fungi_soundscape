@@ -152,13 +152,13 @@ void ImageProcessor::draw() {
 
     if (processedImage != NULL) {
             ofPushMatrix();
-               ofTranslate(50, ofGetHeight() - marginBottom);
+               ofTranslate(20, ofGetHeight()/2);
                //ofScale(0.4,0.4,0.4);
-               currentImage.draw(0, 0, int(640 * 0.2), int(480 * 0.2));
+               currentImage.draw(0, 0, int(640 * 0.55), int(480 * 0.55));
            ofPopMatrix();
         
         ofPushMatrix();
-            ofTranslate(50 + space, ofGetHeight() - marginBottom);
+            ofTranslate(50 + space * 2.2, ofGetHeight() - marginBottom);
             //ofScale(0.4,0.4,0.4);
             backgroundGrayImage.draw(0, 0, imgWidth, imgHeight);
         ofPopMatrix();
@@ -166,21 +166,21 @@ void ImageProcessor::draw() {
 
         
         ofPushMatrix();
-            ofTranslate(50 + space * 2, ofGetHeight() - marginBottom);
+            ofTranslate(50 + space * 3.2, ofGetHeight() - marginBottom);
             //ofScale(0.4,0.4,0.4);
             grayImage.draw(0, 0, imgWidth, imgHeight);
         ofPopMatrix();
         
         
         ofPushMatrix();
-            ofTranslate(50 + space * 3, ofGetHeight() - marginBottom);
+            ofTranslate(50 + space * 4.2, ofGetHeight() - marginBottom);
             processedImage->draw(0,0, imgWidth, imgHeight);
         ofPopMatrix();
         
         if (contourFinder.nBlobs > 0) {
             ofPushMatrix();
             ofPushStyle();
-                ofTranslate(50 + space * 4, ofGetHeight() - marginBottom);
+                ofTranslate(50 + space * 5.2, ofGetHeight() - marginBottom);
                 ofScale(0.2,0.2,0.2);
             ofSetLineWidth(1);
 

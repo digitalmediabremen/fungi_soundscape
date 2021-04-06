@@ -71,9 +71,11 @@ class ofApp : public ofBaseApp{
         
         ofParameter<string> mushroomType;
         ofParameter<string> locationSearch;
+        ofParameter<string> mushroomId;
 
         void onChangeMushroomGenus(string&);
         void onChangeLocationSearch(string&);
+        void onChangeMushroomID(string&);
         ImageProcessor imageProcessor;
         APIService apiService;
         

@@ -74,8 +74,10 @@ void ofApp::setup(){
     gui.setName( "read mush" );
     mushroomType.set("Mushroom genus search", "");
     locationSearch.set("Location Search", "Germany");
+    mushroomId.set("Search by ID", "");
     gui.add(mushroomType);
     gui.add(locationSearch);
+    gui.add(mushroomId);
     gui.add( customSequencer.parameters );
     //gui.add( zaps.parameters );
     gui.add( synth.ui );
@@ -85,6 +87,7 @@ void ofApp::setup(){
     // listen via class method
     mushroomType.addListener(this, &ofApp::onChangeMushroomGenus);
     locationSearch.addListener(this, &ofApp::onChangeLocationSearch);
+    mushroomId.addListener(this, &ofApp::onChangeMushroomID);
 
     
     // get default
@@ -217,6 +220,8 @@ void ofApp::draw(){
     if (currentFungus != NULL) {
         ofPushMatrix();
         ofSetColor(255, 255, 255, 255);
+        ofDrawBitmapString( ofToString(currentFungus->id), 50, topMargin - 20);
+
         ofDrawBitmapString( currentFungus->name, 50, topMargin);
         ofDrawBitmapString( currentFungus->location, 50, 50);
 
@@ -306,11 +311,22 @@ void ofApp::onChangeLocationSearch(string&) {
     apiService.fetchObservationsByLocation(locationSearch.get());
 }
 
+void ofApp::onChangeMushroomID(string&) {
+    if (mushroomId.get() == "") {
+        return;
+    }
+    ofLog() << "changed to id" << mushroomId.get();
+    apiService.fetchObservationByID(mushroomId.get());
+
+}
+
 void ofApp::onReceiveObservations() {
     
     if (apiService.fungiList.size() > 0) {
         currentFungus = apiService.fungiList[(int)ofRandom(apiService.fungiList.size()-1)];
         string imageURL = currentFungus->imageURL;
+        
+        ofLog () << "FUNGUS ID: "<<ofToString(currentFungus->id);
         // ofImage * downloadedFungus;
         //imageURL = "https://mushroomobserver.org/images/640/928.jpg"; // example of good fallback when no contours (mush is darker, around is brighter)
         //imageURL = "https://mushroomobserver.org/images/640/125451.jpg"; // no contours

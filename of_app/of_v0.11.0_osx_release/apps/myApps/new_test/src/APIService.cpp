@@ -6,6 +6,7 @@ APIService::APIService () {
 
      baseImagePath = "https://mushroomobserver.org/images/" + ofToString(IMAGE_SIZE) + "/";
      baseObservationPath = "https://mushroomobserver.org/api2/observations";
+    
      ofRegisterURLNotification(this);
     
     httpObservationsID = "observations";
@@ -28,6 +29,21 @@ void APIService::fetchObservationsOfSpecies (string species) {
     imageUrls = new vector<string>();
     ofLog() << "species:" << species;
     string urlObservations = baseObservationPath + "?children_of=" + species + "&format=json&detail=low";
+    ofLoadURLAsync(urlObservations, httpObservationsID);
+}
+
+void APIService::fetchObservationByID (string id) {
+    //https://mushroomobserver.org/api2/observations?id=541&format=json&detail=high
+    if (lastId == id) {
+        completedFetchObservations.notify();
+        return;
+    }
+    lastId = id;
+    
+    lastSpecies = "";
+    lastLocation = "";
+    imageUrls = new vector<string>();
+    string urlObservations = baseObservationPath + "?id=" + id + "&format=json&detail=low&has_notes=1";
     ofLoadURLAsync(urlObservations, httpObservationsID);
 }
 

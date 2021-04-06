@@ -4411,7 +4411,7 @@
 					../../../addons/ofxSmartFont/src,
 					../../../addons/ofxThreadedImageLoader/src,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-D__MACOSX_CORE__",
@@ -4801,7 +4801,7 @@
 					../../../addons/ofxSmartFont/src,
 					../../../addons/ofxThreadedImageLoader/src,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				OTHER_CPLUSPLUSFLAGS = (
@@ -4991,7 +4991,7 @@
 					../../../addons/ofxSmartFont/src,
 					../../../addons/ofxThreadedImageLoader/src,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-D__MACOSX_CORE__",
