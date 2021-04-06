@@ -2,7 +2,7 @@
 
 * The general idea is to create an algorithm that receives recent mushroom observations and turns it into music by analyzing mushroom patterns using simple computer vision.
 
-* Try to derive an algoritmin from the mushroom growth pattern.
+* Try to derive an algoritmin from the mushroom shape or growth pattern. Image to sound
 
 ### TODO
 * pull images from mushroom database - ok
@@ -22,4 +22,7 @@
 * Missing beats, a lot of mushrooms sounds a bit the same. Tweak parameters, add instruments.
 
 ### SS
-![Screenshot](/screenshot.png?raw=true "screen shot")
+![Screenshot](/mushroom_1.png?raw=true "screen shot 1")
+![Screenshot](/mushroom_2.png?raw=true "screen shot 2")
+![Screenshot](/mushroom_3.png?raw=true "screen shot 3")
+![Screenshot](/mushroom_4.png?raw=true "screen shot 4")
