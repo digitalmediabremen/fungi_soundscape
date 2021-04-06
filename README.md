@@ -1,8 +1,14 @@
 # Perceiving_Fungi / Unfolding_Mushrooms
 
+## Audiovisual performance
+
 * The general idea is to create an algorithm that receives recent mushroom observations and turns it into music by analyzing mushroom patterns using simple computer vision.
 
 * Try to derive an algoritmin from the mushroom shape or growth pattern. Image to sound
+
+### Details
+* developed using openframeworks and the amazing ofxPDSP addon
+* final version is app named 'new_test'
 
 ### TODO
 * pull images from mushroom database - ok
@@ -21,7 +27,7 @@
 * make use of Machine Learning to get mushroom shapes instead of opencv/computer vision
 * Missing beats, a lot of mushrooms sounds a bit the same. Tweak parameters, add instruments.
 
-### SS
+### screenshots
 ![Screenshot](/mushroom_1.png?raw=true "screen shot 1")
 ![Screenshot](/mushroom_2.png?raw=true "screen shot 2")
 ![Screenshot](/mushroom_3.png?raw=true "screen shot 3")
