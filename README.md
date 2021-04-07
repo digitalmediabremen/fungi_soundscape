@@ -29,6 +29,8 @@ Website link: [link](https://antoniohof.com/Fungi-soundscape).
 * play with modules, what parameter use to control modules - ok
 * how can I make the piece evolve in a more 'musical' way? - ok
 
+* add a black and white map with latitude/longitude of observation
+
 ### Potential for improving
 * how to skip an image when it's not well defined/processed? Example: when hands are present, rulers, etc
 * make use of Machine Learning to get mushroom shapes instead of opencv/computer vision
