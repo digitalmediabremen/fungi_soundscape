@@ -127,13 +127,26 @@ void ofApp::setup(){
     ofxParagraph* p = new ofxParagraph();
     p->setColor(ofColor(255, 255, 255, 255));
     p->drawBorder(ofColor::fromHex(0x777777));
-    p->drawBorder(true);
+    p->drawBorder(false);
     p->setAlignment(ofxParagraph::ALIGN_LEFT);
-    p->setWidth(280);
+    p->setWidth(320);
+    p->setIndent(0);
 
     p->setFont("fonts/Roboto-Medium.ttf", 9);
 
     paragraph = p;//.push_back(p);
+    
+    ofxParagraph* p2 = new ofxParagraph();
+    p2->setColor(ofColor(255, 255, 255, 255));
+    p2->drawBorder(ofColor::fromHex(0x777777));
+    p2->drawBorder(false);
+    p2->setAlignment(ofxParagraph::ALIGN_LEFT);
+    p2->setWidth(320);
+    p2->setIndent(0);
+
+    p2->setFont("fonts/Roboto-Medium.ttf", 9);
+
+    locationParagraph = p2;//.push_back(p);
     
 }
 
@@ -183,25 +196,15 @@ void ofApp::update(){
 void ofApp::draw(){
     ofBackground(0);
     
-    int topMargin = 50;
+    int topMargin = 30;
     int leftMargin = 20;
 
     imageProcessor.draw();
     
     map.draw(leftMargin, 100, 835/2.5, 439/2.5);
-    
-    if (currentFungus != NULL && currentFungus->latitude != 0.0) {
-        ofPushStyle();
-        ofSetColor(0,255,0);
-        ofVec2f point = calculateMapPosition(currentFungus->latitude, currentFungus->longitude, 835/2.5, 439/2.5);
-        
-        // draw little map point
-        ofDrawCircle((leftMargin - 8) + point.x, 125 + point.y, 8);
-        ofPopStyle();
-    }
-    
+
     ofPushMatrix();
-    ofTranslate( 380, topMargin );
+    ofTranslate( ofGetWidth() - 420, topMargin - 8 );
     customSequencer.draw( 28, 120, brightColor, darkColor );
     ofPopMatrix();
     
@@ -209,28 +212,34 @@ void ofApp::draw(){
     // draw the scopes
     ofPushMatrix();
         ofSetColor( brightColor );
-    int boxWidth = 330;
-    int boxHeight = 80;
-        for(int y=0; y<6; ++y){
-            //for( int x=0; x<colums; ++x){
-                int i = y;
-                /*
-                string label;
-                switch (i){
-                    case 0: case 1: case 2: case 3:
-                        label = "synth " + ofToString(i);
-                    break;
-                    
-                    case 4: label = "delay L"; break;
-                    case 5: label = "delay R"; break;
-                }
-                 */
-                int xpos = ofGetWidth() - (boxWidth + 20);
-                int ypos = y * 110;
-                // ofDrawBitmapString( "", xpos, ypos);
-                scopes[i].draw( xpos, ypos + topMargin, boxWidth, boxHeight);
-            //}
+    int boxWidth = 327;
+    int boxHeight = 100;
+    
+    int space = 20;
+    
+    for(int y=0; y<2; ++y){
+        for( int x=0; x<3; ++x){
+            int i = x+y*3;
+            string label;
+            switch (i){
+                case 0: case 1: case 2: case 3:
+                    label = "zap " + ofToString(i);
+                break;
+                
+                case 4: label = "delay L"; break;
+                case 5: label = "delay R"; break;
+            }
+            int xpos = x*(boxWidth + space);
+            int ypos = y*(boxHeight + space);
+            scopes[i].draw(380 + xpos, ypos + (ofGetHeight() - 280), boxWidth, boxHeight);
         }
+    }
+    
+    
+    
+    
+    
+
     ofPopMatrix();
     
     if (currentFungus != NULL) {
@@ -240,12 +249,26 @@ void ofApp::draw(){
 
         ofDrawBitmapString( ofToString(currentFungus->id), leftMargin, topMargin + 20);
 
-        ofDrawBitmapString( currentFungus->location, leftMargin, 300);
+        //ofDrawBitmapString( currentFungus->location, leftMargin, 300);
 
         ofPopMatrix();
-        //paragraph->setText(currentFungus->description);
-        //paragraph->draw(50, 200);
+        
+        if (currentFungus->latitude != 0.0) {
+            ofPushStyle();
+            ofSetColor(0,255,0);
+            ofVec2f point = calculateMapPosition(currentFungus->latitude, currentFungus->longitude, 835/2.5, 439/2.5);
+            
+            // draw little map point
+            ofDrawCircle((leftMargin - 8) + point.x, 125 + point.y, 8);
+            ofPopStyle();
+        }
+        locationParagraph->setText(currentFungus->location);
+        locationParagraph->draw(leftMargin, 300);
+        
+        paragraph->setText(currentFungus->description);
+        paragraph->draw(leftMargin, 320 + locationParagraph->getHeight());
     }
+
     
     if (DEBUG_MODE) {
         gui.draw();

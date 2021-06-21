@@ -145,20 +145,47 @@ void ImageProcessor::generateMatrix() {
 
 
 void ImageProcessor::draw() {
-    int space = 150;
-    int marginBottom = 160;
-    int imgWidth = int(640 * 0.2);
-    int imgHeight = int(480 * 0.2);
+    int space = 200;
+    int marginBottom = 500;
+    
+    int leftMargin = 380;
+    int topMargin = 22;
+    
+    int rightMargin = 430;
+
+    
+    float scale = 0.25;
+
+    int imgWidth = int(640 * scale);
+    int imgHeight = int(480 * scale);
+    
+
 
     if (processedImage != NULL) {
             ofPushMatrix();
-               ofTranslate(20, ofGetHeight()/2);
-               //ofScale(0.4,0.4,0.4);
-               currentImage.draw(0, 0, int(640 * 0.55), int(480 * 0.55));
+               ofTranslate(leftMargin, topMargin);
+                float ratio = currentImage.getWidth()/currentImage.getHeight();
+        
+        float containerWidth = ofGetWidth() - (leftMargin + rightMargin);
+        float containerHeight = ofGetHeight() - marginBottom;
+        
+                float finalWidth = currentImage.getWidth() * 1.37;
+                float finalHeight = (currentImage.getWidth() / ratio) * 1.37;
+
+        if (finalWidth > containerWidth) {
+            finalWidth = containerWidth;
+            finalHeight = containerWidth / ratio;
+        }
+        if (finalHeight > containerHeight) {
+             finalWidth = containerHeight * ratio;
+             finalHeight = containerHeight;
+         }
+        
+               currentImage.draw(0, 0, finalWidth, finalHeight);
            ofPopMatrix();
         
         ofPushMatrix();
-            ofTranslate(50 + space * 2.2, ofGetHeight() - marginBottom);
+            ofTranslate(leftMargin, containerHeight + 50);
             //ofScale(0.4,0.4,0.4);
             backgroundGrayImage.draw(0, 0, imgWidth, imgHeight);
         ofPopMatrix();
@@ -166,22 +193,22 @@ void ImageProcessor::draw() {
 
         
         ofPushMatrix();
-            ofTranslate(50 + space * 3.2, ofGetHeight() - marginBottom);
+            ofTranslate(leftMargin + imgWidth + 20, containerHeight + 50);
             //ofScale(0.4,0.4,0.4);
             grayImage.draw(0, 0, imgWidth, imgHeight);
         ofPopMatrix();
         
         
         ofPushMatrix();
-            ofTranslate(50 + space * 4.2, ofGetHeight() - marginBottom);
+            ofTranslate(leftMargin + (imgWidth*2) + 20 * 2, containerHeight + 50);
             processedImage->draw(0,0, imgWidth, imgHeight);
         ofPopMatrix();
-        
+        /*
         if (contourFinder.nBlobs > 0) {
             ofPushMatrix();
             ofPushStyle();
-                ofTranslate(50 + space * 5.2, ofGetHeight() - marginBottom);
-                ofScale(0.2,0.2,0.2);
+                ofTranslate(leftMargin + (imgWidth*3) + 20 * 3, containerHeight + 50);
+                ofScale(scale, scale, scale);
             ofSetLineWidth(1);
 
             for( int i=0; i<(int)contourFinder.blobs.size(); i++ ) {
@@ -195,6 +222,7 @@ void ImageProcessor::draw() {
             ofPopStyle();
             ofPopMatrix();
         }
+         */
 
     }
 }

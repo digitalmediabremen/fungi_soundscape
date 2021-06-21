@@ -98,7 +98,8 @@ class ofApp : public ofBaseApp{
     void customizeSequencer();
     
     ofxParagraph* paragraph;
-    
+    ofxParagraph* locationParagraph;
+
     ofImage map;
     
     ofVec2f calculateMapPosition(float lat, float lng, float width, float height);
