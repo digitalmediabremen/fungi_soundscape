@@ -212,7 +212,7 @@ void ofApp::draw(){
     // draw the scopes
     ofPushMatrix();
         ofSetColor( brightColor );
-    int boxWidth = 327;
+    int boxWidth = 330;
     int boxHeight = 100;
     
     int space = 20;
