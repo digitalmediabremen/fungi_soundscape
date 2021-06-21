@@ -3,7 +3,7 @@
 Fungus::Fungus () {
 }
 // constructor
-void Fungus::setup (string _name, string _description, int _id, int _numberViews, string _location, string _imageURL, float _confidence) {
+void Fungus::setup (string _name, string _description, int _id, int _numberViews, string _location, string _imageURL, float _confidence, bool _hasLocation) {
     
     description = cleanString(_description);
     ofLog() << description;
@@ -13,7 +13,9 @@ void Fungus::setup (string _name, string _description, int _id, int _numberViews
     location = _location;
     imageURL = _imageURL;
     confidence = _confidence;
-
+    latitude = 0.0;
+    longitude = 0.0;
+    hasLocation = _hasLocation;
 }
 
 string Fungus::cleanString (string str) {

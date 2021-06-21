@@ -1,5 +1,6 @@
 #include "ofApp.h"
 
+#include <math.h>
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -13,6 +14,8 @@ void ofApp::setup(){
     darkColor = ofColor( 35, 255, 35);
     
     ofSetWindowTitle( "read mushroom" );
+    
+    map.load("map3.png");
     
     //----------------- ---------------------
     // Setting up sequencer
@@ -111,6 +114,7 @@ void ofApp::setup(){
     ofAddListener(apiService.completedFetchObservations,this,&ofApp::onReceiveObservations);
     ofAddListener(apiService.completedFetchImage,this,&ofApp::onCompletedImageDownload);
     ofAddListener(apiService.failedEvent,this,&ofApp::onFailedToReceiveImagesURL);
+    ofAddListener(apiService.completedFetchCoordinates,this,&ofApp::onReceiveCoordinates);
 
     
     maxPitch = 75;
@@ -179,10 +183,22 @@ void ofApp::update(){
 void ofApp::draw(){
     ofBackground(0);
     
-    int topMargin = 100;
-    
+    int topMargin = 50;
+    int leftMargin = 20;
+
     imageProcessor.draw();
     
+    map.draw(leftMargin, 100, 835/2.5, 439/2.5);
+    
+    if (currentFungus != NULL && currentFungus->latitude != 0.0) {
+        ofPushStyle();
+        ofSetColor(0,255,0);
+        ofVec2f point = calculateMapPosition(currentFungus->latitude, currentFungus->longitude, 835/2.5, 439/2.5);
+        
+        // draw little map point
+        ofDrawCircle((leftMargin - 8) + point.x, 125 + point.y, 8);
+        ofPopStyle();
+    }
     
     ofPushMatrix();
     ofTranslate( 380, topMargin );
@@ -220,14 +236,15 @@ void ofApp::draw(){
     if (currentFungus != NULL) {
         ofPushMatrix();
         ofSetColor(255, 255, 255, 255);
-        ofDrawBitmapString( ofToString(currentFungus->id), 50, topMargin - 20);
+        ofDrawBitmapString( currentFungus->name, leftMargin, topMargin);
 
-        ofDrawBitmapString( currentFungus->name, 50, topMargin);
-        ofDrawBitmapString( currentFungus->location, 50, 50);
+        ofDrawBitmapString( ofToString(currentFungus->id), leftMargin, topMargin + 20);
+
+        ofDrawBitmapString( currentFungus->location, leftMargin, 300);
 
         ofPopMatrix();
-        paragraph->setText(currentFungus->description);
-        paragraph->draw(50, 200);
+        //paragraph->setText(currentFungus->description);
+        //paragraph->draw(50, 200);
     }
     
     if (DEBUG_MODE) {
@@ -338,6 +355,10 @@ void ofApp::onReceiveObservations() {
         ofLog () << imageURL;
 
         apiService.fetchImage(imageURL);
+        
+        if (currentFungus->hasLocation) {
+            apiService.fetchCoordinates(currentFungus->id);
+        }
   }
 }
 
@@ -389,3 +410,25 @@ void ofApp::customizeSequencer() {
     ofLog() << currentFungus->description;
 }
 
+ofVec2f ofApp::calculateMapPosition(float lat, float lng, float width, float height) {
+    
+    
+    // get x
+    float x = (lng + 180) * (width / 360);
+    // convert from degrees to radians
+    float latRad = lat * M_PI / 180;
+    // get y value
+    float mercN = log(tan((M_PI / 4) + (latRad / 2)));
+    float y = (height / 2) - (width * mercN / (2 * M_PI));
+
+    ofVec2f v1; // v1.x is 0, v1.y is 0
+    v1.set( x, y ); // now v1.x is 10, v1.y is 50
+    return v1;
+}
+
+
+void ofApp::onReceiveCoordinates() {
+    ofVec2f coordinates = apiService.lastCoordinates;
+    currentFungus->latitude = coordinates.y;
+    currentFungus->longitude = coordinates.x;
+}

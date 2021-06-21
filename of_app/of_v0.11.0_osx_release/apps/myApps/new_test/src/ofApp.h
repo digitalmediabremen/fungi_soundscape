@@ -80,6 +80,7 @@ class ofApp : public ofBaseApp{
         APIService apiService;
         
         void onReceiveObservations();
+        void onReceiveCoordinates();
         void onFailedToReceiveImagesURL(string & error);
         void onCompletedImageDownload();
     
@@ -97,6 +98,10 @@ class ofApp : public ofBaseApp{
     void customizeSequencer();
     
     ofxParagraph* paragraph;
+    
+    ofImage map;
+    
+    ofVec2f calculateMapPosition(float lat, float lng, float width, float height);
     
 };
 

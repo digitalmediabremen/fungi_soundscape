@@ -30,9 +30,15 @@ public:
     
     ofImage * lastLoadedImage;
     vector<Fungus*> fungiList;
+    
+    void fetchCoordinates (int id);
+    ofEvent<void> completedFetchCoordinates;
+    ofVec2f lastCoordinates;
 
 private:
     string httpObservationsID;
+    string httpCoordinatesID;
+
     string singleImageRequestID;
     string baseObservationPath;
     string baseImagePath;
