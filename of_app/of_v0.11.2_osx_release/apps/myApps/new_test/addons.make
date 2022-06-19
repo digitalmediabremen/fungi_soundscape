@@ -1,0 +1,10 @@
+ofxAudioFile
+ofxFlite
+ofxGui
+ofxMidi
+ofxOpenCv
+ofxOsc
+ofxPDSP
+ofxParagraph
+ofxSmartFont
+ofxThreadedImageLoader
