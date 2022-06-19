@@ -1,6 +1,5 @@
-# terra_arrasada
+# mushroom orquestra
 
-plataforma colaborativa para mapear áreas de devastação ambiental, desastres naturais.
 
 ## Project setup
 ```
