@@ -4,7 +4,11 @@
 #include "ofxPDSP.h"
 #include "CustomSequencer.h"
 #include "ofxGui.h"
-// #include "Zaps.h"
+//#include "Zaps.h"
+#include "Chorus.h"
+#include "SinePercussion.h"
+#include "KarplusStrong.h"
+
 #include "StereoDelay.h"
 #include "ofxOpenCv.h"
 #include "APIService.h"
@@ -46,8 +50,10 @@ class ofApp : public ofBaseApp{
              
         CustomSequencer customSequencer;
         
-        //Zaps zaps;
-    
+        // vector<np::synth::SinePercussion> drums;
+
+        // np::effect::Chorus chorus;
+
         PolySynth synth;
 
         pdsp::IRVerb reverb;
@@ -96,6 +102,8 @@ class ofApp : public ofBaseApp{
         int maxPitch;
     
     void customizeSequencer();
+    
+    int stringSynthNum;
     
     ofxParagraph* paragraph;
     ofxParagraph* locationParagraph;

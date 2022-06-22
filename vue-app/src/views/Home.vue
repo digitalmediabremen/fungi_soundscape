@@ -1,32 +1,14 @@
 <template>
   <div class="home">
     <div id="globe" class="home_globe"></div>
-    <div class="home_message" @mouseover="hoverMessage = true" @mouseleave="hoverMessage = false">
-      <transition-group name="fade" mode="out-in">
-        <p
-          v-for="(message) in currentMessages"
-          :key="message"
-          v-show="!hoverMessage"
-          class="home_message_text"
-        >{{message}}</p>
-      </transition-group>
-      <transition name="fadedelay" mode="out-in">
-        <p
-          v-if="hoverMessage"
-          class="home_message_interaction"
-          @click="$router.push('/explore')"
-        >Explore</p>
-      </transition>
-    </div>
   </div>
 </template>
 
 <script>
 import { mapActions } from 'vuex'
-import * as THREE from 'three';
-import ThreeGlobe from 'three-globe';
-// import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls.js';
+import Globe from 'globe.gl';
 import { mapGetters } from 'vuex'
+import { getDistance } from 'geolib'
 
 export default {
   name: 'home',
@@ -40,125 +22,71 @@ export default {
   },
   data () {
     return {
-      renderer: null,
-      camera: null,
-      messages: [
-        'Oil Spills',
-        'Deforestation',
-        'Illegal Mining',
-        'Fracking',
-        'Wild Animal Trafficking',
-        'Toxic Waste',
-        'Aquifer Contamination',
-        'Greenhouse Gas Emissions'
-      ],
-      currentMessages: [],
-      messageAnimation: null,
-      hoverMessage: false
+      globe: null,
+      locationData: null
     }
   },
   mounted () {
-    this.fetchStories().then(() => {
-      this.setupScene()
-      this.animateMessage()
-    })
+    this.setupScene()
   },
   destroyed () {
-    clearInterval(this.messageAnimation)
     window.removeEventListener('resize', this.onWindowResize)
   },
   methods: {
-    animateMessage () {
-      console.log("created animation")
-      this.messageAnimation = setInterval(() => {
-        let index = this.messages.indexOf(this.currentMessages[0])
-        index++
-        if (index > this.messages.length - 1) {
-          index = 0
-        }
-        let newMessage = this.messages[index]
-        this.currentMessages = []
-        this.currentMessages.push(newMessage)
-      }, 2000)
-    },
-    async setupScene () {
-      await window.THREE
-
-      let pathData = []
-
-      this.getStories.forEach(story => {
-        let path = [...story.geometry.coordinates.map((coord) => {
-          return [coord.lat, coord.lng, 0.1]
-        })]
-        pathData.push(path)
-      })
-
-      const Globe = new ThreeGlobe()
+    setupScene () {
+      this.globe = new Globe()
+      this.globe(document.querySelector('#globe'))
         .globeImageUrl('images/earth_bw.jpg')
         .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
-        .pathsData(pathData)
-        .pathColor(() => 'rgba(255,0,0,1)')
+        .pointColor(() => '#00FF00')
+        .pointLat('north')
+        .pointsMerge(true)
+        .pointLng('west')
+        .pointRadius(0.1)
+        .pointAltitude(0.001)
+        .onGlobeClick(this.onClickedLocation)
+        .backgroundColor('#FFFFFF')
+        .atmosphereColor('#808080')
+        .atmosphereAltitude(0.2)
 
-      // setTimeout(() => {
-        // gData.forEach(d => d.size = Math.random())
-        // Globe.pointsData(gData)
-      // }, 4000)
-
-      // custom globe material
-      const globeMaterial = Globe.globeMaterial();
-      globeMaterial.bumpScale = 10;
-      new THREE.TextureLoader().load('//unpkg.com/three-globe/example/img/earth-water.png', texture => {
-        globeMaterial.specularMap = texture;
-        globeMaterial.specular = new THREE.Color('#ffffff');
-        globeMaterial.shininess = 15;
+        console.log(this.globe.scene())
+        const scene = this.globe.scene()
+        console.log(scene.children)
+      this.$papa.parse('/locations.csv', {
+        download: true,
+        header: true,
+        complete: this.onCompleteFetchCSV
       })
 
-      // Setup renderer
-      const width = document.querySelector('#globe').clientWidth
-      const renderer = this.renderer = new THREE.WebGLRenderer()
-      renderer.setSize(width, window.innerHeight)
-      document.getElementById('globe').appendChild(renderer.domElement)
+      setTimeout(() => {
+        scene.children[2].intensity = 2
+        // scene.children[2].position.set(0.5,0,0.5)// = 2
+      }, 100)
 
-      // Setup scene
-      const scene = new THREE.Scene()
-      scene.add(Globe)
-      scene.add(new THREE.AmbientLight(0xbbbbbb))
-      scene.add(new THREE.DirectionalLight(0xffffff, 0.5))
-      scene.background = new THREE.Color( 0xffffff);
-
-      // Setup camera
-      const camera = this.camera = new THREE.PerspectiveCamera()
-      camera.aspect = (width)/window.innerHeight
-      camera.updateProjectionMatrix()
-      camera.position.z = 500
-
-      // Add camera controls
-      /*
-      const tbControls = new TrackballControls(camera, renderer.domElement)
-      tbControls.minDistance = 101
-      tbControls.rotateSpeed = 5
-      tbControls.zoomSpeed = 0.8
-      */
-
-      // Kick-off renderer
-      let r = 0
-      let animate = () => { // IIFE
-        // Frame cycle
-        // tbControls.update()
-        renderer.render(scene, camera)
-        r=r+0.005
-        Globe.rotation.set(0, r, 0)
-        requestAnimationFrame(animate)
-      }
-      window.addEventListener('resize', this.onWindowResize)
-      animate()
     },
-    onWindowResize () {
-      console.log('resize')
-      const width = document.querySelector('#globe').clientWidth
-      this.camera.aspect = width/ window.innerHeight
-      this.camera.updateProjectionMatrix()
-      this.renderer.setSize(width, window.innerHeight)
+    onCompleteFetchCSV (locations) {
+      console.log(locations.data)
+      this.locationData = locations.data
+      this.globe.pointsData(this.locationData)
+    },
+    onClickedLocation (point, event) {
+      console.log(point)
+      console.log(event)
+      const distances = []
+
+      for (let i = 0; i < this.locationData.length - 1; i++) {
+        const dist = getDistance(
+            { latitude: point.lat, longitude: point.lng },
+            { latitude: this.locationData[i].north, longitude: this.locationData[i].west }
+        )
+        distances.push(dist)
+      }
+      
+      let minDist = Math.min(...distances)
+      console.log('minDist', minDist)
+
+     const clickedObject = this.locationData[distances.indexOf(minDist)]
+     console.log(clickedObject)
     },
     ...mapActions('map', [
       'fetchUserPosition'
@@ -169,10 +97,6 @@ export default {
   }
 }
 </script>
-<style lang='sass'>
-canvas
-  width: 100% !important
-</style>
 <style lang='sass' scoped>
 .home
   &_globe

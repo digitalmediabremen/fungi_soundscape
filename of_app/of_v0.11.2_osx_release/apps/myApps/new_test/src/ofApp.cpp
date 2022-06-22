@@ -4,11 +4,12 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    
+    // ofSetDataPathRoot("./"); // if exporting application
+    stringSynthNum = 2;
     //------------------- graphics --------------
     ofBackground(0);
     ofSetFrameRate(60);
-    ofDisableAntiAliasing();
+    // ofDisableAntiAliasing();
 
     brightColor = ofColor( 255, 255, 255);
     darkColor = ofColor( 35, 255, 35);
@@ -26,19 +27,32 @@ void ofApp::setup(){
     // loads reverb impulse response
     reverb.loadIR(ofToDataPath( "kingtubby-fl1.wav" ));
     
-    //zaps.setup(NUMSYNTHS);
+    // zaps.setup(NUMSYNTHS);
     synth.setup(NUMSYNTHS);
-    
+    //ksynth.setup(1);
+    // drums.resize(NUMSYNTHS);
+
     scopes.resize(NUMSYNTHS + 2);
     
     for ( int i=0; i<NUMSYNTHS; ++i ) {
-        // customSequencer.out_trig(i) >> zaps.voices[i]; // patch the sequence outputs to the zaps
-        //zaps.voices[i] >> scopes[i] >> engine.blackhole();
+        //customSequencer.out_trig(i) >> zaps.voices[i]; // patch the sequence outputs to the zaps
+        // zaps.voices[i] >> scopes[i] >> engine.blackhole();
+        //if (i == stringSynthNum) { // strings in only one synth
+            // customSequencer.out_trig(i)  >> ksynth.in_trig( 0 );
+        //}
+        // midiKeys.outs_pitch[i] >> ksynth.in_pitch( i );
+        // customSequencer.out_trig(i) >> drums[i].in("trig");
+        // drums[i] * dB(-2.0f) >> engine.audio_out(0);
+        // drums[i] * dB(-2.0f) >> engine.audio_out(1);
+
+
         customSequencer.out_trig(i) >> synth.voices[i]; // patch the sequence outputs to the zaps
         synth.voices[i] >> scopes[i] >> engine.blackhole();
-
     }
     
+    
+    // ksynth.ch(0) >> chorus.ch(0) >> engine.audio_out(0);
+    // ksynth.ch(1) >> chorus.ch(1) >> engine.audio_out(1);
     
     // zaps.fader.ch(0) >> engine.audio_out(0);
     // zaps.fader.ch(1) >> engine.audio_out(1);
@@ -47,8 +61,8 @@ void ofApp::setup(){
     synth.ch(1) >> engine.audio_out(1);
     
     float reverbGain = -30.0f; // -65dB, this IRs are very loud // THIS MAKE S A CRAZY DIFFERENCE, use 0.0f for crazy
-    //zaps.fader.ch(0) * dB(revGain) >> reverb.ch(0);
-    //zaps.fader.ch(1) * dB(revGain) >> reverb.ch(1);
+    // zaps.fader.ch(0) * dB(reverbGain) >> reverb.ch(0);
+    // zaps.fader.ch(1) * dB(reverbGain) >> reverb.ch(1);
     
     synth.ch(0) * dB(reverbGain) >> reverb.ch(0);
     synth.ch(1) * dB(reverbGain) >> reverb.ch(1);
@@ -82,10 +96,12 @@ void ofApp::setup(){
     gui.add(locationSearch);
     gui.add(mushroomId);
     gui.add( customSequencer.parameters );
-    //gui.add( zaps.parameters );
+    // gui.add( zaps.parameters );
     gui.add( synth.ui );
     gui.add( dub.parameters );
 
+    // gui.add( drums[0].parameters );
+    //gui.add( chorus.parameters );
     
     // listen via class method
     mushroomType.addListener(this, &ofApp::onChangeMushroomGenus);
@@ -183,6 +199,14 @@ void ofApp::update(){
              
             //zaps.voices[i].pitchControl.set(pitch);
             pitch >> synth.voices[i].in("pitch");
+            /*
+            if (i == int(ofRandom(NUMSYNTHS))) { // strings in only one synth
+                pitch >> drums[i].in("pitch");
+
+            //    pitch >> ksynth.in_pitch(0 );
+            }
+            */
+
         }
     }
     

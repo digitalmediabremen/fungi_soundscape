@@ -6,17 +6,18 @@ import './registerServiceWorker'
 import firebase from 'firebase'
 import vuetify from './plugins/vuetify';
 import Clipboard from 'v-clipboard'
-
+import VuePapaParse from 'vue-papa-parse'
 Vue.config.productionTip = false
 
+
+Vue.use(Clipboard)
+Vue.use(VuePapaParse)
 new Vue({
   router,
   store,
   vuetify,
   render: h => h(App)
 }).$mount('#app')
-
-Vue.use(Clipboard)
 
 
 // Your web app's Firebase configuration
@@ -37,21 +38,3 @@ export const db = firebase.firestore()
 // storage
 export const storage = firebase.storage().ref();
 
-if (firebase.messaging.isSupported()) {
-  console.warn('messaging supported!')
-  const messaging = firebase.messaging()
-  messaging.usePublicVapidKey(process.env.VUE_APP_FIREBASE_MESSAGING) // 1. Generate a new key pair
-  // Request Permission of Notifications
-  messaging.requestPermission().then(() => {
-    console.log('Notification permission granted.')
-
-    // Get Token
-    messaging.getToken().then((token) => {
-      console.log(token)
-    })
-  }).catch((err) => {
-    console.log('Unable to get permission to notify.', err)
-  });
-} else {
-  console.error('messaging not supported!')
-}

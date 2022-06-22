@@ -1,23 +1,10 @@
 <template>
 <v-app id="app">
-  <!--
-  <v-navigation-drawer app>
-  </v-navigation-drawer>
-  -->
-
-  <v-app-bar v-if="$route.meta.top.show" app>
-    <TopBar></TopBar>
-  </v-app-bar>
-
   <v-main>
-    <v-container fluid fill-height>
+    <v-container fluid fill-height fill-width class="ma-0 pa-0">
       <router-view class="view"></router-view>
     </v-container>
   </v-main>
-
-  <v-footer app>
-    <!-- -->
-  </v-footer>
 </v-app>
 </template>
 
@@ -25,12 +12,10 @@
 import { mapActions } from 'vuex'
 
 import {
-  TopBar
 } from '@/components'
 
 export default {
   components: {
-    TopBar
   },
   data () {
     return {
