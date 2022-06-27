@@ -5,7 +5,12 @@
           {{ selectedLocationName }}
         </h1>
     </div>
-    <div id="globe" v-touch:moving="onTouchMove" @touchmove="onTouchMove" @mousemove="onMouseMove" class="home_globe"></div>
+    <div id="globe" @touchmove="onTouchMove" @mousemove="onMouseMove" class="home_globe"></div>
+    <div class='send' v-if="isMobile">
+      <a class='send_button' @click="setChosen">
+        SEND
+      </a>
+    </div>
   </div>
 </template>
 <script>
@@ -24,6 +29,9 @@ export default {
   components: {
   },
   computed: {
+    isMobile () {
+      return this.mobileCheck()
+    },
     selectedLocationName () {
       if (this.selected) {
         return this.selected.name
@@ -46,7 +54,8 @@ export default {
         lng: 0,
         altitude: 2.5
       },
-      selected: null
+      selected: null,
+      nextToPlay: null
     }
   },
   beforeMount () {
@@ -55,21 +64,23 @@ export default {
 
   },
   mounted () {
-      let script2 = document.createElement('script')
-      script2.setAttribute('src', '/js/jquery.jsonrpcclient.js')
-      document.head.appendChild(script2)
+      if (!this.mobileCheck()) {
+        let script2 = document.createElement('script')
+        script2.setAttribute('src', '/js/jquery.jsonrpcclient.js')
+        document.head.appendChild(script2)
 
-      let script3 = document.createElement('script')
-      script3.setAttribute('src', '/js/jquery.json.js')
-      document.head.appendChild(script3)
+        let script3 = document.createElement('script')
+        script3.setAttribute('src', '/js/jquery.json.js')
+        document.head.appendChild(script3)
 
-      let script4 = document.createElement('script')
-      script4.setAttribute('src', '/js/prism.js')
-      document.head.appendChild(script4)
+        let script4 = document.createElement('script')
+        script4.setAttribute('src', '/js/prism.js')
+        document.head.appendChild(script4)
 
-      let script5 = document.createElement('script')
-      script5.setAttribute('src', '/js/ofxUtils.js')
-      document.head.appendChild(script5)
+        let script5 = document.createElement('script')
+        script5.setAttribute('src', '/js/ofxUtils.js')
+        document.head.appendChild(script5)
+    }
     this.setupScene()
     process.nextTick(() => {
       // eslint-disable-next-line
@@ -78,7 +89,8 @@ export default {
         this.globe.height([event.target.innerHeight])
       })
       this.observePov()
-      this.observeID()
+      this.observeSelected()
+      this.observeChosen()
     })
     //ws://
     function addError(error) {
@@ -102,17 +114,18 @@ export default {
     function onWebSocketError() {
         console.log("on error");
     }
-
-    setTimeout(() => {
-      this.JSONRPCClient = new $.JsonRpcClient({
-        ajaxUrl: getDefaultPostURL(),
-        socketUrl: getDefaultWebSocketURL(), // get a websocket for the localhost
-        onmessage: onWebSocketMessage,
-        onopen: onWebSocketOpen,
-        onclose: onWebSocketClose,
-        onerror: onWebSocketError
-     });
-    }, 500)
+    if (!this.mobileCheck()) {
+      setTimeout(() => {
+        this.JSONRPCClient = new $.JsonRpcClient({
+          ajaxUrl: getDefaultPostURL(),
+          socketUrl: getDefaultWebSocketURL(), // get a websocket for the localhost
+          onmessage: onWebSocketMessage,
+          onopen: onWebSocketOpen,
+          onclose: onWebSocketClose,
+          onerror: onWebSocketError
+        });
+      }, 500)
+    }
   },
   destroyed () {
   },
@@ -123,8 +136,8 @@ export default {
             new MouseEvent(
                 "click", // or "mousedown" if the canvas listens for such an event
                 {
-                    clientX: event.changedTouches[0].clientX,
-                    clientY: event.changedTouches[0].clientY,
+                    clientX: e.changedTouches[0].clientX,
+                    clientY: e.changedTouches[0].clientY,
                     bubbles: true
                 }
             )
@@ -132,7 +145,8 @@ export default {
     },
     setupScene () {
       const isMobile = this.mobileCheck()
-      this.globe = new Globe({ antialias: false })
+      console.log('isMobile', isMobile)
+      this.globe = new Globe({ antialias: false, precision: 'mediump', powerPreference: 'high-performance', depth: false})
       this.globeEl = document.querySelector('#globe')
       this.globe(this.globeEl)
         .globeImageUrl('images/earth_bw.jpg')
@@ -146,8 +160,7 @@ export default {
         .onGlobeClick(this.onClickedLocation)
         .onGlobeRightClick(this.onClickedLocation)
         .backgroundColor('#FFFFFF')
-        .atmosphereColor('#808080')
-        .atmosphereAltitude(0.2)
+        .showAtmosphere(false)
 
         const scene = this.globe.scene()
 
@@ -174,17 +187,20 @@ export default {
         canvas.addEventListener('touchmove', this.onTouchMove, false);
         canvas.addEventListener('touchend', this.onTap, false);
 
+        // this.globe.renderer().setPixelRatio(0.5)
       }, 100)
 
     },
     onCompleteFetchCSV (csv) {
-      this.locationData = csv.data
+      this.locationData = csv.data// .slice(0, 2000)
       
       this.locationData.forEach((item) => {
         item.color = '#00FF00'
         item.altitude = 0.001
       })
-      
+      if (this.mobileCheck()) {
+        return
+      }
       this.globe.pointsData(this.locationData)
     },
     /*
@@ -235,7 +251,6 @@ export default {
       let minDist = Math.min(...distances)
      const minIndex = distances.indexOf(minDist)
      const clickedObject = this.locationData[minIndex]
-
       const db = getDatabase()
       set(ref(db, 'selected/'), {
         id: clickedObject.id,
@@ -269,13 +284,23 @@ export default {
         }
       })
     },
-    observeID () {
+    observeSelected () {
       const db = getDatabase()
       const povRef = ref(db, 'selected/')
       onValue(povRef, (snapshot) => {
         const data = snapshot.val()
-        if (data.id) {
+        if (data && data.id) {
           this.setSelectedByIndex(data.index)
+        }
+      })
+    },
+    observeChosen () {
+      const db = getDatabase()
+      const povRef = ref(db, 'chosen/')
+      onValue(povRef, (snapshot) => {
+        const data = snapshot.val()
+        if (data && data.id) {
+          this.play(data.id)
         }
       })
     },
@@ -286,7 +311,7 @@ export default {
       this.globe.pointOfView(data, THROTTLE_SPEED)
     },
     setSelectedByIndex (index) {
-      if (!this.locationData) {
+      if (!this.locationData || !this.globe) {
         return
       }
       for (let i = 0; i < this.locationData.length - 1; i++) {
@@ -301,30 +326,35 @@ export default {
 
       this.locationData[index] = clickedObject
 
-      this.globe.pointsData(this.locationData)
-      if (this.JSONRPCClient) {
+      if (this.mobileCheck()) {
+        this.globe.pointsData([clickedObject])
+      } else {
+        this.globe.pointsData(this.locationData)
+      }
+    },
+    play (id) {
+      if (this.JSONRPCClient && !this.mobileCheck()) {
       this.JSONRPCClient.call('set-text',
-          this.selected.id.toString(),
+          id.toString(),
           function(result) {
             console.log(result)
           },
           function(error) {
               console.error(error())
           });
+        setTimeout(() => {
+          this.JSONRPCClient.call('get-text',
+          null,
+          function(result) {
+              console.log('resultado?', result)
+          },
+          function(error) {
+              addError(error);
+          });
+        }, 1200)
       } else {
-        console.error('this.JSONRPCClient not defined')
+        console.warn('this.JSONRPCClient not defined')
       }
-
-      setTimeout(() => {
-        this.JSONRPCClient.call('get-text',
-        null,
-        function(result) {
-            console.log('resultado?', result)
-        },
-        function(error) {
-            addError(error);
-        });
-      }, 1200)
     },
     mobileCheck () {
       let check = false; // eslint-disable-next-line
@@ -336,7 +366,13 @@ export default {
     ]),
     ...mapActions('story', [
       'fetchStories'
-    ])
+    ]),
+    setChosen (id) {
+        const db = getDatabase()
+        set(ref(db, 'chosen/'), {
+          id: this.selected.id
+        })
+    }
   }
 }
 </script>
@@ -382,7 +418,25 @@ export default {
   pointer-events: none
 .name
   font-family: Roboto
-  font-size: 1em
+  font-size: 1.5em
   pointer-events: none
 
+.send
+  position: fixed
+  bottom: 20px
+  width: 100%
+  height: 40px
+  display: flex
+  justify-content: center
+
+.send_button
+  font-size: 50px
+  font-family: Roboto
+  width: 100px
+  height: 100%
+  text-align: center
+  display: flex
+  justify-content: center
+  align-items: center
+  vertical-align: middle
 </style>
