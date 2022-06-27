@@ -18,6 +18,10 @@ void ofApp::setup(){
     
     map.load("map3.png");
     
+    // NO_IMAGE
+    // SUCCESS
+    // NONE
+    STATE = "NONE";
     //----------------- ---------------------
     // Setting up sequencer
     engine.sequencer.setTempo(MIN_BPM);
@@ -139,7 +143,7 @@ void ofApp::setup(){
     isFullscreen = false;
 
         
-    // texts
+    // description
     ofxParagraph* p = new ofxParagraph();
     p->setColor(ofColor(255, 255, 255, 255));
     p->drawBorder(ofColor::fromHex(0x777777));
@@ -147,11 +151,13 @@ void ofApp::setup(){
     p->setAlignment(ofxParagraph::ALIGN_LEFT);
     p->setWidth(320);
     p->setIndent(0);
+    p->setLeading(6);
 
-    p->setFont("fonts/Roboto-Medium.ttf", 9);
+    p->setFont("fonts/Roboto-Medium.ttf", 16);
 
     paragraph = p;//.push_back(p);
     
+    // location
     ofxParagraph* p2 = new ofxParagraph();
     p2->setColor(ofColor(255, 255, 255, 255));
     p2->drawBorder(ofColor::fromHex(0x777777));
@@ -159,10 +165,72 @@ void ofApp::setup(){
     p2->setAlignment(ofxParagraph::ALIGN_LEFT);
     p2->setWidth(320);
     p2->setIndent(0);
+    p->setLeading(6);
 
-    p2->setFont("fonts/Roboto-Medium.ttf", 9);
+    p2->setFont("fonts/Roboto-Medium.ttf", 18);
 
     locationParagraph = p2;//.push_back(p);
+    
+    // name
+    ofxParagraph* p3 = new ofxParagraph();
+    p3->setColor(ofColor(255, 255, 255, 255));
+    p3->drawBorder(ofColor::fromHex(0x777777));
+    p3->drawBorder(false);
+    p3->setAlignment(ofxParagraph::ALIGN_LEFT);
+    p3->setWidth(320);
+    p3->setIndent(0);
+    p3->setLeading(10);
+    p3->setFont("fonts/Roboto-Medium.ttf", 20);
+
+    name = p3;//.push_back(p);
+    
+    // id
+    ofxParagraph* p4 = new ofxParagraph();
+    p4->setColor(ofColor(255, 255, 255, 255));
+    p4->drawBorder(ofColor::fromHex(0x777777));
+    p4->drawBorder(false);
+    p4->setAlignment(ofxParagraph::ALIGN_LEFT);
+    p4->setWidth(320);
+    p4->setIndent(0);
+
+    p4->setFont("fonts/Roboto-Medium.ttf", 18);
+
+    idString = p4;//.push_back(p);
+    
+    // date
+    ofxParagraph* p5 = new ofxParagraph();
+    p5->setColor(ofColor(255, 255, 255, 255));
+    p5->drawBorder(ofColor::fromHex(0x777777));
+    p5->drawBorder(false);
+    p5->setAlignment(ofxParagraph::ALIGN_LEFT);
+    p5->setWidth(320);
+    p5->setIndent(0);
+
+    p5->setFont("fonts/Roboto-Medium.ttf", 18);
+    
+    dataParagraph = p5;
+    
+    // server
+    ofx::HTTP::JSONRPCServerSettings settings;
+    settings.setPort(8197);
+
+    // Initialize the server.
+    server.setup(settings);
+    
+    
+    server.registerMethod("get-text",
+                          "Returns the state to client.",
+                          this,
+                          &ofApp::sendCommand);
+    
+    server.registerMethod("set-text",
+                            "Send location id to the client",
+                            this,
+                            &ofApp::onReceivedCommand);
+    
+    
+    server.start();
+    
     
 }
 
@@ -225,7 +293,7 @@ void ofApp::draw(){
 
     imageProcessor.draw();
     
-    map.draw(leftMargin, 100, 835/2.5, 439/2.5);
+    // map.draw(leftMargin, 100, 835/2.5, 439/2.5);
 
     ofPushMatrix();
     ofTranslate( ofGetWidth() - 420, topMargin - 8 );
@@ -269,14 +337,19 @@ void ofApp::draw(){
     if (currentFungus != NULL) {
         ofPushMatrix();
         ofSetColor(255, 255, 255, 255);
-        ofDrawBitmapString( currentFungus->name, leftMargin, topMargin);
+        int topStart = topMargin + 20;
+        int spaceBetween = 25;
+        name->setText(currentFungus->name);
+        name->draw(leftMargin, topStart);
+        //ofDrawBitmapString( currentFungus->name, leftMargin, topMargin);
 
-        ofDrawBitmapString( ofToString(currentFungus->id), leftMargin, topMargin + 20);
-
+        // ofDrawBitmapString( ofToString(currentFungus->id), leftMargin, topMargin + 20);
+        idString->setText(ofToString(currentFungus->id));
+        idString->draw(leftMargin, topStart + name->getHeight());
         //ofDrawBitmapString( currentFungus->location, leftMargin, 300);
 
         ofPopMatrix();
-        
+        /*
         if (currentFungus->latitude != 0.0) {
             ofPushStyle();
             ofSetColor(0,255,0);
@@ -286,11 +359,22 @@ void ofApp::draw(){
             ofDrawCircle((leftMargin - 8) + point.x, 125 + point.y, 8);
             ofPopStyle();
         }
+        */
         locationParagraph->setText(currentFungus->location);
-        locationParagraph->draw(leftMargin, 300);
+        locationParagraph->draw(leftMargin, spaceBetween + topStart + name->getHeight() + idString->getHeight());
         
-        paragraph->setText(currentFungus->description);
-        paragraph->draw(leftMargin, 320 + locationParagraph->getHeight());
+        
+        dataParagraph->setText(currentFungus->date);
+        dataParagraph->draw(leftMargin, spaceBetween + topStart + name->getHeight() + idString->getHeight() + locationParagraph->getHeight());
+        
+        
+        if (currentFungus->description != "null") {
+            paragraph->setText(currentFungus->description);
+            paragraph->draw(leftMargin, spaceBetween + spaceBetween + topStart + name->getHeight() + idString->getHeight() + dataParagraph->getHeight() + locationParagraph->getHeight());
+        } else {
+            paragraph->setText("No observation diary found.");
+            paragraph->draw(leftMargin, spaceBetween + spaceBetween + topStart + name->getHeight() + idString->getHeight() + dataParagraph->getHeight() + locationParagraph->getHeight());
+        }
     }
 
     
@@ -403,14 +487,15 @@ void ofApp::onReceiveObservations() {
 
         apiService.fetchImage(imageURL);
         
-        if (currentFungus->hasLocation) {
-            apiService.fetchCoordinates(currentFungus->id);
-        }
+        // if (currentFungus->hasLocation) {
+        //    apiService.fetchCoordinates(currentFungus->id);
+        // }
   }
 }
 
 void ofApp::onFailedToReceiveImagesURL(string & error) {
     ofLogError() << "failed to fetch, response: " << error;
+    STATE = "NO_IMAGE";
 }
 
 void ofApp::onCompletedImageDownload () {
@@ -421,6 +506,7 @@ void ofApp::onCompletedImageDownload () {
     }
     
     customizeSequencer();
+    STATE = "SUCCESS";
 }
 
 float ofApp::calculateTempo(float confidence) { // more confidence in identification of fungus, the faster it plays
@@ -478,4 +564,22 @@ void ofApp::onReceiveCoordinates() {
     ofVec2f coordinates = apiService.lastCoordinates;
     currentFungus->latitude = coordinates.y;
     currentFungus->longitude = coordinates.x;
+}
+
+
+void ofApp::onReceivedCommand(ofx::JSONRPC::MethodArgs& args)
+{
+    // Set the user text.
+    ofLog() << "ID RECEIVED: " << args.params.dump(4);
+    string id = args.params.dump(4);
+    apiService.fetchObservationsByLocationID(id);
+
+}
+
+void ofApp::sendCommand(ofx::JSONRPC::MethodArgs& args)
+{
+    ofLog () << "get text called";
+    // send
+    args.result = STATE;
+
 }

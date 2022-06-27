@@ -16,6 +16,7 @@ public:
     
     void fetchObservationsOfSpecies(string species);
     void fetchObservationsByLocation(string location);
+    void fetchObservationsByLocationID(string locationID);
     void fetchObservationByID(string id);
 
     ofEvent<void> completedFetchObservations;

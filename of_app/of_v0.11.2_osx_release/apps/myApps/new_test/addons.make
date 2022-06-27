@@ -1,6 +1,14 @@
 ofxAudioFile
 ofxFlite
 ofxGui
+ofxPoco
+ofxSSLManager
+ofxIO
+ofxMediaType
+ofxNetworkUtils
+ofxHTTP
+ofxJSONRPC
+ofxLws
 ofxMidi
 ofxOpenCv
 ofxOsc

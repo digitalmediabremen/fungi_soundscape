@@ -2323,7 +2323,7 @@ id	name	north	south	east	west	high	low
 2525	Hamlin Park East Woods, Shoreline, King Co., Washington, USA	47.7498	47.7442	-122.302	-122.31	NULL	NULL
 2526	Hamlin Park East Parking Lot, Shoreline, King Co., Washington, USA	47.7449	47.7434	-122.302	-122.303	NULL	NULL
 2527	Hamlin Park Lower baseball fields and play area, Shoreline, King Co., Washington, USA	47.7462	47.7444	-122.305	-122.31	NULL	NULL
-2528	Hamlin Park "Devil's Bowl", Shoreline, King Co., Washington, USA	47.7509	47.7482	-122.307	-122.311	NULL	NULL
+2528	Hamlin Park Devil's Bowl, Shoreline, King Co., Washington, USA	47.7509	47.7482	-122.307	-122.311	NULL	NULL
 2529	Avatar Grove, Port Renfrew, British Columbia, Canada	48.6252	48.6105	-124.433	-124.439	NULL	NULL
 2530	A few miles east of El Portal entrance along Merced River, Yosemite Valley, Yosemite National Park, California, USA	37.7236	37.7142	-119.652	-119.708	NULL	NULL
 2531	Koke'e State Park Campground, Kauai, Hawaii, USA	22.1371	22.1265	-159.647	-159.661	NULL	NULL
@@ -7199,7 +7199,7 @@ id	name	north	south	east	west	high	low
 7768	Tugaloo State Park, Georgia, USA	34.5024	34.4905	-83.0546	-83.0811	NULL	NULL
 7769	Wytheville, Virginia, USA	36.9818	36.9226	-81.0316	-81.1341	NULL	NULL
 7770	Western Regional Park, Howard Co., Maryland, USA	39.3117	39.2944	-77.0116	-77.0436	NULL	NULL
-7771	Our "living" dead tree, Logan, Hocking county, Ohio, USA	39.5609	39.5105	-82.3605	-82.4616	NULL	NULL
+7771	Our living dead tree, Logan, Hocking county, Ohio, USA	39.5609	39.5105	-82.3605	-82.4616	NULL	NULL
 7772	Camp Creek State Park, West Virginia, USA	37.5521	37.4864	-81.1079	-81.1742	NULL	NULL
 7773	Route 33 Rest Stop, Meigs Co., Ohio, USA	39.2658	38.9346	-81.7212	-82.302	NULL	NULL
 7774	Damascus, Clackamas Co., Oregon, USA	45.4299	45.359	-122.434	-122.54	NULL	NULL
@@ -7423,7 +7423,7 @@ id	name	north	south	east	west	high	low
 8000	Heintooga picnic area, Great Smoky Mountains National Park, Swain Co., North Carolina, USA	35.5702	35.5606	-83.1626	-83.1863	1595	NULL
 8001	National City, San Diego, San Diego Co., California, USA	32.6943	32.633	-117.052	-117.116	NULL	NULL
 8002	Lovell, Maine, USA	44.2643	44.102	-70.7987	-71.0036	NULL	NULL
-8003	Trail to "Ancient Cedars" S of Shawn Lakes along Sixteen Mile Creek, Whistler, British Columbia, Canada	50.2018	50.1942	-122.95	-122.96	990	810
+8003	Trail to Ancient Cedars S of Shawn Lakes along Sixteen Mile Creek, Whistler, British Columbia, Canada	50.2018	50.1942	-122.95	-122.96	990	810
 8004	Santa Maria Jaltianguis, Oaxaca, Mexico	17.3906	17.3456	-96.5085	-96.5322	NULL	NULL
 8005	San Juan Comaltepec, Oaxaca, Mexico	17.4312	17.2599	-95.8246	-96.0198	NULL	NULL
 8006	Round Pond, Bethel, Maine, USA	44.3027	44.2947	-70.8107	-70.822	NULL	NULL
@@ -8872,7 +8872,7 @@ id	name	north	south	east	west	high	low
 9539	Reserva Natural Laguna Blanca, San Pedro, Paraguay	-23.7589	-23.8672	-56.275	-56.3069	NULL	NULL
 9540	RISD, Providence, Rhode Island, USA	41.829	41.8251	-71.4045	-71.4102	NULL	NULL
 9541	La Pirámide de Nohoch Mul, Cobá, Quintana Roo, Mexico	20.4971	20.4871	-87.7157	-87.7354	NULL	NULL
-9542	CESIAK "Centro Ecológico Sian Ka'an", Tulum, Quintana Roo, Mexico	20.1141	20.1061	-87.466	-87.4751	NULL	NULL
+9542	CESIAK Centro Ecológico Sian Ka'an, Tulum, Quintana Roo, Mexico	20.1141	20.1061	-87.466	-87.4751	NULL	NULL
 9543	Kohlstattgraben, Wiesen, Bezirk Mattersburg, Burgenland, Austria	47.7765	47.7153	16.3631	16.2908	NULL	NULL
 9544	Blumau-Fromau, Wiesen, Bezirk Mattersburg, Burgenland, Austria	47.7765	47.7153	16.3631	16.2908	NULL	NULL
 9545	Moonstone Beach, Cambria, San Luis Obispo, San Luis Obispo Co., California, USA	35.5869	35.5658	-121.103	-121.122	NULL	NULL
@@ -9623,7 +9623,7 @@ id	name	north	south	east	west	high	low
 10335	Fondeadero, Santa Fe Island, Galápagos, Ecuador	-0.799659	-0.809549	-90.0342	-90.0459	NULL	NULL
 10336	Charles Darwin Station, Santa Cruz Island, Galápagos, Ecuador	-0.738104	-0.742458	-90.3032	-90.3093	NULL	NULL
 10337	Playa Dorada, Bartolomé Island, Galápagos, Ecuador	-0.284066	-0.285708	-90.5548	-90.5567	NULL	NULL
-10338	"tortoise crossing", Santa Cruz Island, Galápagos, Ecuador	-0.684937	-0.709501	-90.3898	-90.4144	NULL	NULL
+10338	tortoise crossing, Santa Cruz Island, Galápagos, Ecuador	-0.684937	-0.709501	-90.3898	-90.4144	NULL	NULL
 10339	Mainville, Pennsylvania, USA	40.9891	40.9717	-76.3612	-76.3837	NULL	NULL
 10342	Rockcastle Campground, Laurel Co., Kentucky, USA	36.9667	36.9605	-84.3438	-84.3526	NULL	NULL
 10343	Cass, Arkansas, USA	35.6966	35.6785	-93.8034	-93.8354	NULL	NULL
@@ -10197,7 +10197,7 @@ id	name	north	south	east	west	high	low
 10977	Lone Star Boat Ramp and Park, Morris Co., Texas, USA	32.9073	32.9001	-94.7114	-94.7185	NULL	NULL
 10978	Rich Mount, Polk Co., Arkansas, USA	34.6998	34.6815	-94.3212	-94.3532	NULL	NULL
 10979	Stevenson College, University of California Santa Cruz, Santa Cruz Co., California, USA	36.9988	36.9961	-122.051	-122.054	NULL	NULL
-10980	"Spring Road Gulch", University of California Santa Cruz, Santa Cruz Co., California, USA	37.0045	37.0029	-122.057	-122.062	NULL	NULL
+10980	Spring Road Gulch, University of California Santa Cruz, Santa Cruz Co., California, USA	37.0045	37.0029	-122.057	-122.062	NULL	NULL
 10981	Turlock Regional Sports Complex, Turlock, Stanislaus Co., California, USA	37.5364	37.5337	-120.876	-120.881	NULL	NULL
 10982	Maple Lake Forest, Hobart, Lake Co., Indiana, USA	41.5652	41.4636	-87.22	-87.3175	NULL	NULL
 10983	North Berkeley between Walnut and Sacramento Streets, Berkeley, Alameda Co., California, USA	37.889	37.8721	-122.267	-122.283	200	60
@@ -11873,7 +11873,7 @@ id	name	north	south	east	west	high	low
 12786	Greenwood Cemetary, Grand Rapids, Michigan, USA	42.993	42.986	-85.7029	-85.7076	NULL	NULL
 12787	Westend Christian Reformed Church, Grand Rapids, Michigan, USA	42.986	42.9788	-85.7174	-85.7269	NULL	NULL
 12788	Scout Trail, Grand Rapids, Michigan, USA	42.9962	42.9928	-85.7281	-85.7329	NULL	NULL
-12789	Northern Hardwoods Cross Country Trails "Mushroom Glen", Germfask, Michigan, USA	46.2426	46.2375	-85.9479	-85.9553	NULL	NULL
+12789	Northern Hardwoods Cross Country Trails Mushroom Glen, Germfask, Michigan, USA	46.2426	46.2375	-85.9479	-85.9553	NULL	NULL
 12791	Pearson Field, Vancouver, Clark Co., Washington, USA	45.6245	45.6187	-122.65	-122.667	NULL	NULL
 12792	Mt Calvary Cemetery, Grand Rapids, Michigan, USA	42.9858	42.9838	-85.7021	-85.7068	NULL	NULL
 12793	Driggs River Trail, Seney, Michigan, USA	46.3181	46.2916	-86.078	-86.1127	NULL	NULL
@@ -13518,7 +13518,7 @@ id	name	north	south	east	west	high	low
 14542	Alluvial forest at the western bank of Nitinat River at the bridge over the river, road from Cowichan Lake to Bamfield, Vancouver Island, British Columbia, Canada	48.8682	48.8632	-124.637	-124.643	NULL	NULL
 14543	Start of the Lifesaving Trail, Bamfield, Vancouver Island, British Columbia, Canada	48.8007	48.7931	-125.109	-125.119	NULL	NULL
 14544	Santa Rosa Parque Nacional, Scientific Station, Guanacaste, Costa Rica	10.84	10.8348	-85.6131	-85.6191	NULL	NULL
-14545	Along the trail through "Ghost Forest", at the end of the Wild Duck Rd., west part of Bamfield, Vancouver Island, British Columbia, Canada	48.8274	48.8258	-125.149	-125.151	NULL	NULL
+14545	Along the trail through Ghost Forest, at the end of the Wild Duck Rd., west part of Bamfield, Vancouver Island, British Columbia, Canada	48.8274	48.8258	-125.149	-125.151	NULL	NULL
 14546	Delores Co., Colorado, USA	37.8955	37.4847	-107.861	-109.043	NULL	NULL
 14547	Oakham, Worcester Co., Massachusetts, USA	42.4038	42.3082	-71.9895	-72.1135	NULL	NULL
 14548	1504 Rockwood Dr., Keller, Tarrant Co., Texas, USA	32.9192	32.9165	-97.218	-97.2207	NULL	NULL
@@ -14331,7 +14331,7 @@ id	name	north	south	east	west	high	low
 15428	Boarding House Dam, Watagans National Park, New South Wales, Australia	-32.999	-33.0003	151.41	151.398	324	322
 15429	San de Fuca, Coupeville, Island Co., Washington, USA	48.2377	48.2324	-122.717	-122.733	NULL	NULL
 15430	Kelly Butte Natural Area, Portland, Multnomah Co., Oregon, USA	45.5024	45.497	-122.551	-122.565	NULL	NULL
-15431	"Quebrada La Miel", Envigado, Antioquia, Colombia	6.18889	6.14373	-75.5582	-75.6057	NULL	NULL
+15431	Quebrada La Miel, Envigado, Antioquia, Colombia	6.18889	6.14373	-75.5582	-75.6057	NULL	NULL
 15432	Ruffin Canyon Open Space, Murphy Canyon, San Diego, San Diego Co., California, USA	32.8024	32.7868	-117.131	-117.134	NULL	NULL
 15433	Archerfield Wetlands, Brisbane, Queensland, Australia	-27.5449	-27.5562	152.997	152.985	NULL	NULL
 15434	Linbrook Woodlands, Hopkins Church Rd., Sewickley, Pennsylvania, USA	41.6063	39.6063	-79.1543	-81.1543	NULL	NULL
@@ -14400,7 +14400,7 @@ id	name	north	south	east	west	high	low
 15501	Ledgewood Beach/Bon-Air Community, Coupeville, Island Co., Washington, USA	48.1464	48.1348	-122.591	-122.607	NULL	NULL
 15502	St. George, Utah, USA	37.2097	37	-113.477	-113.65	NULL	NULL
 15503	Sycamore Island, Blawnox, Allegheny, Pennsylvania, USA	40.4943	40.4886	-79.8532	-79.8592	NULL	NULL
-15504	Bosque "La Antenna", Chulumani Municipality, Sud Yungas Province, La Paz Department, Bolivia	-16.3532	-16.3532	-67.5171	-67.5171	2500	2300
+15504	Bosque La Antenna, Chulumani Municipality, Sud Yungas Province, La Paz Department, Bolivia	-16.3532	-16.3532	-67.5171	-67.5171	2500	2300
 15505	Latakia, Syria	35.5942	35.4929	35.8676	35.7165	NULL	NULL
 15507	Tecolote Canyon Natural Park, San Diego, San Diego Co., California, USA	32.8297	32.7726	-117.169	-117.205	NULL	NULL
 15508	Eagle, Ada Co., Idaho, USA	43.7208	43.6627	-116.286	-116.458	NULL	NULL
@@ -15409,7 +15409,7 @@ id	name	north	south	east	west	high	low
 16596	The Wrekin, Shropshire, England	52.6761	52.6625	-2.53543	-2.56744	NULL	NULL
 16597	Disney's Magic Kingdom Theme Park, Lake Buena Vista, Florida, USA	28.4204	28.4177	-81.5798	-81.5826	NULL	NULL
 16599	Algonquin College, Nepean, Ontario, Canada	45.3497	45.347	-75.7549	-75.7576	NULL	NULL
-16600	Lowe's "smoking patch", Kailua-Kona, Hawaii, USA	19.6472	19.6445	-155.984	-155.988	NULL	NULL
+16600	Lowe's smoking patch, Kailua-Kona, Hawaii, USA	19.6472	19.6445	-155.984	-155.988	NULL	NULL
 16601	Danada Forest Preserve, Illinois, USA	41.8288	41.8163	-88.1021	-88.1171	NULL	NULL
 16603	Currumbin Valley, Queensland, Australia	-28.1623	-28.1854	153.473	153.447	NULL	NULL
 16605	Robinson Nature Center, Howard Co., Maryland, USA	39.1908	39.1895	-76.8944	-76.8954	NULL	NULL
@@ -15841,7 +15841,7 @@ id	name	north	south	east	west	high	low
 17067	Walton Drive, College Station, Texas, USA	30.6283	30.6222	-96.3176	-96.3299	NULL	NULL
 17068	Christianitos Creek, E. End of Pico Ave., San Clemente, California, USA	33.4602	33.4507	-117.567	-117.572	NULL	NULL
 17069	Batesburg, South Carolina, USA	33.9331	33.8901	-81.4781	-81.5658	NULL	NULL
-17070	D. A. "Andy" Anderson Arboretum, College Station, Brazos Co., Texas, USA	30.6038	30.6003	-96.3033	-96.3076	NULL	NULL
+17070	D. A. Andy Anderson Arboretum, College Station, Brazos Co., Texas, USA	30.6038	30.6003	-96.3033	-96.3076	NULL	NULL
 17072	Brown Mountain, Jackson Co., Oregon, USA	42.3985	42.285	-122.222	-122.392	NULL	NULL
 17073	Applegate Lake, Jackson Co., Oregon, USA	42.0618	41.9992	-123.101	-123.175	NULL	NULL
 17074	Table Rocks, Jackson Co., Oregon, USA	42.4953	42.4329	-122.87	-122.991	NULL	NULL
@@ -19419,7 +19419,7 @@ id	name	north	south	east	west	high	low
 21008	Sunday Pond, New York, USA	44.3499	44.3481	-74.3025	-74.3055	NULL	NULL
 21009	Kenosha Gulch, Colorado, USA	39.4572	39.4563	-105.722	-105.724	NULL	NULL
 21010	Sand Dunes Park, Wisconsin, USA	45.3386	45.3356	-86.8963	-86.9008	NULL	NULL
-21012	"tree island" at the junction of Eastdown Rd. and Estevan Ave., Oak Bay, Victoria, British Columbia, Canada	48.4381	48.4376	-123.316	-123.316	NULL	NULL
+21012	tree island at the junction of Eastdown Rd. and Estevan Ave., Oak Bay, Victoria, British Columbia, Canada	48.4381	48.4376	-123.316	-123.316	NULL	NULL
 21013	Stara Planina, Serbia	42.7468	42.7468	25.0788	25.0788	NULL	NULL
 21014	Zigzag Ranger District portion in Clackamas Co., Mount Hood National Forest, Clackamas Co., Oregon, USA	45.458	45.1828	-121.695	-122.21	NULL	NULL
 21015	Chapin Forest Reservation, Kirtland, Ohio, USA	41.6048	41.5837	-81.3471	-81.383	NULL	NULL
@@ -20050,7 +20050,7 @@ id	name	north	south	east	west	high	low
 21718	Rosario Resort and Spa, Orcas Island, San Juan Co., Washington, USA	48.646	48.6433	-122.872	-122.875	NULL	NULL
 21719	Blue Bell, Pennsylvania, USA	40.1738	40.1218	-75.24	-75.2933	NULL	NULL
 21720	Arras, France	50.3105	50.2681	2.81067	2.72505	NULL	NULL
-21721	Golf Club "Playa Dorada", Puerto Plata, Dominican Republic	19.7675	19.7675	-70.6427	-70.6427	0	NULL
+21721	Golf Club Playa Dorada, Puerto Plata, Dominican Republic	19.7675	19.7675	-70.6427	-70.6427	0	NULL
 21724	Markleysburg Bog, Markleysburg, Pennsylvania, USA	39.7431	39.7431	-79.4481	-79.4481	NULL	NULL
 21725	Wied l-Eghzien, Xaghra, Gozo, Malta	36.0553	36.0553	14.2683	14.2683	NULL	NULL
 21726	Mennonite Church Camp, Laurelville, Pennsylvania, USA	40.1512	40.1512	-79.4719	-79.4719	NULL	NULL
@@ -21732,7 +21732,7 @@ id	name	north	south	east	west	high	low
 23642	Big Mountain, Washington Co., Utah, USA	37.5303	37.4908	-113.637	-113.679	NULL	NULL
 23643	Zenobia Peak, Dinosaur National Monument, Moffat Co., Colorado, USA	40.6154	40.5984	-108.854	-108.886	NULL	NULL
 23644	Golden Gate Range, Lincoln Co., Nevada, USA	38.1925	37.7913	-115.315	-115.479	NULL	NULL
-23645	"Fort Apache", Lincoln Co., Nevada, USA	37.3079	37.3054	-115.613	-115.616	NULL	NULL
+23645	Fort Apache, Lincoln Co., Nevada, USA	37.3079	37.3054	-115.613	-115.616	NULL	NULL
 23646	Leppy Hills, Tooele Co., Utah, USA	40.8803	40.7347	-113.887	-114.111	NULL	NULL
 23648	Kiln Spring, Lincoln Co., Nevada, USA	37.8138	37.7961	-114.148	-114.18	NULL	NULL
 23649	Sand Springs Range, Churchill Co., Nevada, USA	39.3869	39.0611	-118.304	-118.459	NULL	NULL
@@ -23450,7 +23450,7 @@ id	name	north	south	east	west	high	low
 25646	Babin Zub, Stara Planina Nature Park, Serbia	43.3787	43.3624	22.628	22.5959	NULL	NULL
 25647	Vodopad Bigar, Stanjinac, Serbia	43.3567	43.3535	22.4453	22.4409	NULL	NULL
 25648	Berislavica, Serbia	43.3399	43.3074	22.4709	22.4279	NULL	NULL
-25649	Jardín botánico de Cartagena "Guillermo Piñeres", Turbaco, Bolívar, Colombia	10.3539	10.3535	-75.4288	-75.4296	NULL	NULL
+25649	Jardín botánico de Cartagena Guillermo Piñeres, Turbaco, Bolívar, Colombia	10.3539	10.3535	-75.4288	-75.4296	NULL	NULL
 25650	Hacienda Margarita, Lares, Puerto Rico, USA	18.2199	18.2096	-66.888	-66.9015	NULL	NULL
 25651	Aiquara, Bahia, Brazil	-14.1183	-14.1399	-39.8722	-39.9042	NULL	NULL
 25652	Šugrin, Serbia	43.3694	43.3235	22.5031	22.4448	NULL	NULL
@@ -24181,7 +24181,7 @@ id	name	north	south	east	west	high	low
 26501	Cow pasture, Reynolds Co., Missouri, USA	37.604	37.0503	-90.7344	-91.3142	NULL	NULL
 26504	Bristol Woods County Park, Wisconsin, USA	42.5385	42.5241	-88.0006	-88.0176	NULL	NULL
 26505	Hualapai Mountain Park, Mohave Co., Arizona, USA	35.1651	34.6358	-113.782	-114.009	NULL	NULL
-26506	Reserva Natural Privada "SETAL", El Estor, Izabal, Guatemala	15.5159	15.472	-89.354	-89.4051	NULL	NULL
+26506	Reserva Natural Privada SETAL, El Estor, Izabal, Guatemala	15.5159	15.472	-89.354	-89.4051	NULL	NULL
 26507	Municipio de Fraijanes, Guatemala	14.5111	14.3986	-90.4055	-90.5002	NULL	NULL
 26508	Red Pine Fork Trail, Wasatch National Forest, Utah, USA	40.5708	40.5398	-111.688	-111.702	9600	NULL
 26509	illerica, Massachusetts, USA	80	-80	89	-89	NULL	NULL

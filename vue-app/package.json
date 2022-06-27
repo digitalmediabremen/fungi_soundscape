@@ -1,5 +1,5 @@
 {
-  "name": "mushroom-orchestra",
+  "name": "choral-mycelia",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -11,9 +11,11 @@
     "@mapbox/mapbox-gl-draw": "^1.1.2",
     "core-js": "^3.6.5",
     "css-loader": "^3.5.3",
-    "firebase": "^6.6.0",
+    "firebase": "^9.8.3",
     "geolib": "^3.3.3",
     "globe.gl": "^2.26.2",
+    "jquery": "^3.6.0",
+    "lodash": "^4.17.21",
     "mapbox-gl": "^1.11.0",
     "register-service-worker": "^1.6.2",
     "v-clipboard": "^2.2.3",
@@ -21,6 +23,7 @@
     "vue-mapbox": "^0.4.1",
     "vue-papa-parse": "^3.1.0",
     "vue-router": "^3.0.3",
+    "vue2-touch-events": "^3.2.2",
     "vuetify": "^2.2.11",
     "vuex": "^3.0.1"
   },

@@ -4,7 +4,7 @@
       <a class="wrap_back" v-if="getMeta.back" @click="goBack">
         <img src="static/icons/backarrow-icon.svg" />
       </a>
-      <router-link class="wrap_logo" v-if="!getMeta.back" to="/" tag="a">Mushroom Orchestra</router-link>
+      <router-link class="wrap_logo" v-if="!getMeta.back" to="/" tag="a">choral-mycelia</router-link>
       <div class="controls">
         <!--
           <div

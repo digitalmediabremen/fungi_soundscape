@@ -35,6 +35,8 @@ void APIService::fetchObservationsOfSpecies (string species) {
 }
 
 void APIService::fetchObservationByID (string id) {
+    id.erase(std::remove(id.begin(), id.end(), '\"'),id.end());
+
     //https://mushroomobserver.org/api2/observations?id=541&format=json&detail=high
     if (lastId == id) {
         completedFetchObservations.notify();
@@ -45,7 +47,8 @@ void APIService::fetchObservationByID (string id) {
     lastSpecies = "";
     lastLocation = "";
     imageUrls = new vector<string>();
-    string urlObservations = baseObservationPath + "?api_key=t53d3qson4iv8gal8fiove4vqgwudkd2&id=" + id + "&format=json&detail=low&has_notes=1";
+    string urlObservations = baseObservationPath + "?api_key=t53d3qson4iv8gal8fiove4vqgwudkd2&id=" + id + "&format=json&detail=low";
+    //&has_notes=1
     ofLog () << urlObservations;
 
     ofLoadURLAsync(urlObservations, httpObservationsID);
@@ -64,7 +67,26 @@ void APIService::fetchObservationsByLocation (string location) {
     lastSpecies = "";
     imageUrls = new vector<string>();
     ofLog() << "location:" << location;
-    string urlObservations = baseObservationPath + "?region=" + location + "&api_key=t53d3qson4iv8gal8fiove4vqgwudkd2&format=json&detail=low&has_notes=1";
+    string urlObservations = baseObservationPath + "?region=" + location + "&api_key=t53d3qson4iv8gal8fiove4vqgwudkd2&format=json&detail=low";
+    ofLog () << urlObservations;
+
+    ofLoadURLAsync(urlObservations, httpObservationsID);
+}
+
+void APIService::fetchObservationsByLocationID (string id) {
+    
+    id.erase(std::remove(id.begin(), id.end(), '\"'),id.end());
+
+    if (id == lastLocation) {
+        completedFetchObservations.notify();
+        return;
+    }
+    
+    lastLocation = id;
+    lastSpecies = "";
+    imageUrls = new vector<string>();
+    ofLog() << "locationID:" << id;
+    string urlObservations = baseObservationPath + "?location=" + id + "&api_key=t53d3qson4iv8gal8fiove4vqgwudkd2&format=json&detail=low";
     ofLog () << urlObservations;
 
     ofLoadURLAsync(urlObservations, httpObservationsID);
@@ -137,7 +159,7 @@ void APIService::createFungi(ofJson jsonObservations) {
         int views = (int)jsonObservations["results"][i]["number_of_views"];
         string location = ofToString(jsonObservations["results"][i]["location_name"]);
         bool hasLocation = !gps_hidden;
-
+        string date = jsonObservations["results"][i]["created_at"];
         /*
         bool hasLatitude = !gps_hidden && jsonObservations["results"][i].count("latitude") > 0;
         bool hasLongitude = !gps_hidden && jsonObservations["results"][i].count("longitude") > 0;
@@ -150,7 +172,7 @@ void APIService::createFungi(ofJson jsonObservations) {
         
         float confidence = hasConfidence ? float(jsonObservations["results"][i]["confidence"]) : 1.0f;
 
-        f->setup(name, description, id, views , location, image_url, confidence, hasLocation);
+        f->setup(name, description, id, views , location, image_url, confidence, hasLocation, date);
 
 
         fungiList.push_back(f);
@@ -180,7 +202,7 @@ void APIService::fetchCoordinates (int id) {
 
     // https://mushroomobserver.org/api2/observations?id=541&format=json&detail=high
 
-    string urlObservations = baseObservationPath + "?api_key=t53d3qson4iv8gal8fiove4vqgwudkd2&id=" + ofToString(id) + "&format=json&detail=high&has_notes=1";
+    string urlObservations = baseObservationPath + "?api_key=t53d3qson4iv8gal8fiove4vqgwudkd2&id=" + ofToString(id) + "&format=json&detail=high";
     ofLoadURLAsync(urlObservations, httpCoordinatesID);
 
 }

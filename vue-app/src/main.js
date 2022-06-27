@@ -3,13 +3,16 @@ import App from './App.vue'
 import router from './router'
 import store from './store/index'
 import './registerServiceWorker'
-import firebase from 'firebase'
 import vuetify from './plugins/vuetify';
 import Clipboard from 'v-clipboard'
 import VuePapaParse from 'vue-papa-parse'
 Vue.config.productionTip = false
+import { getDatabase } from "firebase/database"
+import { initializeApp } from "firebase/app"
 
+import Vue2TouchEvents from 'vue2-touch-events'
 
+Vue.use(Vue2TouchEvents)
 Vue.use(Clipboard)
 Vue.use(VuePapaParse)
 new Vue({
@@ -27,14 +30,12 @@ var firebaseConfig = {
   projectId: process.env.VUE_APP_FIREBASE_PROJECTID,
   storageBucket: process.env.VUE_APP_FIREBASE_STORAGEBUCKET,
   messagingSenderId: process.env.VUE_APP_FIREBASE_SENDERID,
-  appId: process.env.VUE_APP_FIREBASE_APPID
+  appId: process.env.VUE_APP_FIREBASE_APPID,
+  databaseURL: process.env.VUE_APP_DATABASE_URL,
 };
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig)
+const app = initializeApp(firebaseConfig)
 
-// database
-export const db = firebase.firestore()
-
-// storage
-export const storage = firebase.storage().ref();
+// eslint-disable-next-line
+export const db = getDatabase(app)
 

@@ -22,6 +22,9 @@
 #define ABSOLUTE_MAX_PITCH 100
 #define ABSOLUTE_MIN_PITCH 40
 
+#include "ofxJSONRPC.h"
+
+
 class ofApp : public ofBaseApp{
 
 	public:
@@ -95,23 +98,36 @@ class ofApp : public ofBaseApp{
         float calculateTempo(float confidence);
         int calculateReadHeight(float percentage);
     
-    ofSoundStream soundstream;
-    
-    bool isFullscreen;
-    int calculateMaxPitch(float percentage);
-        int maxPitch;
-    
-    void customizeSequencer();
-    
-    int stringSynthNum;
-    
-    ofxParagraph* paragraph;
-    ofxParagraph* locationParagraph;
+        ofSoundStream soundstream;
+        
+        bool isFullscreen;
+        int calculateMaxPitch(float percentage);
+            int maxPitch;
+        
+        void customizeSequencer();
+        
+        int stringSynthNum;
+        
+        ofxParagraph* paragraph;
+        ofxParagraph* locationParagraph;
 
-    ofImage map;
+        ofxParagraph* name;
+        ofxParagraph* idString;
+        ofxParagraph* dataParagraph;
+
+        ofImage map;
+        
+        ofVec2f calculateMapPosition(float lat, float lng, float width, float height);
+        
+        
+        // Registered methods.
+        void sendCommand(ofx::JSONRPC::MethodArgs& args);
+
+        void onReceivedCommand(ofx::JSONRPC::MethodArgs& args);
+        /// \brief The server that handles the JSONRPC requests.
+        ofx::HTTP::JSONRPCServer server;
     
-    ofVec2f calculateMapPosition(float lat, float lng, float width, float height);
-    
+        string STATE;
 };
 
 

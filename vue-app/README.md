@@ -1,4 +1,4 @@
-# mushroom orquestra
+# choral-mycelia
 
 
 ## Project setup
