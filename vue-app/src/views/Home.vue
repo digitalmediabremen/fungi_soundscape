@@ -117,6 +117,19 @@ export default {
   destroyed () {
   },
   methods: {
+    onTap (e) {
+      console.log('e tap', e)
+    document.querySelector('canvas').dispatchEvent(
+            new MouseEvent(
+                "click", // or "mousedown" if the canvas listens for such an event
+                {
+                    clientX: event.changedTouches[0].clientX,
+                    clientY: event.changedTouches[0].clientY,
+                    bubbles: true
+                }
+            )
+        );
+    },
     setupScene () {
       const isMobile = this.mobileCheck()
       this.globe = new Globe({ antialias: false })
@@ -159,6 +172,8 @@ export default {
         // scene.children[2].position.set(0.5,0,0.5)// = 2
         let canvas = document.querySelector('canvas')
         canvas.addEventListener('touchmove', this.onTouchMove, false);
+        canvas.addEventListener('touchend', this.onTap, false);
+
       }, 100)
 
     },
