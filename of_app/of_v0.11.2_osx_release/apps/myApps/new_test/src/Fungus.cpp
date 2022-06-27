@@ -26,7 +26,7 @@ void Fungus::setup (string _name, string _description, int _id, int _numberViews
 
     char buffer[80];
 
-    std::strftime(buffer,sizeof(buffer),"%d-%m-%Y - %H:%M:%S",&tm);
+    std::strftime(buffer,sizeof(buffer),"%d-%m-%Y at %H:%M:%S",&tm);
     std::string str(buffer);
 
     date = str;

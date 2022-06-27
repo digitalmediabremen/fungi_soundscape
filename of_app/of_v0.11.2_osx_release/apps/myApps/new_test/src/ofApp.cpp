@@ -139,7 +139,7 @@ void ofApp::setup(){
     
     maxPitch = 75;
     
-    DEBUG_MODE = true;
+    DEBUG_MODE = false;
     isFullscreen = false;
 
         
