@@ -6,8 +6,8 @@
         </h1>
     </div>
     <div id="globe" @touchmove="onTouchMove" @mousemove="onMouseMove" class="home_globe"></div>
-    <div class='send' v-if="isMobile">
-      <a class='send_button' @click="setChosen">
+    <div class='send' v-if="isMobile" >
+      <a class='send_button' @click="setChosen" @click.native="setChosen">
         SEND
       </a>
     </div>
@@ -20,7 +20,7 @@ import Globe from 'globe.gl';
 import { mapGetters } from 'vuex'
 import { getDistance } from 'geolib'
 // eslint-disable-next-line
-import { getDatabase, set, ref, onValue} from "firebase/database";
+import { getDatabase, set, ref, get, onValue, child, onChildAdded} from "firebase/database";
 // import { db } from "@/main.js"
 import throttle from 'lodash/throttle'
 const THROTTLE_SPEED = 50
@@ -44,6 +44,7 @@ export default {
   },
   data () {
     return {
+      isOpen: false,
       JSONRPCClient: null,
       localIdentifier: null,
       globe: null,
@@ -61,7 +62,6 @@ export default {
   beforeMount () {
     this.localIdentifier =  Math.floor(Math.random() * 10000)
         window.$ = window.jQuery = require('jquery');
-
   },
   mounted () {
       if (!this.mobileCheck()) {
@@ -80,9 +80,45 @@ export default {
         let script5 = document.createElement('script')
         script5.setAttribute('src', '/js/ofxUtils.js')
         document.head.appendChild(script5)
+
+        script5.onload = () => {
+          console.log('scripted loaded')
+          function addError(error) {
+            console.log(error);
+          }
+
+          function onWebSocketMessage(evt) {
+              console.log("on message:");
+              console.log(evt.data);
+          }
+
+          function onWebSocketClose() {
+              console.error("on close socket OF");
+          }
+
+          function onWebSocketError() {
+              console.error("on error connecting to socket of OF");
+          }
+
+          if (!this.mobileCheck()) {
+              console.log('set to connect to OF')
+              this.JSONRPCClient = new $.JsonRpcClient({
+                ajaxUrl: getDefaultPostURL(),
+                socketUrl: getDefaultWebSocketURL(), // get a websocket for the localhost
+                onmessage: onWebSocketMessage,
+                onopen: this.onWebSocketOpen,
+                onclose: onWebSocketClose,
+                onerror: onWebSocketError
+              })
+              console.log(this.JSONRPCClient)
+            setTimeout(() => {
+              this.generateArcs()
+            }, 800)
+          }
+        }
     }
     this.setupScene()
-    process.nextTick(() => {
+    setTimeout(() => {
       // eslint-disable-next-line
       window.addEventListener('resize', (event) => {
         this.globe.width([event.target.innerWidth])
@@ -90,46 +126,20 @@ export default {
       })
       this.observePov()
       this.observeSelected()
-      this.observeChosen()
-    })
+      process.nextTick(() => {
+        this.observeChosen()
+      })
+    }, 1200)
     //ws://
-    function addError(error) {
-      console.log(error);
-    }
-
-    function onWebSocketOpen(ws) {
-        console.log("on open");
-        console.log(ws);
-    }
-
-    function onWebSocketMessage(evt) {
-        console.log("on message:");
-        console.log(evt.data);
-    }
-
-    function onWebSocketClose() {
-        console.log("on close");
-    }
-
-    function onWebSocketError() {
-        console.log("on error");
-    }
-    if (!this.mobileCheck()) {
-      setTimeout(() => {
-        this.JSONRPCClient = new $.JsonRpcClient({
-          ajaxUrl: getDefaultPostURL(),
-          socketUrl: getDefaultWebSocketURL(), // get a websocket for the localhost
-          onmessage: onWebSocketMessage,
-          onopen: onWebSocketOpen,
-          onclose: onWebSocketClose,
-          onerror: onWebSocketError
-        });
-      }, 500)
-    }
   },
   destroyed () {
   },
   methods: {
+     onWebSocketOpen(ws) {
+        console.log("on open connection to of");
+        this.isOpen = true
+        console.log(ws);
+    },
     onTap (e) {
       console.log('e tap', e)
     document.querySelector('canvas').dispatchEvent(
@@ -159,8 +169,9 @@ export default {
         .pointAltitude('altitude')
         .onGlobeClick(this.onClickedLocation)
         .onGlobeRightClick(this.onClickedLocation)
-        .backgroundColor('#FFFFFF')
+        .backgroundColor('#000000')
         .showAtmosphere(false)
+        .arcColor('color')
 
         const scene = this.globe.scene()
 
@@ -178,6 +189,9 @@ export default {
       */
 
       setTimeout(() => {
+        if (!isMobile) {
+          this.globe.enablePointerInteraction(false)
+        }
         scene.children[2].intensity = 2
         if (isMobile) {
           this.globe.pointOfView({lat: 0, lng: 0, altitude: 5}, THROTTLE_SPEED)
@@ -191,8 +205,36 @@ export default {
       }, 100)
 
     },
+    generateArcs() {
+      console.log("GENERATE ARCS")
+      const arcs = []
+        const db = getDatabase()
+        const dbRef = ref(db);
+        get(child(dbRef, `chosen/`)).then((snapshot) => {
+          console.log(snapshot)
+            if (snapshot.exists()) {
+              const data = snapshot.val()
+              const arrChosen = Object.values(data)
+              console.log('arrChosen', arrChosen)
+              for(let i = 0; i < arrChosen.length; i++) {
+                if (i !== 0) {
+                  const arc = {
+                    startLat: this.locationData[arrChosen[i-1].index].north,
+                    startLng: this.locationData[arrChosen[i-1].index].west,
+                    endLat: this.locationData[arrChosen[i].index].north,
+                    endLng: this.locationData[arrChosen[i].index].west,
+                    color: 'white'
+                  }
+                  arcs.push(arc)
+                }
+              }
+              console.log('arcs', arcs)
+              this.globe.arcsData(arcs)
+            }
+          })
+    },
     onCompleteFetchCSV (csv) {
-      this.locationData = csv.data// .slice(0, 2000)
+      this.locationData = csv.data
       
       this.locationData.forEach((item) => {
         item.color = '#00FF00'
@@ -285,6 +327,7 @@ export default {
       })
     },
     observeSelected () {
+      console.log('observo select')
       const db = getDatabase()
       const povRef = ref(db, 'selected/')
       onValue(povRef, (snapshot) => {
@@ -296,13 +339,22 @@ export default {
     },
     observeChosen () {
       const db = getDatabase()
-      const povRef = ref(db, 'chosen/')
-      onValue(povRef, (snapshot) => {
-        const data = snapshot.val()
-        if (data && data.id) {
-          this.play(data.id)
-        }
-      })
+      const refChosen = ref(db, 'chosen/')
+          onChildAdded(refChosen, (snapshot) => {
+            const dbRef = ref(db);
+            get(child(dbRef, `chosen/`)).then((snapChosen) => {
+              const allChosens = snapChosen.val()
+                const data = snapshot.val()
+                if (data) {
+                  const lastIndex = Object.values(allChosens).length - 1
+                  if (snapshot.key.toString() == lastIndex.toString()) {
+                    this.play(data.id)
+                  }
+                } else {
+                  console.log('no data')
+                }
+              })
+          })
     },
     setPov (data) {
       if (!data) {
@@ -319,9 +371,10 @@ export default {
         this.locationData[i].altitude = 0.001
       }
       const clickedObject = this.locationData[index]
+      clickedObject.index = index
       this.selected = clickedObject
 
-      clickedObject.color = 'red'
+      clickedObject.color = '#00FF00'
       clickedObject.altitude = 0.5
 
       this.locationData[index] = clickedObject
@@ -333,7 +386,11 @@ export default {
       }
     },
     play (id) {
+      if (!this.isOpen) {
+        console.warn("SOCKET NOT OPEN YET")
+      }
       if (this.JSONRPCClient && !this.mobileCheck()) {
+        console.log('send to play', id)
       this.JSONRPCClient.call('set-text',
           id.toString(),
           function(result) {
@@ -353,7 +410,10 @@ export default {
           });
         }, 1200)
       } else {
-        console.warn('this.JSONRPCClient not defined')
+        console.warn('this.JSONRPCClient not defined or socket not open')
+      }
+      if (!this.mobileCheck()) {
+        this.generateArcs()
       }
     },
     mobileCheck () {
@@ -367,11 +427,41 @@ export default {
     ...mapActions('story', [
       'fetchStories'
     ]),
-    setChosen (id) {
-        const db = getDatabase()
-        set(ref(db, 'chosen/'), {
-          id: this.selected.id
-        })
+    setChosen () {
+          console.log('set chosen clicked')
+          const db = getDatabase()
+          const dbRef = ref(db);
+          get(child(dbRef, `chosen/`)).then((snapshot) => {
+          console.log(snapshot)
+          if (snapshot.exists()) {
+            console.log(snapshot.val());
+            const data = snapshot.val()
+
+            console.log('length', data.length)
+            console.log('data', data)
+            data[data.length] = {
+              id: this.selected.id,
+              index: this.selected.index
+            }
+            console.log('data after', data)
+            set(ref(db, 'chosen/'), {
+              ...data
+            })
+            
+          } else {
+            console.log("No data available");
+            console.log(this.selected)
+            set(ref(db, 'chosen/'), {
+              0: {
+                id: this.selected.id,
+                index: this.selected.index
+              }
+            })
+          }
+        }).catch((error) => {
+          console.error(error);
+        });
+
     }
   }
 }
@@ -420,6 +510,7 @@ export default {
   font-family: Roboto
   font-size: 1.5em
   pointer-events: none
+  color: white
 
 .send
   position: fixed
@@ -428,10 +519,12 @@ export default {
   height: 40px
   display: flex
   justify-content: center
-
+  color: white
 .send_button
   font-size: 50px
   font-family: Roboto
+  z-index: 999999 !important
+  pointer-events: all !important
   width: 100px
   height: 100%
   text-align: center
@@ -439,4 +532,5 @@ export default {
   justify-content: center
   align-items: center
   vertical-align: middle
+  color: white
 </style>

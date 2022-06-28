@@ -4,7 +4,7 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    // ofSetDataPathRoot("./"); // if exporting application
+    //ofSetDataPathRoot("./"); // if exporting application
     stringSynthNum = 2;
     //------------------- graphics --------------
     ofBackground(0);

@@ -147,7 +147,7 @@ function getDefaultWebSocketURL()
     }
 
     url = url.split('/');
-    console.log(scheme + url[0])
+    console.log('ws://localhost:8197')
     return "ws://localhost:8197";
 }
 
