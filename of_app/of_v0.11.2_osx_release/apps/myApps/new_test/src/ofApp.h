@@ -114,6 +114,7 @@ class ofApp : public ofBaseApp{
         ofxParagraph* name;
         ofxParagraph* idString;
         ofxParagraph* dataParagraph;
+        ofxParagraph* latLngParagraph;
 
         ofImage map;
         

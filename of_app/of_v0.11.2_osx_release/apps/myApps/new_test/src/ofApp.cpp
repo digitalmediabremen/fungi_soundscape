@@ -4,7 +4,7 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    //ofSetDataPathRoot("./"); // if exporting application
+    ofSetDataPathRoot("./"); // if exporting application
     stringSynthNum = 2;
     //------------------- graphics --------------
     ofBackground(0);
@@ -151,11 +151,11 @@ void ofApp::setup(){
     p->setAlignment(ofxParagraph::ALIGN_LEFT);
     p->setWidth(320);
     p->setIndent(0);
-    p->setLeading(6);
 
-    p->setFont("fonts/Roboto-Medium.ttf", 16);
+    p->setFont("fonts/CourierM.ttf", 16);
 
     paragraph = p;//.push_back(p);
+    
     
     // location
     ofxParagraph* p2 = new ofxParagraph();
@@ -165,9 +165,8 @@ void ofApp::setup(){
     p2->setAlignment(ofxParagraph::ALIGN_LEFT);
     p2->setWidth(320);
     p2->setIndent(0);
-    p->setLeading(6);
 
-    p2->setFont("fonts/Roboto-Medium.ttf", 18);
+    p2->setFont("fonts/CourierM_Bold.ttf", 18);
 
     locationParagraph = p2;//.push_back(p);
     
@@ -178,9 +177,8 @@ void ofApp::setup(){
     p3->drawBorder(false);
     p3->setAlignment(ofxParagraph::ALIGN_LEFT);
     p3->setWidth(320);
+    p3->setFont("fonts/CourierM_Bold.ttf", 20);
     p3->setIndent(0);
-    p3->setLeading(10);
-    p3->setFont("fonts/Roboto-Medium.ttf", 20);
 
     name = p3;//.push_back(p);
     
@@ -193,7 +191,7 @@ void ofApp::setup(){
     p4->setWidth(320);
     p4->setIndent(0);
 
-    p4->setFont("fonts/Roboto-Medium.ttf", 18);
+    p4->setFont("fonts/CourierM.ttf", 18);
 
     idString = p4;//.push_back(p);
     
@@ -206,9 +204,21 @@ void ofApp::setup(){
     p5->setWidth(320);
     p5->setIndent(0);
 
-    p5->setFont("fonts/Roboto-Medium.ttf", 18);
+    p5->setFont("fonts/CourierM.ttf", 18);
     
     dataParagraph = p5;
+    
+    ofxParagraph* p6 = new ofxParagraph();
+    p6->setColor(ofColor(255, 255, 255, 255));
+    p6->drawBorder(ofColor::fromHex(0x777777));
+    p6->drawBorder(false);
+    p6->setAlignment(ofxParagraph::ALIGN_LEFT);
+    p6->setWidth(320);
+    p6->setIndent(0);
+
+    p6->setFont("fonts/CourierM.ttf", 18);
+
+    latLngParagraph = p6;//.push_back(p);
     
     // server
     ofx::HTTP::JSONRPCServerSettings settings;
@@ -280,7 +290,7 @@ void ofApp::update(){
     
     if (customSequencer.stepsSinceChange >= MATRIX_HEIGHT - 10) { // start to fetch next shrooms.
         customSequencer.stepsSinceChange = - 100;
-        apiService.fetchObservationsByLocation(locationSearch.get());
+        apiService.fetchObservationsByLocationID(apiService.lastLocation);
     }
 }
 
@@ -363,9 +373,12 @@ void ofApp::draw(){
         locationParagraph->setText(currentFungus->location);
         locationParagraph->draw(leftMargin, spaceBetween + topStart + name->getHeight() + idString->getHeight());
         
+        string latLng = ofToString(currentFungus->latitude) + ' ' + ofToString(currentFungus->longitude);
+        latLngParagraph->setText(latLng);
+        latLngParagraph->draw(leftMargin, spaceBetween + topStart + name->getHeight() + idString->getHeight() + locationParagraph->getHeight());
         
         dataParagraph->setText(currentFungus->date);
-        dataParagraph->draw(leftMargin, spaceBetween + topStart + name->getHeight() + idString->getHeight() + locationParagraph->getHeight());
+        dataParagraph->draw(leftMargin, spaceBetween + topStart + name->getHeight() + idString->getHeight() + locationParagraph->getHeight() + latLngParagraph->getHeight());
         
         
         if (currentFungus->description != "null") {
@@ -487,9 +500,9 @@ void ofApp::onReceiveObservations() {
 
         apiService.fetchImage(imageURL);
         
-        // if (currentFungus->hasLocation) {
-        //    apiService.fetchCoordinates(currentFungus->id);
-        // }
+        if (currentFungus->hasLocation) {
+            apiService.fetchCoordinates(currentFungus->id);
+        }
   }
 }
 

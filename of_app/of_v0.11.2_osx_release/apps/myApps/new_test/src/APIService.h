@@ -35,6 +35,7 @@ public:
     void fetchCoordinates (int id);
     ofEvent<void> completedFetchCoordinates;
     ofVec2f lastCoordinates;
+    string lastLocation;
 
 private:
     string httpObservationsID;
@@ -46,6 +47,5 @@ private:
     string lastSpecies;
     string lastId;
 
-    string lastLocation;
     void createFungi(ofJson jsonObservations);
 };

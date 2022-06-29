@@ -11,10 +11,13 @@ import { getDatabase } from "firebase/database"
 import { initializeApp } from "firebase/app"
 
 import Vue2TouchEvents from 'vue2-touch-events'
+import { VueHammer } from 'vue2-hammer'
 
 Vue.use(Vue2TouchEvents)
 Vue.use(Clipboard)
 Vue.use(VuePapaParse)
+
+Vue.use(VueHammer)
 new Vue({
   router,
   store,

@@ -2,14 +2,17 @@
   <div class="home">
     <div class='selected'>
         <h1 class='name'>
-          {{ selectedLocationName }}
+          {{ nameToShow }}
         </h1>
     </div>
-    <div id="globe" @touchmove="onTouchMove" @mousemove="onMouseMove" class="home_globe"></div>
+    <div id="globe" v-hammer:tap="onTap" @touchmove="onTouchMove" @mousemove="onMouseMove" class="home_globe"></div>
     <div class='send' v-if="isMobile" >
       <a class='send_button' @click="setChosen" @click.native="setChosen">
-        SEND
+        LISTEN
       </a>
+    </div>
+    <div v-if="!isMobile" class="qrcode">
+      <img class="qrcodeimage" src="/images/qrcodesite.png"/>
     </div>
   </div>
 </template>
@@ -19,8 +22,9 @@ import { mapActions } from 'vuex'
 import Globe from 'globe.gl';
 import { mapGetters } from 'vuex'
 import { getDistance } from 'geolib'
+import * as THREE from 'three'
 // eslint-disable-next-line
-import { getDatabase, set, ref, get, onValue, child, onChildAdded} from "firebase/database";
+import { getDatabase, set,query, ref, get, onValue, child, onChildAdded} from "firebase/database";
 // import { db } from "@/main.js"
 import throttle from 'lodash/throttle'
 const THROTTLE_SPEED = 50
@@ -31,6 +35,18 @@ export default {
   computed: {
     isMobile () {
       return this.mobileCheck()
+    },
+    nameToShow () {
+      if (this.isMobile) {
+        return this.selectedLocationName
+      }
+      return this.chosenLocationName
+    },
+    chosenLocationName () {
+      if (this.chosen) {
+        return this.locationData[this.chosen.index].name
+      }
+      return ""
     },
     selectedLocationName () {
       if (this.selected) {
@@ -56,7 +72,7 @@ export default {
         altitude: 2.5
       },
       selected: null,
-      nextToPlay: null
+      chosen: null
     }
   },
   beforeMount () {
@@ -64,6 +80,7 @@ export default {
         window.$ = window.jQuery = require('jquery');
   },
   mounted () {
+      console.log('v0.13')
       if (!this.mobileCheck()) {
         let script2 = document.createElement('script')
         script2.setAttribute('src', '/js/jquery.jsonrpcclient.js')
@@ -82,54 +99,60 @@ export default {
         document.head.appendChild(script5)
 
         script5.onload = () => {
-          console.log('scripted loaded')
-          function addError(error) {
-            console.log(error);
-          }
-
-          function onWebSocketMessage(evt) {
-              console.log("on message:");
-              console.log(evt.data);
-          }
-
-          function onWebSocketClose() {
-              console.error("on close socket OF");
-          }
-
-          function onWebSocketError() {
-              console.error("on error connecting to socket of OF");
-          }
-
-          if (!this.mobileCheck()) {
-              console.log('set to connect to OF')
-              this.JSONRPCClient = new $.JsonRpcClient({
-                ajaxUrl: getDefaultPostURL(),
-                socketUrl: getDefaultWebSocketURL(), // get a websocket for the localhost
-                onmessage: onWebSocketMessage,
-                onopen: this.onWebSocketOpen,
-                onclose: onWebSocketClose,
-                onerror: onWebSocketError
-              })
-              console.log(this.JSONRPCClient)
             setTimeout(() => {
-              this.generateArcs()
-            }, 800)
-          }
+
+            console.log('scripted loaded')
+            function addError(error) {
+              console.log(error);
+            }
+
+            function onWebSocketMessage(evt) {
+                console.log("on message:");
+                console.log(evt.data);
+            }
+
+            function onWebSocketClose() {
+                console.error("on close socket OF");
+            }
+
+            function onWebSocketError() {
+                console.error("on error connecting to socket of OF");
+            }
+
+            if (!this.mobileCheck()) {
+                console.log('set to connect to OF')
+                this.JSONRPCClient = new $.JsonRpcClient({
+                  ajaxUrl: getDefaultPostURL(),
+                  socketUrl: getDefaultWebSocketURL(), // get a websocket for the localhost
+                  onmessage: onWebSocketMessage,
+                  onopen: this.onWebSocketOpen,
+                  onclose: onWebSocketClose,
+                  onerror: onWebSocketError
+                })
+                console.log('json maluco ', this.JSONRPCClient)
+            }
+          })
         }
     }
     this.setupScene()
     setTimeout(() => {
+
       // eslint-disable-next-line
       window.addEventListener('resize', (event) => {
         this.globe.width([event.target.innerWidth])
         this.globe.height([event.target.innerHeight])
       })
-      this.observePov()
-      this.observeSelected()
+
       process.nextTick(() => {
+        console.log('observe')
+        this.observePov()
+        this.observeSelected()
         this.observeChosen()
+        //setTimeout(() => {
+        //  this.generateArcs()
+        //}, 800)
       })
-    }, 1200)
+    }, 500)
     //ws://
   },
   destroyed () {
@@ -142,16 +165,56 @@ export default {
     },
     onTap (e) {
       console.log('e tap', e)
-    document.querySelector('canvas').dispatchEvent(
-            new MouseEvent(
-                "click", // or "mousedown" if the canvas listens for such an event
-                {
-                    clientX: e.changedTouches[0].clientX,
-                    clientY: e.changedTouches[0].clientY,
-                    bubbles: true
-                }
-            )
-        );
+      const x = e.center ? e.center.x : e.changedTouches[0].clientX 
+      const y = e.center ? e.center.y : e.changedTouches[0].clientY
+     
+      $('.scene-container').trigger({
+          type: 'mousedown',
+          which: 3,
+          clientX: x,
+          clientY: y
+      }).trigger({
+          type: 'mouseup',
+          which: 3,
+          clientX: x,
+          clientY: y
+      });
+
+      $('#globe').trigger({
+          type: 'mousedown',
+          which: 3,
+          clientX: x,
+          clientY: y
+      }).trigger({
+          type: 'mouseup',
+          which: 3,
+          clientX: x,
+          clientY: y
+      });
+      
+      $('canvas').trigger({
+          type: 'mousedown',
+          which: 3,
+          clientX: x,
+          clientY: y
+      }).trigger({
+        type: 'mouseup',
+        which: 3,
+        clientX: x,
+        clientY: y
+      });
+
+            
+      $('canvas').trigger({
+          type: 'click',
+          clientX: x,
+          clientY: y
+      }).trigger({
+        type: 'mouseup',
+        which: 3,
+        clientX: x,
+        clientY: y
+      });
     },
     setupScene () {
       const isMobile = this.mobileCheck()
@@ -166,15 +229,16 @@ export default {
         .pointsMerge(true)
         .pointLng('west')
         .pointRadius(0.1)
+        .pointResolution(3)
         .pointAltitude('altitude')
-        .onGlobeClick(this.onClickedLocation)
-        .onGlobeRightClick(this.onClickedLocation)
+        .onGlobeClick(this.searchLocation)
+        .onGlobeRightClick(this.searchLocation)
         .backgroundColor('#000000')
         .showAtmosphere(false)
         .arcColor('color')
 
         const scene = this.globe.scene()
-
+        console.log('configurou!')
       this.$papa.parse('/locationsOnlyImage.csv', {
         download: true,
         header: true,
@@ -189,6 +253,7 @@ export default {
       */
 
       setTimeout(() => {
+        console.log('chamou')
         if (!isMobile) {
           this.globe.enablePointerInteraction(false)
         }
@@ -197,9 +262,11 @@ export default {
           this.globe.pointOfView({lat: 0, lng: 0, altitude: 5}, THROTTLE_SPEED)
         }
         // scene.children[2].position.set(0.5,0,0.5)// = 2
+                console.log('addou')
+
         let canvas = document.querySelector('canvas')
         canvas.addEventListener('touchmove', this.onTouchMove, false);
-        canvas.addEventListener('touchend', this.onTap, false);
+        canvas.addEventListener('touchstart', this.onTap, false);
 
         // this.globe.renderer().setPixelRatio(0.5)
       }, 100)
@@ -215,7 +282,6 @@ export default {
             if (snapshot.exists()) {
               const data = snapshot.val()
               const arrChosen = Object.values(data)
-              console.log('arrChosen', arrChosen)
               for(let i = 0; i < arrChosen.length; i++) {
                 if (i !== 0) {
                   const arc = {
@@ -234,15 +300,19 @@ export default {
           })
     },
     onCompleteFetchCSV (csv) {
+      console.log('location', csv)
+
       this.locationData = csv.data
       
       this.locationData.forEach((item) => {
         item.color = '#00FF00'
         item.altitude = 0.001
       })
+      
       if (this.mobileCheck()) {
         return
       }
+      
       this.globe.pointsData(this.locationData)
     },
     /*
@@ -276,7 +346,7 @@ export default {
     testLink.click();
     },
     */
-    onClickedLocation (point) {
+    searchLocation: throttle(function (point) {
       if (!this.locationData) {
         return
       }
@@ -298,12 +368,13 @@ export default {
         id: clickedObject.id,
         index: minIndex
       })
-    },
-    onMouseMove() {
+    }, 100),
+    onTouchMove () {
       this.currentPOV = this.globe.pointOfView()
       this.syncPOV(this.currentPOV.lat, this.currentPOV.lng, this.currentPOV.altitude)
+      this.searchLocation({lat:  this.currentPOV.lat, lng:  this.currentPOV.lng})
     },
-    onTouchMove() {
+    onMouseMove() {
       this.currentPOV = this.globe.pointOfView()
       this.syncPOV(this.currentPOV.lat, this.currentPOV.lng, this.currentPOV.altitude)
     },
@@ -338,27 +409,26 @@ export default {
       })
     },
     observeChosen () {
+      console.log('observe chosen')
       const db = getDatabase()
-      const refChosen = ref(db, 'chosen/')
-          onChildAdded(refChosen, (snapshot) => {
-            const dbRef = ref(db);
-            get(child(dbRef, `chosen/`)).then((snapChosen) => {
-              const allChosens = snapChosen.val()
-                const data = snapshot.val()
-                if (data) {
-                  const lastIndex = Object.values(allChosens).length - 1
-                  if (snapshot.key.toString() == lastIndex.toString()) {
-                    this.play(data.id)
-                  }
-                } else {
-                  console.log('no data')
-                }
-              })
+      const chosenRef = ref(db, 'chosen/')
+      onChildAdded(query(chosenRef), (snapshot) => {
+            const data = snapshot.val()
+              console.log('on child added', data)
+            if (data) {
+                this.play(data)
+            } else {
+              console.log('no data')
+            }
           })
     },
     setPov (data) {
       if (!data) {
         return
+      }
+      if (!this.isMobile) {
+        if (data.altitude < 2.5) data.altitude = 2.5
+          data.altitude = data.altitude + 0.2
       }
       this.globe.pointOfView(data, THROTTLE_SPEED)
     },
@@ -377,22 +447,24 @@ export default {
       clickedObject.color = '#00FF00'
       clickedObject.altitude = 0.5
 
-      this.locationData[index] = clickedObject
-
       if (this.mobileCheck()) {
+        this.locationData[index] = clickedObject
         this.globe.pointsData([clickedObject])
-      } else {
-        this.globe.pointsData(this.locationData)
       }
     },
-    play (id) {
+    play (chosen) {
       if (!this.isOpen) {
         console.warn("SOCKET NOT OPEN YET")
       }
+      this.chosen = this.locationData[chosen.index]
+      
       if (this.JSONRPCClient && !this.mobileCheck()) {
-        console.log('send to play', id)
+        this.chosen = this.locationData[chosen.index]
+        this.globe.pointsData(this.locationData)
+
+        console.log('send to play', chosen.id)
       this.JSONRPCClient.call('set-text',
-          id.toString(),
+          chosen.id.toString(),
           function(result) {
             console.log(result)
           },
@@ -428,6 +500,10 @@ export default {
       'fetchStories'
     ]),
     setChosen () {
+        if (!this.selected)
+        {
+          return
+        }
           console.log('set chosen clicked')
           const db = getDatabase()
           const dbRef = ref(db);
@@ -504,14 +580,16 @@ export default {
   height: 60px
   display: flex
   width: 100vw
-  margin: 10px
+  padding: 10px
   pointer-events: none
 .name
-  font-family: Roboto
-  font-size: 1.5em
+  font-family: Courier
+  font-size: 50px
   pointer-events: none
   color: white
-
+  text-shadow: 2px 2px black
+  @media (max-width:600px)
+    font-size: 25px
 .send
   position: fixed
   bottom: 20px
@@ -520,9 +598,10 @@ export default {
   display: flex
   justify-content: center
   color: white
+
 .send_button
   font-size: 50px
-  font-family: Roboto
+  font-family: Courier
   z-index: 999999 !important
   pointer-events: all !important
   width: 100px
@@ -533,4 +612,16 @@ export default {
   align-items: center
   vertical-align: middle
   color: white
+  text-shadow: 2px 2px black
+
+.qrcode
+  position: fixed
+  bottom: 0
+  height: 200px
+  display: flex
+  justify-content: flex-end
+  width: 100vw
+
+.qrcodeimage
+
 </style>
