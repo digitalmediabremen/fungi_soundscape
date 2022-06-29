@@ -92,7 +92,7 @@ void CustomSequencer::setImage( ofxCvGrayscaleImage * img ) {
 
 void CustomSequencer::draw( int side, int bars_h, ofColor fg, ofColor bg ){
     ofPushMatrix();
-    ofScale(0.22,0.275,0.22);
+    ofScale(0.275,0.40,0.275);
     ofSetColor( fg);
 
     for( int y=0; y<MATRIX_HEIGHT; ++y ){
@@ -134,7 +134,7 @@ void CustomSequencer::draw( int side, int bars_h, ofColor fg, ofColor bg ){
     float soff = meter_percent() * sw;
     int sh = side;
     
-    for( int i=0; i<NUMSYNTHS; ++i ){
+    for( int i=0; i<NUMSYNTHS-1; ++i ){
         int sx = sw*i;
         ofNoFill();
         ofDrawRectangle( sx, 0, sw, sh );

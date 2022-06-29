@@ -149,7 +149,7 @@ void ImageProcessor::draw() {
     int marginBottom = 500;
     
     int leftMargin = 380;
-    int topMargin = 22;
+    int topMargin = 30;
     
     int rightMargin = 430;
 
@@ -203,7 +203,7 @@ void ImageProcessor::draw() {
             ofTranslate(leftMargin + (imgWidth*2) + 20 * 2, containerHeight + 50);
             processedImage->draw(0,0, imgWidth, imgHeight);
         ofPopMatrix();
-        /*
+        
         if (contourFinder.nBlobs > 0) {
             ofPushMatrix();
             ofPushStyle();
@@ -222,7 +222,7 @@ void ImageProcessor::draw() {
             ofPopStyle();
             ofPopMatrix();
         }
-         */
+         
 
     }
 }

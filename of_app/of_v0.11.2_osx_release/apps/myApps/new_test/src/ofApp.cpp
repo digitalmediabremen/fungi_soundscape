@@ -298,7 +298,7 @@ void ofApp::update(){
 void ofApp::draw(){
     ofBackground(0);
     
-    int topMargin = 30;
+    int topMargin = 50;
     int leftMargin = 20;
 
     imageProcessor.draw();
@@ -306,14 +306,14 @@ void ofApp::draw(){
     // map.draw(leftMargin, 100, 835/2.5, 439/2.5);
 
     ofPushMatrix();
-    ofTranslate( ofGetWidth() - 420, topMargin - 8 );
+    ofTranslate( ofGetWidth() - 520, topMargin - 19 );
     customSequencer.draw( 28, 120, brightColor, darkColor );
     ofPopMatrix();
     
     
     // draw the scopes
     ofPushMatrix();
-        ofSetColor( brightColor );
+    ofSetColor( brightColor );
     int boxWidth = 331;
     int boxHeight = 100;
     
@@ -347,7 +347,7 @@ void ofApp::draw(){
     if (currentFungus != NULL) {
         ofPushMatrix();
         ofSetColor(255, 255, 255, 255);
-        int topStart = topMargin + 20;
+        int topStart = topMargin;
         int spaceBetween = 25;
         name->setText(currentFungus->name);
         name->draw(leftMargin, topStart);
@@ -383,10 +383,10 @@ void ofApp::draw(){
         
         if (currentFungus->description != "null") {
             paragraph->setText(currentFungus->description);
-            paragraph->draw(leftMargin, spaceBetween + spaceBetween + topStart + name->getHeight() + idString->getHeight() + dataParagraph->getHeight() + locationParagraph->getHeight());
+            paragraph->draw(leftMargin, spaceBetween + spaceBetween + topStart + name->getHeight() + idString->getHeight() + dataParagraph->getHeight() + locationParagraph->getHeight() + latLngParagraph->getHeight());
         } else {
             paragraph->setText("No observation diary found.");
-            paragraph->draw(leftMargin, spaceBetween + spaceBetween + topStart + name->getHeight() + idString->getHeight() + dataParagraph->getHeight() + locationParagraph->getHeight());
+            paragraph->draw(leftMargin, spaceBetween + spaceBetween + topStart + name->getHeight() + idString->getHeight() + dataParagraph->getHeight() + locationParagraph->getHeight() + latLngParagraph->getHeight());
         }
     }
 

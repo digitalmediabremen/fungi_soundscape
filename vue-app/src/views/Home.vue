@@ -409,25 +409,40 @@ export default {
       })
     },
     observeChosen () {
-      console.log('observe chosen')
+      let length = 0
       const db = getDatabase()
-      const chosenRef = ref(db, 'chosen/')
-      onChildAdded(query(chosenRef), (snapshot) => {
+      const dbRef = ref(db);
+       get(child(dbRef, `chosen/`)).then((snapshot) => {
+          console.log(snapshot)
+          if (snapshot.exists()) {
+            console.log(snapshot.val());
             const data = snapshot.val()
-              console.log('on child added', data)
-            if (data) {
-                this.play(data)
-            } else {
-              console.log('no data')
-            }
-          })
+
+            length = data.length
+            console.log('length', length)
+              console.log('observe chosen')
+              const chosenRef = ref(db, 'chosen/')
+              onChildAdded(query(chosenRef), (snapshot) => {
+                    const data = snapshot.val()
+                      console.log('on child added', data)
+                    if (data) {
+                      console.log('index', snapshot.key)
+                      if (snapshot.key > length - 2) {
+                        this.play(data)
+                      }
+                    } else {
+                      console.log('no data')
+                    }
+                  })
+          }
+        })
     },
     setPov (data) {
       if (!data) {
         return
       }
       if (!this.isMobile) {
-        if (data.altitude < 2.5) data.altitude = 2.5
+        if (data.altitude < 2.2) data.altitude = 2.2
           data.altitude = data.altitude + 0.2
       }
       this.globe.pointOfView(data, THROTTLE_SPEED)
