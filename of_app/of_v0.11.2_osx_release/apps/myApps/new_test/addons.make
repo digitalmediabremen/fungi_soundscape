@@ -1,4 +1,5 @@
 ofxAudioFile
+ofxCsv
 ofxFlite
 ofxGui
 ofxPoco

@@ -16,6 +16,7 @@
 #include "PolySynth.h"
 #include "Fungus.h"
 #include "ofxParagraph.h"
+#include "ofxCsv.h"
 
 #define MAX_BPM 100
 #define MIN_BPM 60
@@ -47,12 +48,14 @@ class ofApp : public ofBaseApp{
         void switchRule();
     
         bool DEBUG_MODE = false;
+        ofxCsv csv;
 
         // pdsp modules
         pdsp::Engine   engine; 
              
         CustomSequencer customSequencer;
-        
+        vector<string> locationsIds;
+
         // vector<np::synth::SinePercussion> drums;
 
         // np::effect::Chorus chorus;

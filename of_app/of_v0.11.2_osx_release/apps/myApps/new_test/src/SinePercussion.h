@@ -30,7 +30,6 @@ public:
 
     ofParameterGroup & label( string name );
 
-private:
     void patch();
 
     pdsp::PatchNode     triggers;

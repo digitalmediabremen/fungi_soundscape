@@ -10,6 +10,21 @@ void ofApp::setup(){
     ofBackground(0);
     ofSetFrameRate(60);
     // ofDisableAntiAliasing();
+    // Load a CSV File.
+    if(csv.load("locationsOnlyImage.csv")) {
+        //csv.trim(); // Trim leading/trailing whitespace from non-quoted fields.
+        
+        // Like with C++ vectors, the index operator is a quick way to grab row
+        // & col data, however this will cause a crash if the row or col doesn't
+        // exist, ie. the file didn't load.
+        // also you can write...
+        ofxCsvRow row = csv[0];
+
+        for(int i = 1; i < csv.size(); i++) {
+            ofLog() << csv[i][0];
+            locationsIds.push_back(csv[i][0]);
+        }
+    }
 
     brightColor = ofColor( 255, 255, 255);
     darkColor = ofColor( 35, 255, 35);
@@ -45,9 +60,9 @@ void ofApp::setup(){
             // customSequencer.out_trig(i)  >> ksynth.in_trig( 0 );
         //}
         // midiKeys.outs_pitch[i] >> ksynth.in_pitch( i );
-        // customSequencer.out_trig(i) >> drums[i].in("trig");
-        // drums[i] * dB(-2.0f) >> engine.audio_out(0);
-        // drums[i] * dB(-2.0f) >> engine.audio_out(1);
+        //customSequencer.out_trig(i) >> drums[i].in("trig");
+        //drums[i] * dB(-2.0f) >> engine.audio_out(0);
+        //drums[i] * dB(-2.0f) >> engine.audio_out(1);
 
 
         customSequencer.out_trig(i) >> synth.voices[i]; // patch the sequence outputs to the zaps
@@ -104,9 +119,12 @@ void ofApp::setup(){
     gui.add( synth.ui );
     gui.add( dub.parameters );
 
-    // gui.add( drums[0].parameters );
     //gui.add( chorus.parameters );
-    
+    for ( int i=0; i<NUMSYNTHS; ++i ) {
+    // gui.add( drums[i].parameters );
+
+    }
+
     // listen via class method
     mushroomType.addListener(this, &ofApp::onChangeMushroomGenus);
     locationSearch.addListener(this, &ofApp::onChangeLocationSearch);
@@ -277,6 +295,8 @@ void ofApp::update(){
              
             //zaps.voices[i].pitchControl.set(pitch);
             pitch >> synth.voices[i].in("pitch");
+            // (pitch - 50) >> drums[i].in("pitch");
+
             /*
             if (i == int(ofRandom(NUMSYNTHS))) { // strings in only one synth
                 pitch >> drums[i].in("pitch");
@@ -290,7 +310,9 @@ void ofApp::update(){
     
     if (customSequencer.stepsSinceChange >= MATRIX_HEIGHT - 10) { // start to fetch next shrooms.
         customSequencer.stepsSinceChange = - 100;
-        apiService.fetchObservationsByLocationID(apiService.lastLocation);
+        int random = rand() % locationsIds.size();
+        string sel_elem = locationsIds[random];
+        apiService.fetchObservationsByLocationID(sel_elem);
     }
 }
 
@@ -543,7 +565,11 @@ void ofApp::customizeSequencer() {
        int readHeight = calculateReadHeight(matrixFilledPercentage);
        customSequencer.readHeight.set(readHeight);
     
-    maxPitch = calculateMaxPitch(matrixFilledPercentage / 2);
+    
+    //drums[0].fbControl.set(ofMap(currentFungus->confidence, 0.0f, 3.0f, 0.0f, 0.25f));
+    //drums[1].fbControl.set(ofMap(currentFungus->confidence, 3.0f, 0.0f, 0.0f, 0.25f));
+
+    maxPitch = calculateMaxPitch(matrixFilledPercentage / 1.5f);
     ofLog () << "max pitch" << maxPitch;
     
     

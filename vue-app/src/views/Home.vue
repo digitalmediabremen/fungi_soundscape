@@ -8,7 +8,7 @@
     <div id="globe" @touchmove="onTouchMove" @mousemove="onMouseMove" class="home_globe"></div>
     <div class='send' v-if="isMobile" >
       <a class='send_button' @click="setChosen" @click.native="setChosen">
-        LISTEN
+        OBSERVE
       </a>
     </div>
     <div v-if="!isMobile" class="qrcode">
@@ -43,7 +43,7 @@ export default {
       return this.chosenLocationName
     },
     chosenLocationName () {
-      if (this.chosen) {
+      if (this.chosen && this.locationData && this.locationData[this.chosen.index]) {
         return this.locationData[this.chosen.index].name
       }
       return ""
@@ -81,7 +81,7 @@ export default {
         window.$ = window.jQuery = require('jquery');
   },
   mounted () {
-      console.log('v0.13')
+      console.log('v0.14')
       if (!this.mobileCheck()) {
         let script2 = document.createElement('script')
         script2.setAttribute('src', '/js/jquery.jsonrpcclient.js')
@@ -341,7 +341,7 @@ export default {
         id: clickedObject.id,
         index: minIndex
       })
-    }, 100),
+    }, 250),
     onTouchMove () {
       this.currentPOV = this.globe.pointOfView()
       this.syncPOV(this.currentPOV.lat, this.currentPOV.lng, this.currentPOV.altitude)
@@ -465,7 +465,8 @@ export default {
       clickedObject.color = '#00FF00'
       clickedObject.altitude = 0.5
 
-      this.chosen = this.selected
+      this.chosen = clickedObject
+      console.log('chosen', this.chosen)
 
       this.locationData[index] = clickedObject
       this.globe.pointsData(this.locationData)
@@ -634,7 +635,7 @@ export default {
   bottom: 0
   height: 200px
   display: flex
-  justify-content: flex-end
+  justify-content: flex-start
   width: 100vw
 
 .qrcodeimage
