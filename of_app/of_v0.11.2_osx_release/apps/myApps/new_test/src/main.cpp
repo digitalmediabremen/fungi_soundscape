@@ -21,11 +21,10 @@ int main( ){
     glWindowSettings.monitor = 1;
     glWindowSettings.multiMonitorFullScreen = false;
 
+    ofCreateWindow(glWindowSettings);
 
-        ofCreateWindow(glWindowSettings);
-        
-        
-        ofRunApp( new ofApp());
+
+    ofRunApp( new ofApp());
 
 
 }
