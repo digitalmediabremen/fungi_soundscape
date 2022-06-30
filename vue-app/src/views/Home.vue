@@ -5,7 +5,7 @@
           {{ nameToShow }}
         </h1>
     </div>
-    <div id="globe" v-hammer:tap="onTap" @touchmove="onTouchMove" @mousemove="onMouseMove" class="home_globe"></div>
+    <div id="globe" @touchmove="onTouchMove" @mousemove="onMouseMove" class="home_globe"></div>
     <div class='send' v-if="isMobile" >
       <a class='send_button' @click="setChosen" @click.native="setChosen">
         LISTEN
@@ -72,7 +72,8 @@ export default {
         altitude: 2.5
       },
       selected: null,
-      chosen: null
+      chosen: null,
+      checkInterval: null
     }
   },
   beforeMount () {
@@ -148,6 +149,9 @@ export default {
         this.observePov()
         this.observeSelected()
         this.observeChosen()
+        if (!this.mobileCheck()) {
+          this.checkOFFungus()
+        }
         //setTimeout(() => {
         //  this.generateArcs()
         //}, 800)
@@ -158,63 +162,33 @@ export default {
   destroyed () {
   },
   methods: {
+    checkOFFungus () {
+      this.checkInterval = setInterval(() => {
+        console.log('chamou')
+        if (this.JSONRPCClient) {
+          this.JSONRPCClient.call('get-text',
+          null,
+          (result)=> {
+              console.log('resultado?', result)
+              if (this.chosen && this.chosen.id.toString() !== result.toString()) {
+                console.warn("wrong loca, set loca")
+                this.setChosenByID(result)
+              } else {
+                console.log('good location')
+              }
+          },
+          function(error) {
+              addError(error);
+          })
+        } else {
+          console.warn('no json RPC')
+        }
+      }, 5000)
+    },
      onWebSocketOpen(ws) {
         console.log("on open connection to of");
         this.isOpen = true
         console.log(ws);
-    },
-    onTap (e) {
-      console.log('e tap', e)
-      const x = e.center ? e.center.x : e.changedTouches[0].clientX 
-      const y = e.center ? e.center.y : e.changedTouches[0].clientY
-     
-      $('.scene-container').trigger({
-          type: 'mousedown',
-          which: 3,
-          clientX: x,
-          clientY: y
-      }).trigger({
-          type: 'mouseup',
-          which: 3,
-          clientX: x,
-          clientY: y
-      });
-
-      $('#globe').trigger({
-          type: 'mousedown',
-          which: 3,
-          clientX: x,
-          clientY: y
-      }).trigger({
-          type: 'mouseup',
-          which: 3,
-          clientX: x,
-          clientY: y
-      });
-      
-      $('canvas').trigger({
-          type: 'mousedown',
-          which: 3,
-          clientX: x,
-          clientY: y
-      }).trigger({
-        type: 'mouseup',
-        which: 3,
-        clientX: x,
-        clientY: y
-      });
-
-            
-      $('canvas').trigger({
-          type: 'click',
-          clientX: x,
-          clientY: y
-      }).trigger({
-        type: 'mouseup',
-        which: 3,
-        clientX: x,
-        clientY: y
-      });
     },
     setupScene () {
       const isMobile = this.mobileCheck()
@@ -266,7 +240,6 @@ export default {
 
         let canvas = document.querySelector('canvas')
         canvas.addEventListener('touchmove', this.onTouchMove, false);
-        canvas.addEventListener('touchstart', this.onTap, false);
 
         // this.globe.renderer().setPixelRatio(0.5)
       }, 100)
@@ -467,6 +440,41 @@ export default {
         this.globe.pointsData([clickedObject])
       }
     },
+    setChosenByID (id) { // ONLY DESKTOP
+      if (!this.locationData || !this.globe) {
+        return
+      }
+      id = id.toString()
+      console.log('set sel', id)
+      let selected = null
+      let index = 0
+      for (let i = 0; i < this.locationData.length - 1; i++) {
+        this.locationData[i].color = '#00FF00'
+        this.locationData[i].altitude = 0.001
+        if (this.locationData[i].id === id) {
+          selected = this.locationData[i]
+          index = i
+        }
+      }
+      console.log('set sel', selected)
+
+      const clickedObject = selected
+      clickedObject.index = index
+      this.selected = clickedObject
+
+      clickedObject.color = '#00FF00'
+      clickedObject.altitude = 0.5
+
+      this.chosen = this.selected
+
+      this.locationData[index] = clickedObject
+      this.globe.pointsData(this.locationData)
+      const dataLatLng = {
+        lat: clickedObject.north, lng: clickedObject.west, altitude: this.currentPOV.altitude
+      }
+      this.setPov(dataLatLng)
+      
+    },
     play (chosen) {
       if (!this.isOpen) {
         console.warn("SOCKET NOT OPEN YET")
@@ -478,6 +486,8 @@ export default {
         this.globe.pointsData(this.locationData)
 
         console.log('send to play', chosen.id)
+        console.log('send to play index', chosen.index)
+
       this.JSONRPCClient.call('set-text',
           chosen.id.toString(),
           function(result) {
@@ -486,16 +496,6 @@ export default {
           function(error) {
               console.error(error())
           });
-        setTimeout(() => {
-          this.JSONRPCClient.call('get-text',
-          null,
-          function(result) {
-              console.log('resultado?', result)
-          },
-          function(error) {
-              addError(error);
-          });
-        }, 1200)
       } else {
         console.warn('this.JSONRPCClient not defined or socket not open')
       }

@@ -160,6 +160,7 @@ void APIService::createFungi(ofJson jsonObservations) {
         string location = ofToString(jsonObservations["results"][i]["location_name"]);
         bool hasLocation = !gps_hidden;
         string date = jsonObservations["results"][i]["created_at"];
+        int locationID = jsonObservations["results"][i]["location_id"];
         /*
         bool hasLatitude = !gps_hidden && jsonObservations["results"][i].count("latitude") > 0;
         bool hasLongitude = !gps_hidden && jsonObservations["results"][i].count("longitude") > 0;
@@ -172,7 +173,7 @@ void APIService::createFungi(ofJson jsonObservations) {
         
         float confidence = hasConfidence ? float(jsonObservations["results"][i]["confidence"]) : 1.0f;
 
-        f->setup(name, description, id, views , location, image_url, confidence, hasLocation, date);
+        f->setup(name, description, id, views , location, image_url, confidence, hasLocation, date, locationID);
 
 
         fungiList.push_back(f);

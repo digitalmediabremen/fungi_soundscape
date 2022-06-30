@@ -6,7 +6,7 @@ Fungus::Fungus () {
 #include <iomanip>
 #include <ctime>
 // constructor
-void Fungus::setup (string _name, string _description, int _id, int _numberViews, string _location, string _imageURL, float _confidence, bool _hasLocation, string _date) {
+void Fungus::setup (string _name, string _description, int _id, int _numberViews, string _location, string _imageURL, float _confidence, bool _hasLocation, string _date, int _locationID) {
     
     description = cleanString(_description);
     ofLog() << description;
@@ -20,6 +20,7 @@ void Fungus::setup (string _name, string _description, int _id, int _numberViews
     latitude = 0.0;
     longitude = 0.0;
     hasLocation = _hasLocation;
+    locationID = _locationID;
     struct tm tm;
 
     strptime(_date.c_str(), "%Y-%m-%d T%H:%M:%S", &tm);

@@ -543,7 +543,7 @@ void ofApp::customizeSequencer() {
        int readHeight = calculateReadHeight(matrixFilledPercentage);
        customSequencer.readHeight.set(readHeight);
     
-    maxPitch = calculateMaxPitch(matrixFilledPercentage);
+    maxPitch = calculateMaxPitch(matrixFilledPercentage / 2);
     ofLog () << "max pitch" << maxPitch;
     
     
@@ -591,8 +591,10 @@ void ofApp::onReceivedCommand(ofx::JSONRPC::MethodArgs& args)
 
 void ofApp::sendCommand(ofx::JSONRPC::MethodArgs& args)
 {
-    ofLog () << "get text called";
+    ofLog () << "get text called, send fungus ID";
     // send
-    args.result = STATE;
+    if (currentFungus != NULL) {
+        args.result = currentFungus->locationID;
+    }
 
 }

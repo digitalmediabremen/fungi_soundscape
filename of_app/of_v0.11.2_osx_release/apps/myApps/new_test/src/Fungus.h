@@ -9,7 +9,7 @@ class Fungus  {
 
 public:
     Fungus();
-    void setup(string name, string description, int id, int numberViews, string location, string imageURL, float confidence, bool hasLocation, string date);
+    void setup(string name, string description, int id, int numberViews, string location, string imageURL, float confidence, bool hasLocation, string date, int locationID);
     float confidence;
     int id;
     int numberViews;
@@ -22,6 +22,7 @@ public:
     string cleanString(string str);
     bool hasLocation;
     string date;
+    int locationID;
 private:
     
 };
