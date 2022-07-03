@@ -633,7 +633,7 @@ export default {
 .qrcode
   position: fixed
   bottom: 0
-  height: 200px
+  height: 250px
   display: flex
   justify-content: flex-start
   width: 100vw
