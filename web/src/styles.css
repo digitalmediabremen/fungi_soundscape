@@ -1,0 +1,153 @@
+:root {
+  --bg: #050608;
+  --bg-soft: #0d100f;
+  --fg: #e8f0e8;
+  --muted: #8aa08a;
+  --accent: #39ff14; /* fungal neon green */
+  --accent-dim: #1f6b14;
+  --shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  --mono: "Courier New", Courier, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--mono);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+button {
+  font-family: var(--mono);
+  cursor: pointer;
+}
+
+/* App shell ---------------------------------------------------------------- */
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 14px 22px;
+  border-bottom: 1px solid #1a201a;
+  z-index: 10;
+}
+
+.topbar__title {
+  font-size: 18px;
+  letter-spacing: 2px;
+  text-transform: lowercase;
+  color: var(--fg);
+  white-space: nowrap;
+}
+
+.topbar__title span {
+  color: var(--accent);
+}
+
+.topbar__nav {
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.topbar__nav a {
+  color: var(--muted);
+  padding: 6px 14px;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 13px;
+}
+
+.topbar__nav a:hover {
+  color: var(--fg);
+  text-decoration: none;
+}
+
+.topbar__nav a.router-link-active {
+  color: var(--accent);
+  border-color: var(--accent-dim);
+}
+
+.view {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+/* Buttons ------------------------------------------------------------------ */
+.btn {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent-dim);
+  padding: 12px 26px;
+  font-size: 15px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border-radius: 2px;
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+}
+.btn:hover:not(:disabled) {
+  background: var(--accent);
+  color: #04140a;
+  box-shadow: 0 0 24px rgba(57, 255, 20, 0.35);
+}
+.btn:disabled {
+  opacity: 0.4;
+  cursor: progress;
+}
+
+.btn--big {
+  font-size: 22px;
+  padding: 16px 44px;
+}
+
+/* Loader ------------------------------------------------------------------- */
+.spinner {
+  width: 34px;
+  height: 34px;
+  border: 3px solid #1a201a;
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.error {
+  color: #ff6b6b;
+  border: 1px solid #4a1f1f;
+  padding: 10px 14px;
+  border-radius: 2px;
+  max-width: 420px;
+  text-align: center;
+}
