@@ -8,9 +8,12 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "build:data": "python3 scripts/build-data.py"
+    "build:data": "python3 scripts/build-data.py",
+    "build:gbif": "python3 scripts/build-gbif-data.py",
+    "build:wasm": "bash wasm/build.sh"
   },
   "dependencies": {
+    "@huggingface/transformers": "^4.2.0",
     "globe.gl": "^2.32.0",
     "three": "^0.184.0",
     "vue": "^3.4.21",

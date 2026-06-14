@@ -44,6 +44,14 @@
 <script setup>
 import { ref, shallowRef, onMounted, onBeforeUnmount } from 'vue'
 import Globe from 'globe.gl'
+import {
+  BufferGeometry,
+  Float32BufferAttribute,
+  ShaderMaterial,
+  Points,
+  AdditiveBlending,
+  Color,
+} from 'three'
 import MushroomCard from '../components/MushroomCard.vue'
 import { getLocations, fetchObservationsByLocation } from '../api/localData'
 
@@ -58,18 +66,135 @@ const locLoading = ref(false)
 const locError = ref('')
 
 let globe = null
+let pointCloud = null // THREE.Points — the whole dataset in one buffer
 let resizeHandler = null
 let clickToken = 0
+
+// three-globe places the sphere at the origin with this radius; matching it
+// lets us drop our own geometry straight onto the globe surface.
+const GLOBE_RADIUS = 100
+
+function latLngToVec3(lat, lng, alt = 0.007) {
+  const phi = ((90 - lat) * Math.PI) / 180
+  const theta = ((90 - lng) * Math.PI) / 180
+  const r = GLOBE_RADIUS * (1 + alt)
+  return [
+    r * Math.sin(phi) * Math.cos(theta),
+    r * Math.cos(phi),
+    r * Math.sin(phi) * Math.sin(theta),
+  ]
+}
+
+// Render every site as ONE gl.POINTS draw call. A merged sphere-per-point layer
+// (globe.gl's default) chokes well before this many markers; a single buffered
+// point cloud with a custom shader scales to millions and lets dense regions
+// glow additively, which doubles as a density map.
+const VERT = `
+  attribute float aSize;
+  attribute vec3 aColor;
+  uniform float uScale;
+  varying vec3 vColor;
+  void main() {
+    vColor = aColor;
+    vec4 mv = modelViewMatrix * vec4(position, 1.0);
+    gl_Position = projectionMatrix * mv;
+    gl_PointSize = clamp(aSize * uScale / -mv.z, 1.0, 26.0);
+  }
+`
+const FRAG = `
+  varying vec3 vColor;
+  void main() {
+    vec2 uv = gl_PointCoord - vec2(0.5);
+    float d = length(uv);
+    if (d > 0.5) discard;            // round dots, not squares
+    float alpha = smoothstep(0.5, 0.12, d);
+    gl_FragColor = vec4(vColor, alpha);
+  }
+`
+
+function updatePointScale() {
+  if (!pointCloud || !globe) return
+  const cam = globe.camera()
+  const fov = cam && cam.fov ? cam.fov : 50
+  const h =
+    (globe.renderer() && globe.renderer().domElement.height) ||
+    globeEl.value.clientHeight * (window.devicePixelRatio || 1)
+  // world-unit point size -> pixels, with perspective attenuation in the shader
+  pointCloud.material.uniforms.uScale.value =
+    h / (2 * Math.tan((fov * Math.PI) / 180 / 2))
+}
+
+function buildPointCloud(list) {
+  const n = list.length
+  const positions = new Float32Array(n * 3)
+  const sizes = new Float32Array(n)
+  const colors = new Float32Array(n * 3)
+
+  // Scale size/brightness by log(count) so a 1-obs site and a 30k-obs site are
+  // both visible but distinguishable.
+  let maxLog = 1
+  for (let i = 0; i < n; i++) {
+    const l = Math.log1p(list[i].count || 1)
+    if (l > maxLog) maxLog = l
+  }
+  const low = new Color('#1f8a3b')
+  const high = new Color('#e8ffe0')
+  const c = new Color()
+
+  for (let i = 0; i < n; i++) {
+    const site = list[i]
+    const [x, y, z] = latLngToVec3(site.lat, site.lng)
+    positions[i * 3] = x
+    positions[i * 3 + 1] = y
+    positions[i * 3 + 2] = z
+    const t = Math.log1p(site.count || 1) / maxLog
+    sizes[i] = 0.5 + t * 1.4
+    c.copy(low).lerp(high, t)
+    colors[i * 3] = c.r
+    colors[i * 3 + 1] = c.g
+    colors[i * 3 + 2] = c.b
+  }
+
+  const geom = new BufferGeometry()
+  geom.setAttribute('position', new Float32BufferAttribute(positions, 3))
+  geom.setAttribute('aSize', new Float32BufferAttribute(sizes, 1))
+  geom.setAttribute('aColor', new Float32BufferAttribute(colors, 3))
+
+  const material = new ShaderMaterial({
+    uniforms: { uScale: { value: 800 } },
+    vertexShader: VERT,
+    fragmentShader: FRAG,
+    transparent: true,
+    depthTest: true, // the opaque globe still occludes back-facing sites
+    depthWrite: false, // but points blend with each other (additive glow)
+    blending: AdditiveBlending,
+  })
+
+  pointCloud = new Points(geom, material)
+  pointCloud.renderOrder = 1
+  pointCloud.frustumCulled = false
+  globe.scene().add(pointCloud)
+  updatePointScale()
+}
+
+function disposePointCloud() {
+  if (!pointCloud) return
+  if (globe) globe.scene().remove(pointCloud)
+  pointCloud.geometry.dispose()
+  pointCloud.material.dispose()
+  pointCloud = null
+}
 
 function sizeGlobe() {
   if (!globe || !globeEl.value) return
   globe.width(globeEl.value.clientWidth)
   globe.height(globeEl.value.clientHeight)
+  updatePointScale()
 }
 
-// Points are merged into one geometry for performance (23k of them), so we
-// can't rely on per-point click events — instead we find the nearest site to
-// wherever the globe was clicked (the same trick the original app used).
+// The cloud is one merged buffer, so there are no per-marker click targets —
+// instead we find the nearest site to wherever the globe was clicked (the same
+// trick the original app used).
 function findNearest(lat, lng) {
   const cosLat = Math.cos((lat * Math.PI) / 180)
   let best = null
@@ -122,7 +247,8 @@ function clearSelection() {
 async function loadLocations() {
   try {
     locations.value = await getLocations()
-    globe.pointsData(locations.value)
+    disposePointCloud()
+    buildPointCloud(locations.value)
   } catch (e) {
     loadError.value = 'Could not load the site map.'
     console.error(e)
@@ -137,12 +263,8 @@ onMounted(() => {
     .showAtmosphere(true)
     .atmosphereColor('#39ff14')
     .atmosphereAltitude(0.16)
-    .pointLat('lat')
-    .pointLng('lng')
-    .pointAltitude(0.005)
-    .pointRadius(0.16)
-    .pointColor(() => '#39ff14')
-    .pointsMerge(true)
+    // Sites are drawn as our own GPU point cloud (see buildPointCloud), not the
+    // built-in points layer. Rings are still used for the selection highlight.
     .ringColor(() => '#ffffff')
     .ringMaxRadius(4)
     .ringPropagationSpeed(1.4)
@@ -161,6 +283,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   if (resizeHandler) window.removeEventListener('resize', resizeHandler)
+  disposePointCloud()
   if (globe && typeof globe._destructor === 'function') globe._destructor()
   globe = null
 })

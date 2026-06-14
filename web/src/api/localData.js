@@ -1,8 +1,9 @@
 // Local "file API" for the Fungi Soundscape web app.
 //
-// All data is served as static JSON built from Mushroom Observer's CSV dumps
-// by scripts/build-data.py — no live API calls, no rate limits. Only the
-// images are fetched from mushroomobserver.org at runtime.
+// All data is served as static JSON built from either Mushroom Observer's CSV
+// dumps (scripts/build-data.py -> public/data/) or GBIF (scripts/build-gbif-data.py
+// -> public/gbif/) — no live API calls, no rate limits. The active dataset is
+// chosen in ./source.js. Only the images are fetched remotely at runtime.
 //
 // The dataset is deliberately relation-preserving so future network/graph
 // views can be built directly on it:
@@ -12,13 +13,14 @@
 // From these you can derive co-occurrence (species sharing a location),
 // taxonomic hierarchy (lineage), and synonym clusters (shared synonymId).
 //
-// Bucket counts MUST match scripts/build-data.py.
+// Bucket counts MUST match scripts/build-data.py and scripts/build-gbif-data.py.
 
-import { imageUrl, observationUrl } from './mushroomObserver'
+import { imageUrl } from './mushroomObserver'
+import { source } from './source'
 
 const OBS_BUCKETS = 256
 const NAME_BUCKETS = 64
-const BASE = `${import.meta.env.BASE_URL}data/`
+const BASE = `${import.meta.env.BASE_URL}${source.dir}`
 
 // --- low-level loaders (cached) ------------------------------------------
 
@@ -71,24 +73,28 @@ function nameBucket(nameId) {
 
 // --- shaping --------------------------------------------------------------
 
-// Observation tuple layout (see build-data.py):
-//   [id, name, date, imageId, confidence, nameId]
+// Observation tuple layout (shared by both builds):
+//   [id, name, date, image, confidence, nameId]
+// `image` is an integer image id (MO -> build a URL) or a full URL string
+// (GBIF -> use as-is). `nameId` is an MO name_id or a GBIF taxonKey; either way
+// it keys into the names/ buckets via getNameInfo().
 function toFungus(tuple, location) {
-  const [id, name, date, imageId, confidence, nameId] = tuple
+  const [id, name, date, image, confidence, nameId] = tuple
+  const url = typeof image === 'string' ? image : image ? imageUrl(image) : null
   return {
     id,
     name,
     nameId,
     date,
-    imageId,
-    imageUrl: imageId ? imageUrl(imageId) : null,
+    imageId: typeof image === 'number' ? image : null,
+    imageUrl: url,
     confidence,
     locationId: location?.id ?? null,
     locationName: location?.name ?? '',
     lat: location?.lat ?? null,
     lng: location?.lng ?? null,
     hasLocation: location != null,
-    url: observationUrl(id),
+    url: source.observationUrl(id),
   }
 }
 

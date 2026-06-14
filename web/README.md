@@ -38,6 +38,38 @@ Buckets keep each file small so the browser loads only what it needs (the globe
 loads `locations.json`; clicking a site loads one `obs` bucket; a card loads one
 `names` bucket).
 
+## A second source: GBIF (experimental)
+
+[GBIF](https://www.gbif.org) aggregates many biodiversity datasets — including
+Mushroom Observer — under one normalized taxonomic backbone.
+[`scripts/build-gbif-data.py`](scripts/build-gbif-data.py) downloads occurrences
+through GBIF's **asynchronous Download API** and emits the *same* bucket layout
+into `public/gbif/`, so GBIF and MO sit side by side and can be compared with the
+**data MO / GBIF** toggle in the header.
+
+```bash
+# GBIF downloads need a free GBIF.org account; creds come from the environment.
+export GBIF_USER=your_gbif_username      # NOT your email
+export GBIF_PWD=your_gbif_password
+export GBIF_EMAIL=you@example.org
+npm run build:gbif                       # default scope: the Mushroom Observer dataset
+GBIF_SCOPE=fungi npm run build:gbif      # or: every imaged, georeferenced kingdom-Fungi record
+python3 scripts/build-gbif-data.py --dry-run   # preview the request, contact nothing
+```
+
+The script POSTs a filter predicate, polls the download with exponential backoff
+(handling `420 Enhance Your Calm`) until it `SUCCEEDED`, downloads the **DWCA**
+archive (DWCA is the only format carrying image URLs, in `multimedia.txt`), then
+transforms it. GBIF differs from MO in two ways worth knowing:
+
+- **It's a subset of MO.** GBIF's MO mirror holds ~277k records (~257k with a
+  coordinate and a still image) vs MO's own ~578k — GBIF only ingests records
+  meeting its criteria.
+- **Richer graph backbone.** GBIF has no location IDs (just lat/lng), so sites
+  are **grid-snapped** (`GBIF_GRID` decimals, default 2 ≈ 1 km). But every taxon
+  rank carries a stable GBIF integer key (`keys` in the species node), making the
+  taxonomy a real node graph rather than just strings.
+
 ### Graph-ready by design
 
 The dataset preserves relations as IDs so future **network/graph views** can be
@@ -73,12 +105,15 @@ npm run build        # production build into dist/
 ## Layout
 
 ```
-scripts/build-data.py       CSV dumps -> local JSON (the data pipeline)
-src/api/localData.js        local data access + relation/graph helpers
-src/api/mushroomObserver.js remote bits that remain: image URLs + obs page links
+scripts/build-data.py        MO CSV dumps -> public/data/   (the MO pipeline)
+scripts/build-gbif-data.py   GBIF Download API -> public/gbif/  (the GBIF pipeline)
+src/api/source.js            active dataset (MO | GBIF); ?source= / localStorage
+src/api/localData.js         local data access + relation/graph helpers
+src/api/mushroomObserver.js  remote bits that remain: image URLs + obs page links
 src/components/MushroomCard.vue
-src/views/RandomView.vue    "Observe" — random mushroom
-src/views/GlobeView.vue     globe of worldwide encounter sites
+src/components/SourceToggle.vue  header MO/GBIF switch (probes which are built)
+src/views/RandomView.vue     "Observe" — random mushroom
+src/views/GlobeView.vue      globe of worldwide encounter sites
 ```
 
 ## Next
